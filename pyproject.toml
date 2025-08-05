@@ -7,7 +7,7 @@ authors = [
   { name = "Harshal6927" },
   { name = "i-am-unknown-81514525" },
   { name = "Ununennium817" },
-  { name = "..." },                   # Fiwam
+  { name = "fiwam" },
   { name = "dragonsenseiguy" },
 ]
 version = "0.1.0"
