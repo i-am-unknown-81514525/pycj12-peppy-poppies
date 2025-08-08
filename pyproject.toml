@@ -75,5 +75,7 @@ ignore = [
     # Exceptions
     "TRY003",
     "EM101",
-    "EM102"
+    "EM102",
+    # Other
+    "CPY001",
 ]
