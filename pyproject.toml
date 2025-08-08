@@ -21,7 +21,9 @@ dependencies = []
 # Don't forget to pin your dependencies!
 # This list will have to be migrated if you wish to use another dependency manager.
 dev = ["pre-commit~=4.2.0", "ruff~=0.12.2"]
-frontend = []
+frontend = [
+    "pyscript>=0.3.3",
+]
 backend = []
 
 [tool.ruff]
