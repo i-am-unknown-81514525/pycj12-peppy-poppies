@@ -72,4 +72,8 @@ ignore = [
     "TD002",
     "TD003",
     "FIX",
+    # Exceptions
+    "TRY003",
+    "EM101",
+    "EM102"
 ]

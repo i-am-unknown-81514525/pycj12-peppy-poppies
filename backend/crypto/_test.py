@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from backend.crypto.key import import_private_key, generate_key_pair, import_public_key, export_key
+from backend.crypto.key import export_key, generate_key_pair, import_private_key, import_public_key
 
 if __name__ == "__main__":
     pri, pub = generate_key_pair()
