@@ -301,6 +301,7 @@ source = { virtual = "." }
 
 [package.dev-dependencies]
 backend = [
+    { name = "cryptography" },
     { name = "pyjwt", extra = ["crypto"] },
 ]
 dev = [
@@ -314,7 +315,10 @@ frontend = [
 [package.metadata]
 
 [package.metadata.requires-dev]
-backend = [{ name = "pyjwt", extras = ["crypto"], specifier = ">=2.10.1" }]
+backend = [
+    { name = "cryptography", specifier = ">=45.0.6" },
+    { name = "pyjwt", extras = ["crypto"], specifier = ">=2.10.1" },
+]
 dev = [
     { name = "pre-commit", specifier = "~=4.2.0" },
     { name = "ruff", specifier = "~=0.12.2" },
