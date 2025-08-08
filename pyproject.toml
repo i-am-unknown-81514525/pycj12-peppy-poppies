@@ -25,6 +25,7 @@ frontend = [
     "pyscript>=0.3.3",
 ]
 backend = [
+    "cryptography>=45.0.6",
     "pyjwt[crypto]>=2.10.1",
 ]
 
