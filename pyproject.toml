@@ -24,7 +24,9 @@ dev = ["pre-commit~=4.2.0", "ruff~=0.12.2"]
 frontend = [
     "pyscript>=0.3.3",
 ]
-backend = []
+backend = [
+    "pyjwt[crypto]>=2.10.1",
+]
 
 [tool.uv]
 default-groups = ["dev", "frontend", "backend"]
