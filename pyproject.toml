@@ -26,6 +26,9 @@ frontend = [
 ]
 backend = []
 
+[tool.uv]
+default-groups = ["dev", "frontend", "backend"]
+
 [tool.ruff]
 # Increase the line length. This breaks PEP8 but it is way easier to work with.
 # The original reason for this limit was a standard vim terminal is only 79 characters,
