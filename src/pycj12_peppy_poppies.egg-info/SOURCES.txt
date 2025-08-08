@@ -1,0 +1,12 @@
+LICENSE.txt
+README.md
+pyproject.toml
+src/captcha_service/__init__.py
+src/captcha_service/main.py
+src/pycj12_peppy_poppies.egg-info/PKG-INFO
+src/pycj12_peppy_poppies.egg-info/SOURCES.txt
+src/pycj12_peppy_poppies.egg-info/dependency_links.txt
+src/pycj12_peppy_poppies.egg-info/requires.txt
+src/pycj12_peppy_poppies.egg-info/top_level.txt
+src/website_service/__init__.py
+src/website_service/main.py
