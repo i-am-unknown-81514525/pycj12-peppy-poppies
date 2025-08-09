@@ -74,6 +74,7 @@ def handle_message(message: JsProxy) -> None:
     expire_date = datetime.now(UTC) + timedelta(days=1)
     expire_str = expire_date.strftime("%a, %d %b %Y %H:%H:%S GMT")
     document.cookie = f"{COOKIE_JWT}={content}; expires={expire_str}; path=/"
+    document.cookie = f"{COOKIE_REQ_AUTH}=false;Max-Age=0; path=/" # delete the cookie or at least set it to false since auth successed
     parsed = urllib.parse.urlparse(window.location.href).query
     query_dict = urllib.parse.parse_qs(parsed)
     redirect = query_dict.get("redirect", "/")
