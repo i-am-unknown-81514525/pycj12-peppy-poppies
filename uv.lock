@@ -1,6 +1,10 @@
 version = 1
 revision = 3
 requires-python = ">=3.12"
+resolution-markers = [
+    "python_full_version >= '3.13'",
+    "python_full_version < '3.13'",
+]
 
 [[package]]
 name = "certifi"
@@ -309,6 +313,8 @@ dev = [
     { name = "ruff" },
 ]
 frontend = [
+    { name = "pyodide-py", version = "0.27.7", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.13'" },
+    { name = "pyodide-py", version = "0.28.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.13'" },
     { name = "pyscript" },
 ]
 
@@ -323,7 +329,10 @@ dev = [
     { name = "pre-commit", specifier = "~=4.2.0" },
     { name = "ruff", specifier = "~=0.12.2" },
 ]
-frontend = [{ name = "pyscript", specifier = ">=0.3.3" }]
+frontend = [
+    { name = "pyodide-py", specifier = ">=0.27.7" },
+    { name = "pyscript", specifier = ">=0.3.3" },
+]
 
 [[package]]
 name = "pycparser"
@@ -355,6 +364,30 @@ wheels = [
 [package.optional-dependencies]
 crypto = [
     { name = "cryptography" },
+]
+
+[[package]]
+name = "pyodide-py"
+version = "0.27.7"
+source = { registry = "https://pypi.org/simple" }
+resolution-markers = [
+    "python_full_version < '3.13'",
+]
+sdist = { url = "https://files.pythonhosted.org/packages/9d/99/d7b3c9137de5a76a63f2ef89d43c878dcb4dce8118866fb58d26290698f9/pyodide_py-0.27.7.tar.gz", hash = "sha256:afb68f8abf503f691a4ab5d2ffdbf6dd05117920508e1161e04a34737c649d36", size = 52051, upload-time = "2025-06-05T04:10:49.791Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/24/c5/825f73fb815a17838bef3342999247bea1100a0b2e576e5c17b2bdd68766/pyodide_py-0.27.7-py3-none-any.whl", hash = "sha256:2fa7db63a14720e548eb6174d492643424f8b5f21d43b7c9fecb6d712187fe6a", size = 57930, upload-time = "2025-06-05T04:10:48.789Z" },
+]
+
+[[package]]
+name = "pyodide-py"
+version = "0.28.1"
+source = { registry = "https://pypi.org/simple" }
+resolution-markers = [
+    "python_full_version >= '3.13'",
+]
+sdist = { url = "https://files.pythonhosted.org/packages/85/3d/bdb623dc6b1165c906b958b25f81ea2b0ba2f06ded5e491d272f9a54c35d/pyodide_py-0.28.1.tar.gz", hash = "sha256:11464c6e0e3063e7c0bfc2802f53c74f75fb0834190b86bb78769f84c635a18e", size = 52569, upload-time = "2025-08-04T21:31:55.431Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/13/f9/a2533ac6831763c36dd1f4cb6ba9eebb8f41b1880be9e89e3b5994c6c1f8/pyodide_py-0.28.1-py3-none-any.whl", hash = "sha256:e158e58da4cee77d1dc825bdeddd689335a41b8a79b4fa4483a0f3c50e0454e7", size = 58478, upload-time = "2025-08-04T21:31:54.07Z" },
 ]
 
 [[package]]

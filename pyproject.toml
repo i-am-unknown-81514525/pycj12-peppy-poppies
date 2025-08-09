@@ -22,6 +22,7 @@ dependencies = []
 # This list will have to be migrated if you wish to use another dependency manager.
 dev = ["pre-commit~=4.2.0", "ruff~=0.12.2"]
 frontend = [
+    "pyodide-py>=0.27.7",
     "pyscript>=0.3.3",
 ]
 backend = [
