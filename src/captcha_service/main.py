@@ -5,34 +5,25 @@ from datetime import datetime
 from typing import Annotated, Any
 
 from fastapi import FastAPI, HTTPException, Query
-from sqlalchemy import DateTime, String, Text, create_engine
-from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column
+from sqlmodel import Field, SQLModel, Session, create_engine
 
 
-class Base(DeclarativeBase):
-    """SQLAlchemy declarative base."""
+class Challenge(SQLModel, table=True):
+    """Model for challenges (SQLModel)."""
 
-
-
-# Create Data Base
-class Challenge(Base):
-    """Model for challenges."""
-
-    __tablename__ = "challenges"
-
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    website: Mapped[str] = mapped_column(String(255))
-    session_id: Mapped[str] = mapped_column(String(255))
-    question: Mapped[str] = mapped_column(Text)
-    task_json: Mapped[str] = mapped_column(Text)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    id: int | None = Field(default=None, primary_key=True)
+    website: str = Field(max_length=255)
+    session_id: str = Field(max_length=255)
+    question: str
+    task_json: str
+    created_at: datetime = Field(default_factory=datetime.utcnow)
 
 
 DATABASE_URL = "sqlite:///./captcha.db"
-engine = create_engine(DATABASE_URL, echo=False, future=True)
+engine = create_engine(DATABASE_URL, echo=False)
 
 # Create tables
-Base.metadata.create_all(engine)
+SQLModel.metadata.create_all(engine)
 
 
 app = FastAPI(title="Captcha Service")
@@ -40,14 +31,14 @@ app = FastAPI(title="Captcha Service")
 
 @app.get("/generate_challenge")
 def generate_challenge(website: Annotated[str, Query(...)], session_id: Annotated[str, Query(...)]) -> dict[str, Any]:
-    """Generate a challenge for the website."""
+    """Create a challenge"""
     if not website or not session_id:
         raise HTTPException(status_code=400, detail="Both 'website' and 'session_id' query parameters are required.")
 
     question = "Write a function `calc(x: int)` that calculates 673+x"  # We can change it after we get all the data
     task = [1, 1529]  # We can change it after we get all the data
 
-    # Add to Data Base
+    # Add to database
     with Session(engine) as db_session:
         record = Challenge(
             website=website,
