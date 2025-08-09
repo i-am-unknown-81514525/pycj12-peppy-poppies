@@ -1,23 +1,29 @@
 from __future__ import annotations
 
 import json
+import uuid
 from datetime import datetime
-from uuid import uuid4
-from typing import Annotated, Any
+from typing import Annotated
 
 from fastapi import FastAPI, HTTPException, Query
-from sqlmodel import Field, SQLModel, Session, create_engine
+from sqlmodel import Field, Session, SQLModel, create_engine
 
 
 class Challenge(SQLModel, table=True):
     """Model for challenges (SQLModel)."""
 
-    id: str = Field(default_factory=lambda: uuid4().hex, primary_key=True)
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     website: str = Field(max_length=255)
     session_id: str = Field(max_length=255)
     question: str
     task_json: str
     created_at: datetime = Field(default_factory=datetime.utcnow)
+
+
+class GenerateChallengeResponse(SQLModel, table=False):
+    """Response shema for /generate_challenge endpoint."""
+
+    challenge_id: uuid.UUID
 
 
 DATABASE_URL = "sqlite:///./captcha.db"
@@ -31,8 +37,11 @@ app = FastAPI(title="Captcha Service")
 
 
 @app.get("/generate_challenge")
-def generate_challenge(website: Annotated[str, Query(...)], session_id: Annotated[str, Query(...)]) -> dict[str, Any]:
-    """Create a challenge"""
+def generate_challenge(
+    website: Annotated[str, Query(...)],
+    session_id: Annotated[str, Query(...)],
+) -> GenerateChallengeResponse:
+    """Create a challenge."""
     if not website or not session_id:
         raise HTTPException(status_code=400, detail="Both 'website' and 'session_id' query parameters are required.")
 
@@ -52,4 +61,4 @@ def generate_challenge(website: Annotated[str, Query(...)], session_id: Annotate
         challenge_id = record.id
         db_session.commit()
 
-    return {"challenge_id": challenge_id}
+    return GenerateChallengeResponse(challenge_id=challenge_id)
