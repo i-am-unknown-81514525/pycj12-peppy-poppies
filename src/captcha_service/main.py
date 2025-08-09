@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 from datetime import datetime
+from uuid import uuid4
 from typing import Annotated, Any
 
 from fastapi import FastAPI, HTTPException, Query
@@ -11,7 +12,7 @@ from sqlmodel import Field, SQLModel, Session, create_engine
 class Challenge(SQLModel, table=True):
     """Model for challenges (SQLModel)."""
 
-    id: int | None = Field(default=None, primary_key=True)
+    id: str = Field(default_factory=lambda: uuid4().hex, primary_key=True)
     website: str = Field(max_length=255)
     session_id: str = Field(max_length=255)
     question: str
