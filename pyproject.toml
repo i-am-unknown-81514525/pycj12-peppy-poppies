@@ -14,7 +14,10 @@ authors = [
 version = "0.1.0"
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+  "fastapi~=0.115",
+  "uvicorn[standard]~=0.30",
+]
 
 [dependency-groups]
 # This `dev` group contains all the development requirements for our linting toolchain.
