@@ -30,5 +30,7 @@ build/
 # MacOS
 .DS_Store
 
-# Data Base
-captcha.db
+# Database
+*.db
+# PEM file
+*.pem

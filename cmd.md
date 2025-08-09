@@ -7,7 +7,7 @@ uv sync --locked --all-extras
 
 Run the captcha API (dev)
 ```sh
-uv run uvicorn captcha_service.main:app --reload --host 0.0.0.0 --port 8000
+uv run uvicorn backend.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 Update `uv.lock` with new dependencies
