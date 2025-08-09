@@ -1,20 +1,23 @@
 from __future__ import annotations
 
-from datetime import datetime
 import json
-from typing import Any
+from datetime import datetime
+from typing import Annotated, Any
 
 from fastapi import FastAPI, HTTPException, Query
-from sqlalchemy import create_engine, DateTime, String, Text
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, Session
+from sqlalchemy import DateTime, String, Text, create_engine
+from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column
 
 
 class Base(DeclarativeBase):
-    pass
+    """SQLAlchemy declarative base."""
 
 
-#Create Data Base
+
+# Create Data Base
 class Challenge(Base):
+    """Model for challenges."""
+
     __tablename__ = "challenges"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
@@ -36,14 +39,15 @@ app = FastAPI(title="Captcha Service")
 
 
 @app.get("/generate_challenge")
-def generate_challenge(website: str = Query(...), session_id: str = Query(...)) -> dict[str, Any]:
+def generate_challenge(website: Annotated[str, Query(...)], session_id: Annotated[str, Query(...)]) -> dict[str, Any]:
+    """Generate a challenge for the website."""
     if not website or not session_id:
         raise HTTPException(status_code=400, detail="Both 'website' and 'session_id' query parameters are required.")
 
-    question = "Write a function `calc(x: int)` that calculates 673+x" # We can change it after we get all the data
-    task = [1, 1529] # We can change it after we get all the data
+    question = "Write a function `calc(x: int)` that calculates 673+x"  # We can change it after we get all the data
+    task = [1, 1529]  # We can change it after we get all the data
 
-        #Add to Data Base
+    # Add to Data Base
     with Session(engine) as db_session:
         record = Challenge(
             website=website,
