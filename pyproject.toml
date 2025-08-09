@@ -46,6 +46,7 @@ fix = true
 # The directory containing the source code. If you choose a different project layout
 # you will need to update this value.
 src = ["src"]
+extend-exclude = ["js.pyi"]  # File from external source for only typehint
 
 [tool.ruff.lint]
 # Enable all linting rules.
