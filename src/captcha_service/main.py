@@ -43,7 +43,7 @@ def generate_challenge(website: str = Query(...), session_id: str = Query(...)) 
     question = "Write a function `calc(x: int)` that calculates 673+x" # We can change it after we get all the data
     task = [1, 1529] # We can change it after we get all the data
 
-    #Add to Data Base
+        #Add to Data Base
     with Session(engine) as db_session:
         record = Challenge(
             website=website,
@@ -52,6 +52,8 @@ def generate_challenge(website: str = Query(...), session_id: str = Query(...)) 
             task_json=json.dumps(task),
         )
         db_session.add(record)
+        db_session.flush()
+        challenge_id = record.id
         db_session.commit()
 
-    return {"question": question, "task": task}
+    return {"challenge_id": challenge_id}
