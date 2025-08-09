@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Login with Python Captcha</title>
+
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.28.1/full/pyodide.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --secondary-color: #6b7280;
+            --secondary-hover: #4b5563;
+            --success-color: #10b981;
+            --error-color: #ef4444;
+            --warning-color: #f59e0b;
+            --background: #f8fafc;
+            --surface: #ffffff;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --border: #e5e7eb;
+            --border-focus: #3b82f6;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 2rem;
+        }
+        .login-container {
+            background: var(--surface);
+            padding: 4rem 3.5rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            max-width: 750px;
+            min-width: 600px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h2 {
+            color: var(--text-primary);
+            margin: 0 0 1rem 0;
+            font-size: 2.75rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            margin: 0;
+            font-size: 1.1rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .input-group {
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.8rem;
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 1.2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            z-index: 1;
+            font-size: 1.1rem;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        textarea {
+            width: 100%;
+            padding: 1.2rem 1.5rem;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 1.1rem;
+            transition: all 0.2s ease;
+            background: var(--surface);
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            padding-left: 3.5rem;
+            height: 56px;
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        textarea {
+            font-family: "Fira Code", "Courier New", Courier, monospace;
+            min-height: 220px;
+            resize: vertical;
+            line-height: 1.6;
+            font-size: 1rem;
+            padding: 1.5rem;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 1.2rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 1rem;
+            position: relative;
+            overflow: hidden;
+            min-height: 56px;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-secondary {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: var(--secondary-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 0.5rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        #python-captcha {
+            display: none;
+            margin-top: 3rem;
+            padding-top: 3rem;
+            border-top: 2px solid var(--border);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .captcha-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .captcha-header h3 {
+            font-size: 1.8rem;
+            margin: 0;
+            color: var(--text-primary);
+        }
+
+        .captcha-challenge {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .captcha-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        .code-editor-wrapper {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .code-editor-header {
+            background: var(--text-primary);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px 12px 0 0;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .code-editor-header::before {
+            content: "🐍";
+            font-size: 1.2rem;
+        }
+
+        #python-code {
+            border-radius: 0 0 12px 12px;
+            border-top: none;
+            background: #2d3748;
+            color: #e2e8f0;
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+
+        #output-container {
+            margin-top: 1.5rem;
+        }
+
+        #output-container label {
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: block;
+            font-size: 1rem;
+        }
+
+        #output {
+            background: #1a202c;
+            color: #a0aec0;
+            padding: 1.5rem;
+            border-radius: 12px;
+            min-height: 120px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: "Fira Code", "Courier New", Courier, monospace;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            border: 2px solid var(--border);
+        }
+
+        .status-indicator {
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            margin: 1.5rem 0;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+            font-size: 1rem;
+        }
+
+        .status-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .status-error {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error-color);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn-group .btn {
+            margin-top: 0;
+            flex: 1;
+        }
+
+        .action-buttons {
+            margin-top: 2rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .login-container {
+                max-width: 600px;
+                min-width: 500px;
+                padding: 3rem 2.5rem;
+            }
+
+            .captcha-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .login-container {
+                padding: 2rem 1.5rem;
+                margin: 0.5rem;
+                min-width: unset;
+                max-width: 100%;
+            }
+
+            .header h2 {
+                font-size: 2rem;
+            }
+
+            textarea {
+                min-height: 150px;
+                font-size: 0.9rem;
+            }
+
+            .btn-group {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .captcha-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Enhanced desktop layouts */
+        @media (min-width: 1200px) {
+            .login-container {
+                max-width: 900px;
+                padding: 5rem 4rem;
+            }
+
+            .header h2 {
+                font-size: 3.25rem;
+            }
+
+            .captcha-grid {
+                gap: 3rem;
+            }
+        }
+
+        /* Dark theme for better code readability */
+        .code-highlight {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 3px solid var(--primary-color);
+            padding: 0.5rem;
+            margin: 0.5rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <div class="header">
+            <h2><i class="fas fa-shield-alt"></i> Secure Login</h2>
+            <p>Authentication with Python Challenge</p>
+        </div>
+
+        <form id="loginForm" onsubmit="return false;">
+            <div class="form-grid">
+                <div class="input-group">
+                    <label for="username">Username</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="username" name="username" required
+                               placeholder="Enter your username" autocomplete="username">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" name="password" required
+                               placeholder="Enter your password" autocomplete="current-password">
+                    </div>
+                </div>
+            </div>
+
+            <div class="status-indicator" id="statusIndicator"></div>
+
+            <button type="button" class="btn btn-secondary" id="captchaBtn" onclick="showPythonCaptcha()">
+                <i class="fas fa-robot"></i> I'm not a robot - Complete Python Challenge
+            </button>
+
+            <div id="python-captcha">
+                <div class="captcha-header">
+                    <h3><i class="fab fa-python"></i> Python Programming Challenge</h3>
+                </div>
+
+                <div class="captcha-challenge">
+                    <i class="fas fa-code"></i> Prove your programming skills: Calculate the sum of numbers from 0 to 4
+                    <div class="code-highlight">
+                        <strong>Hint:</strong> Use <code>sum(range(5))</code> and print the result. Expected output: 10
+                    </div>
+                </div>
+
+                <div class="captcha-grid">
+                    <div class="code-section">
+                        <div class="input-group">
+                            <label for="python-code">Python Code Editor</label>
+                            <div class="code-editor-wrapper">
+                                <div class="code-editor-header">
+                                    Python Interactive Console - Press Ctrl+Enter to run
+                                </div>
+                                <textarea id="python-code" placeholder="# Write your Python code here
+# Calculate: x = sum(range(5))
+# Then print the result
+
+x = sum(range(5))
+print(f'The sum is: {x}')"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary" id="runCodeBtn" onclick="runPythonCode()">
+                                <div class="loading-spinner" id="loadingSpinner"></div>
+                                <i class="fas fa-play"></i> Execute Code
+                            </button>
+                            <button type="button" class="btn btn-secondary" onclick="clearCode()">
+                                <i class="fas fa-eraser"></i> Clear Editor
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="output-section">
+                        <div id="output-container">
+                            <label><i class="fas fa-terminal"></i> Console Output:</label>
+                            <pre id="output">Ready to execute Python code...
+Press "Execute Code" or use Ctrl+Enter to run your program.</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button type="submit" class="btn btn-primary" id="loginBtn" onclick="handleLogin()">
+                    <i class="fas fa-sign-in-alt"></i> Sign In to Account
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Enhanced JavaScript with better error handling and user experience
+        class LoginApp {
+            constructor() {
+                this.elements = {
+                    pythonCaptchaDiv: document.getElementById('python-captcha'),
+                    codeEditor: document.getElementById('python-code'),
+                    outputArea: document.getElementById('output'),
+                    runCodeBtn: document.getElementById('runCodeBtn'),
+                    captchaBtn: document.getElementById('captchaBtn'),
+                    loginBtn: document.getElementById('loginBtn'),
+                    statusIndicator: document.getElementById('statusIndicator'),
+                    loadingSpinner: document.getElementById('loadingSpinner'),
+                    loginForm: document.getElementById('loginForm')
+                };
+
+                this.pyodide = null;
+                this.captchaCompleted = false;
+                this.expectedResult = 10; // sum(range(5)) = 0+1+2+3+4 = 10
+
+                this.init();
+            }
+
+            init() {
+                // Add input validation
+                this.elements.codeEditor.addEventListener('input', this.onCodeChange.bind(this));
+
+                // Add keyboard shortcuts
+                this.elements.codeEditor.addEventListener('keydown', (e) => {
+                    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                        e.preventDefault();
+                        this.runPythonCode();
+                    }
+                });
+            }
+
+            onCodeChange() {
+                this.captchaCompleted = false;
+                this.updateCaptchaButton();
+            }
+
+            showStatus(message, type = 'info') {
+                const indicator = this.elements.statusIndicator;
+                indicator.textContent = message;
+                indicator.className = `status-indicator status-${type}`;
+                indicator.style.display = 'block';
+
+                // Auto-hide after 3 seconds for non-error messages
+                if (type !== 'error') {
+                    setTimeout(() => {
+                        indicator.style.display = 'none';
+                    }, 3000);
+                }
+            }
+
+            updateCaptchaButton() {
+                const btn = this.elements.captchaBtn;
+                if (this.captchaCompleted) {
+                    btn.innerHTML = '<i class="fas fa-check-circle"></i> Challenge Completed';
+                    btn.className = 'btn btn-success';
+                    btn.disabled = true;
+                } else {
+                    btn.innerHTML = '<i class="fas fa-robot"></i> I\'m not a robot';
+                    btn.className = 'btn btn-secondary';
+                    btn.disabled = false;
+                }
+            }
+
+            showPythonCaptcha() {
+                this.elements.pythonCaptchaDiv.style.display = 'block';
+                this.elements.codeEditor.focus();
+                this.showStatus('Complete the Python challenge to proceed', 'info');
+            }
+
+            setLoading(isLoading) {
+                this.elements.runCodeBtn.disabled = isLoading;
+                this.elements.loadingSpinner.style.display = isLoading ? 'inline-block' : 'none';
+
+                if (isLoading) {
+                    this.elements.runCodeBtn.innerHTML = '<div class="loading-spinner" style="display: inline-block;"></div> Running...';
+                } else {
+                    this.elements.runCodeBtn.innerHTML = '<i class="fas fa-play"></i> Run Code';
+                }
+            }
+
+            async runPythonCode() {
+                this.setLoading(true);
+                this.elements.outputArea.textContent = 'Initializing Python runtime...';
+
+                try {
+                    // Load Pyodide only once
+                    if (!this.pyodide) {
+                        this.elements.outputArea.textContent = 'Loading Python interpreter... This may take a moment.';
+                        this.pyodide = await loadPyodide();
+                    }
+
+                    this.elements.outputArea.textContent = 'Python ready. Executing code...';
+                    const userCode = this.elements.codeEditor.value.trim();
+
+                    if (!userCode) {
+                        throw new Error('Please enter some Python code first.');
+                    }
+
+                    // Set up output capture
+                    this.pyodide.runPython(`
+                        import sys
+                        import io
+                        sys.stdout = io.StringIO()
+                        sys.stderr = io.StringIO()
+                    `);
+
+                    // Run the user's code with timeout simulation
+                    let result = this.pyodide.runPython(userCode);
+
+                    // Get captured output
+                    let stdout = this.pyodide.runPython("sys.stdout.getvalue()");
+                    let stderr = this.pyodide.runPython("sys.stderr.getvalue()");
+
+                    let finalOutput = '';
+                    if (stdout) {
+                        finalOutput += stdout;
+                    }
+                    if (stderr) {
+                        finalOutput += `\n🚨 ERRORS:\n${stderr}`;
+                    }
+
+                    // Show return value if exists
+                    if (result !== undefined && result !== null) {
+                        finalOutput += `\n📤 Return Value: ${result}`;
+                    }
+
+                    this.elements.outputArea.textContent = finalOutput || '✅ Code executed successfully (no output)';
+
+                    // Check if captcha is solved correctly
+                    this.checkCaptchaSolution(finalOutput, result);
+
+                } catch (error) {
+                    const errorMsg = `❌ Error: ${error.message}`;
+                    this.elements.outputArea.textContent = errorMsg;
+                    this.showStatus('Code execution failed. Please check your syntax.', 'error');
+                } finally {
+                    this.setLoading(false);
+                }
+            }
+
+            checkCaptchaSolution(output, result) {
+                // Check if the output contains the expected result (10)
+                const hasCorrectValue = output.includes('10') || result === this.expectedResult;
+                const containsSumCall = this.elements.codeEditor.value.includes('sum(range(5))');
+
+                if (hasCorrectValue && containsSumCall) {
+                    this.captchaCompleted = true;
+                    this.updateCaptchaButton();
+                    this.showStatus('🎉 Captcha solved! You can now login.', 'success');
+                } else {
+                    this.showStatus('Not quite right. Make sure to calculate sum(range(5)) and print the result.', 'error');
+                }
+            }
+
+            clearCode() {
+                this.elements.codeEditor.value = '';
+                this.elements.outputArea.textContent = 'Code cleared. Ready for new input...';
+                this.captchaCompleted = false;
+                this.updateCaptchaButton();
+                this.elements.codeEditor.focus();
+            }
+
+            handleLogin() {
+                const username = document.getElementById('username').value.trim();
+                const password = document.getElementById('password').value.trim();
+
+                if (!username || !password) {
+                    this.showStatus('Please fill in all fields.', 'error');
+                    return;
+                }
+
+                if (!this.captchaCompleted) {
+                    this.showStatus('Please complete the Python challenge first.', 'error');
+                    this.showPythonCaptcha();
+                    return;
+                }
+
+                // Simulate login process
+                this.elements.loginBtn.disabled = true;
+                this.elements.loginBtn.innerHTML = '<div class="loading-spinner" style="display: inline-block;"></div> Logging in...';
+
+                setTimeout(() => {
+                    this.showStatus('🎉 Login successful! Welcome back.', 'success');
+                    this.elements.loginBtn.innerHTML = '<i class="fas fa-check"></i> Logged In';
+                    this.elements.loginBtn.className = 'btn btn-success';
+                }, 1500);
+            }
+        }
+
+        // Initialize the application
+        const app = new LoginApp();
+
+        // Global functions for onclick handlers
+        function showPythonCaptcha() {
+            app.showPythonCaptcha();
+        }
+
+        function runPythonCode() {
+            app.runPythonCode();
+        }
+
+        function clearCode() {
+            app.clearCode();
+        }
+
+        function handleLogin() {
+            app.handleLogin();
+        }
+    </script>
+
+</body>
+</html>
