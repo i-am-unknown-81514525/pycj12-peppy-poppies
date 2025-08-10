@@ -26,6 +26,13 @@ class GenerateChallengeResponse(SQLModel, table=False):
     challenge_id: uuid.UUID
 
 
+class ChallengeDetailResponse(SQLModel, table=False):
+    """Response schema for /get-challenge endpoint."""
+
+    question: str
+    task: list[int]
+
+
 DATABASE_URL = "sqlite:///./captcha.db"
 engine = create_engine(DATABASE_URL, echo=False)
 
@@ -62,3 +69,19 @@ def generate_challenge(
         db_session.commit()
 
     return GenerateChallengeResponse(challenge_id=challenge_id)
+
+
+@app.get("/get-challenge")
+def get_challenge(challenge_id: Annotated[uuid.UUID, Query(...)]) -> ChallengeDetailResponse:
+    """Return the challenge details (question and task) for the given challenge_id."""
+    with Session(engine) as db_session:
+        challenge = db_session.get(Challenge, challenge_id)
+        if challenge is None:
+            raise HTTPException(status_code=404, detail="Challenge not found")
+
+        try:
+            task: list[int] = json.loads(challenge.task_json)
+        except Exception as exc:  # noqa: BLE001 - surface as 500 since DB data is invalid
+            raise HTTPException(status_code=500, detail="Corrupted challenge data") from exc
+
+        return ChallengeDetailResponse(question=challenge.question, task=task)
