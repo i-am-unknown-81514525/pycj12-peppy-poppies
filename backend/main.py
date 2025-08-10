@@ -71,7 +71,7 @@ def generate_challenge(
     return GenerateChallengeResponse(challenge_id=challenge_id)
 
 
-@app.get("/get-challenge")
+@app.get("/get_challenge")
 def get_challenge(challenge_id: Annotated[uuid.UUID, Query(...)]) -> ChallengeDetailResponse:
     """Return the challenge details (question and task) for the given challenge_id."""
     with Session(engine) as db_session:
@@ -81,7 +81,7 @@ def get_challenge(challenge_id: Annotated[uuid.UUID, Query(...)]) -> ChallengeDe
 
         try:
             task: list[int] = json.loads(challenge.task_json)
-        except Exception as exc:  # noqa: BLE001 - surface as 500 since DB data is invalid
+        except json.JSONDecodeError as exc:
             raise HTTPException(status_code=500, detail="Corrupted challenge data") from exc
 
         return ChallengeDetailResponse(question=challenge.question, task=task)
