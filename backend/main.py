@@ -2,13 +2,21 @@ from __future__ import annotations
 
 import json
 import uuid
-from datetime import datetime
+
+import jwt
+from pydantic import BaseModel
+from pathlib import Path
+from crypto.key import import_private_key
+from crypto.jwt_generate import JWTGenerator
+from datetime import datetime, timedelta
 from typing import Annotated
 
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, Body
 from sqlmodel import Field, Session, SQLModel, create_engine
 
-
+KEY_DIR = Path("./crypto/keys")  # modify later
+private_key = import_private_key(KEY_DIR / "pri.pem") # modify later
+jwt_generator = JWTGenerator(issuer="captcha-server.com", private_key=private_key) # modify later
 class Challenge(SQLModel, table=True):
     """Model for challenges (SQLModel)."""
 
@@ -31,6 +39,14 @@ class ChallengeDetailResponse(SQLModel, table=False):
 
     question: str
     task: list[int]
+
+
+class SolutionRequest(BaseModel):
+    solutions: list[int]
+
+
+class SolutionResponse(SQLModel, table=False):
+    token: str
 
 
 DATABASE_URL = "sqlite:///./captcha.db"
@@ -85,3 +101,14 @@ def get_challenge(challenge_id: Annotated[uuid.UUID, Query(...)]) -> ChallengeDe
             raise HTTPException(status_code=500, detail="Corrupted challenge data") from exc
 
         return ChallengeDetailResponse(question=challenge.question, task=task)
+
+
+@app.post("/solution", response_model=SolutionResponse)
+def submit_solution(solution_req: SolutionRequest = Body(...)) -> SolutionResponse:
+    token = jwt_generator.generate(
+        website="placeholder-website",  # modify these values later
+        session_id="placeholder-session",
+        challenge_id="placeholder-challenge",
+        solutions=solution_req.solutions,
+    )
+    return SolutionResponse(token=token)
