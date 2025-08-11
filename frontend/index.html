@@ -586,7 +586,11 @@ Press "Execute Code" or use Ctrl+Enter to run your program.</pre>
 
             showPythonCaptcha() {
                 this.elements.pythonCaptchaDiv.style.display = 'block';
-                this.elements.codeEditor.focus();
+                const element = document.getElementById('python-captcha');
+                if (element) {
+                    // Add scrolling animation to reveal the captcha.
+                    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
                 this.showStatus('Complete the Python challenge to proceed', 'info');
             }
 
@@ -679,6 +683,7 @@ Press "Execute Code" or use Ctrl+Enter to run your program.</pre>
 
                 if (hasCorrectValue && containsSumCall) {
                     this.captchaCompleted = true;
+                    this.elements.pythonCaptchaDiv.style.display = 'none';
                     this.updateCaptchaButton();
                     this.showStatus('🎉 Captcha solved! You can now login.', 'success');
                 } else {
