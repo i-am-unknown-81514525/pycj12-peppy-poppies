@@ -1,6 +1,7 @@
 import urllib.parse
 from typing import TypedDict
 
+from pyodide.ffi import create_proxy
 from pyodide.http import pyfetch
 from pyscript import document, window  # type: ignore[reportAttributeAccessIssue]
 
@@ -24,4 +25,4 @@ async def get_challenge() -> tuple[str, list[int]]:
     return (response["question"], response["task"])
 
 
-window.get_challenge = get_challenge
+window.get_challenge = create_proxy(get_challenge)
