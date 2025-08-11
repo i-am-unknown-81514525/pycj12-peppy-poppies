@@ -31,3 +31,5 @@ build/
 .DS_Store
 
 *.pem
+backend.sqlite
+captcha.sqlite

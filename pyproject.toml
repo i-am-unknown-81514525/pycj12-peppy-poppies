@@ -28,6 +28,9 @@ frontend = [
 backend = [
     "cryptography>=45.0.6",
     "pyjwt[crypto]>=2.10.1",
+    "advanced-alchemy>=1.4.5",
+    "aiosqlite>=0.21.0",
+    "litestar[jwt,standard]>=2.17.0",
 ]
 
 [tool.uv]
@@ -80,4 +83,6 @@ ignore = [
     "EM102",
     # Other
     "CPY001",
+    "RUF012",
+    "PLR6301",
 ]
