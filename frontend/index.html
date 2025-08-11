@@ -653,8 +653,19 @@ Press "Execute Code" or use Ctrl+Enter to run your program.</pre>
                     this.checkCaptchaSolution(finalOutput, result);
 
                 } catch (error) {
-                    const errorMsg = `❌ Error: ${error.message}`;
-                    this.elements.outputArea.textContent = errorMsg;
+                    if (error.name === "PythonError") {
+                        // Get the current Python exception from `sys.last_exc`.
+                        const errorMsg = this.pyodide.runPython(`
+                            import sys
+                            exc = sys.last_exc
+                            f"❌ {type(exc).__name__}: {exc!s}"
+                        `);
+                        this.elements.outputArea.textContent = errorMsg;
+                    } else {
+                        const errorMsg = `❌ Error: ${error.message}`;
+                        this.elements.outputArea.textContent = errorMsg;
+                    }
+
                     this.showStatus('Code execution failed. Please check your syntax.', 'error');
                 } finally {
                     this.setLoading(false);
