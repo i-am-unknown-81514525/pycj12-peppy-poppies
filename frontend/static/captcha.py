@@ -34,7 +34,7 @@ async def get_challenge() -> tuple[str, list[int]]:
     parsed = urllib.parse.urlparse(window.location.href).query
     query_dict = urllib.parse.parse_qs(parsed)
     challenge_id = query_dict.get("challenge_id")
-    request = await pyfetch(f"/get_challenge?challenge_id={challenge_id}")
+    request = await pyfetch(f"/api/challenge/get-challenge/{challenge_id}")
     response: GetChallengeResponse = await request.json()
     return (response["question"], response["task"])
 
@@ -47,9 +47,9 @@ async def send_result(results: list[int]) -> bool:
     req_data = json.dumps(
         {
             "solutions": list(results),  # in case this is a JsProxy
-        }
+        },
     )
-    response = await pyfetch(f"/solution?challenge_id={challenge_id}", method="POST", body=req_data)
+    response = await pyfetch(f"/api/challenge/submit-challenge/{challenge_id}", method="POST", body=req_data)
     if not response.ok:
         return False
     jwt = await response.text()
