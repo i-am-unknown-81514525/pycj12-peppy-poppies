@@ -678,6 +678,7 @@ backend = [
     { name = "cryptography" },
     { name = "litestar", extra = ["jwt", "standard"] },
     { name = "pyjwt", extra = ["crypto"] },
+    { name = "python-dotenv" },
 ]
 dev = [
     { name = "pre-commit" },
@@ -698,6 +699,7 @@ backend = [
     { name = "cryptography", specifier = ">=45.0.6" },
     { name = "litestar", extras = ["jwt", "standard"], specifier = ">=2.17.0" },
     { name = "pyjwt", extras = ["crypto"], specifier = ">=2.10.1" },
+    { name = "python-dotenv", specifier = ">=1.1.1" },
 ]
 dev = [
     { name = "pre-commit", specifier = "~=4.2.0" },
