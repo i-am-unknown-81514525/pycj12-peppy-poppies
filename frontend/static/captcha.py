@@ -8,7 +8,8 @@ from pyodide.http import pyfetch
 from pyscript import document, window  # type: ignore[reportAttributeAccessIssue]
 
 body = document.body
-
+worker = window.Worker.new("/static/runner.js", {"type": "module"})
+status: dict[str, int] = {}  # -1: failed, 0: success, 1: starting, 2: loading code, >=100: running test (idx:v-100)
 
 class GetChallengeResponse(TypedDict):
     """Response schema for /get_challenge endpoint."""
@@ -29,21 +30,45 @@ class SolutionCorrectJWTPayload(TypedDict):
     iat: float
 
 
-async def get_challenge() -> tuple[str, list[int]]:
-    """Endpoint to collect challenge data."""
+def get_challenge_id() -> str:
+    """Get challenge_id of the challenge."""
     parsed = urllib.parse.urlparse(window.location.href).query
     query_dict = urllib.parse.parse_qs(parsed)
     challenge_id = query_dict.get("challenge_id")
+    if not isinstance(challenge_id, str):
+        raise ValueError("Not a running challenge")
+    return challenge_id
+
+async def get_challenge() -> tuple[str, list[int]]:
+    """Endpoint to collect challenge data."""
+    challenge_id = get_challenge_id()
     request = await pyfetch(f"/api/challenge/get-challenge/{challenge_id}")
     response: GetChallengeResponse = await request.json()
     return (response["question"], response["task"])
 
+async def worker_on_message(e) -> None:
+    content: str = e.data
+    key, value = content.split(",", maxsplit=1)
+    challenge_id = get_challenge_id()
+    if key == "result":
+        result = await send_result(json.loads(value))
+        status[challenge_id] = 0 if result else -1
+    elif key == "load":
+        status[challenge_id] = 2
+    elif key == "run":
+        status[challenge_id] = 100 + int(value)
+
+
+async def submit(code: str, task: list[int]) -> None:
+    """Submit the code to be executed locally with the given task."""
+    challenge_id = get_challenge_id()
+    status[challenge_id] = 1
+    worker.postMessage(json.dumps({"code": code, "task": task}))
+
 
 async def send_result(results: list[int]) -> bool:
     """Send the calculated result to CAPTCHA service to obtain the JWT."""
-    parsed = urllib.parse.urlparse(window.location.href).query
-    query_dict = urllib.parse.parse_qs(parsed)
-    challenge_id = query_dict.get("challenge_id")
+    challenge_id = get_challenge_id()
     req_data = json.dumps(
         {
             "solutions": list(results),  # in case this is a JsProxy
@@ -66,4 +91,5 @@ async def send_result(results: list[int]) -> bool:
 
 
 window.get_challenge = create_proxy(get_challenge)
-window.send_result = create_proxy(send_result)
+window.submit = create_proxy(submit)
+worker.onmessage = create_proxy(worker_on_message)
