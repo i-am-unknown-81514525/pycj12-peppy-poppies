@@ -2,21 +2,21 @@ from __future__ import annotations
 
 import json
 import uuid
-
-import jwt
-from pydantic import BaseModel
+from datetime import datetime
 from pathlib import Path
-from crypto.key import import_private_key
-from crypto.jwt_generate import JWTGenerator
-from datetime import datetime, timedelta
 from typing import Annotated
 
-from fastapi import FastAPI, HTTPException, Query, Body
+from crypto.jwt_generate import JWTGenerator
+from crypto.key import import_private_key
+from fastapi import Body, FastAPI, HTTPException, Query
+from pydantic import BaseModel
 from sqlmodel import Field, Session, SQLModel, create_engine
 
 KEY_DIR = Path("./crypto/keys")  # modify later
-private_key = import_private_key(KEY_DIR / "pri.pem") # modify later
-jwt_generator = JWTGenerator(issuer="captcha-server.com", private_key=private_key) # modify later
+private_key = import_private_key(KEY_DIR / "pri.pem")  # modify later
+jwt_generator = JWTGenerator(issuer="captcha-server.com", private_key=private_key)  # modify later
+
+
 class Challenge(SQLModel, table=True):
     """Model for challenges (SQLModel)."""
 
@@ -42,10 +42,14 @@ class ChallengeDetailResponse(SQLModel, table=False):
 
 
 class SolutionRequest(BaseModel):
+    """Response schema for /solution."""
+
     solutions: list[int]
 
 
 class SolutionResponse(SQLModel, table=False):
+    """Response model returning a JWT token after solution submission."""
+
     token: str
 
 
@@ -104,7 +108,10 @@ def get_challenge(challenge_id: Annotated[uuid.UUID, Query(...)]) -> ChallengeDe
 
 
 @app.post("/solution", response_model=SolutionResponse)
-def submit_solution(solution_req: SolutionRequest = Body(...)) -> SolutionResponse:
+def submit_solution(
+    solution_req: Annotated[SolutionRequest, Body(...)],
+) -> SolutionResponse:
+    """Submit solution endpoint that returns jwt (assumes solution is correct)."""
     token = jwt_generator.generate(
         website="placeholder-website",  # modify these values later
         session_id="placeholder-session",
