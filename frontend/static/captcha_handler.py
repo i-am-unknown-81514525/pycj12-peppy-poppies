@@ -78,10 +78,11 @@ def handle_message(message: JsProxy) -> None:
     document.cookie = f"{COOKIE_REQ_AUTH}=false;Max-Age=0; path=/"
     parsed = urllib.parse.urlparse(window.location.href).query
     query_dict = urllib.parse.parse_qs(parsed)
-    redirect = query_dict.get("redirect", "/")
+    redirect = query_dict.get("redirect", None)
     if isinstance(redirect, list):
-        redirect = redirect[0] if len(redirect) > 0 else "/"
-    window.location.href = urllib.parse.unquote(redirect)
+        redirect = redirect[0] if len(redirect) > 0 else None
+    if redirect is not None:
+        window.location.href = urllib.parse.unquote(redirect)
 
 
 if window.location.href == "/challenge":
