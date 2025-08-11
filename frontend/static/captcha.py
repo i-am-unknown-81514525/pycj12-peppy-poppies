@@ -47,7 +47,7 @@ async def send_result(results: list[int]) -> bool:
     req_data = json.dumps(
         {
             "solutions": list(results),  # in case this is a JsProxy
-        }
+        },
     )
     response = await pyfetch(f"/solution?challenge_id={challenge_id}", method="POST", body=req_data)
     if not response.ok:
