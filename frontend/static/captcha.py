@@ -5,7 +5,8 @@ from typing import TypedDict
 
 from pyodide.ffi import create_proxy
 from pyodide.http import pyfetch
-from pyscript import document, window  # type: ignore[reportAttributeAccessIssue]
+from pyscript import document, window, display, when  # type: ignore[reportAttributeAccessIssue]
+import panel as pn
 
 body = document.body
 worker = window.Worker.new("/static/runner.js", {"type": "module"})
@@ -88,7 +89,6 @@ async def send_result(results: list[int]) -> bool:
         origin = f"https://{origin}"
     window.parent.postMessage(jwt, origin)
     return True
-
 
 window.get_challenge = create_proxy(get_challenge)
 window.submit = create_proxy(submit)
