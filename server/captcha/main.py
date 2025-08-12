@@ -1,5 +1,6 @@
 from advanced_alchemy.exceptions import DuplicateKeyError, NotFoundError, RepositoryError
 from litestar import Litestar
+from litestar.config.cors import CORSConfig
 from litestar.exceptions import ClientException, NotAuthorizedException, NotFoundException
 from litestar.logging import LoggingConfig
 from litestar.openapi import OpenAPIConfig
@@ -43,4 +44,5 @@ app = Litestar(
         Exception: exception_handler,
         RepositoryError: exception_handler,
     },
+    cors_config=CORSConfig(allow_origins=["*"], allow_methods=["*"], allow_headers=["*"]),
 )
