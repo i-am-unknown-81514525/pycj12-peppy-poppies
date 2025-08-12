@@ -1,1 +1,12 @@
-packages = ["panel"]
+packages = [
+    "https://cdn.holoviz.org/panel/wheels/bokeh-3.7.3-py3-none-any.whl",
+    "https://cdn.holoviz.org/panel/wheels/panel-1.7.5-py3-none-any.whl",
+    "param==2.2.1",
+    "pyyaml==6.0.2",
+    "numpy",
+    "xyzservices",
+    "jinja2",
+    "packaging",
+    "pyviz-comms",
+    "pandas",
+]

@@ -9,8 +9,10 @@ from pyscript import document, window, display, when  # type: ignore[reportAttri
 import panel as pn
 import param
 
+pn.extension("ace", "codeeditor", sizing_mode="stretch_width")
+
 body = document.body
-worker = window.Worker.new("/static/runner.js", {"type": "module"})
+worker = window.Worker.new("/static/runner.js", type="module")
 
 class GetChallengeResponse(TypedDict):
     """Response schema for /get_challenge endpoint."""
@@ -34,8 +36,12 @@ class SolutionCorrectJWTPayload(TypedDict):
 def get_challenge_id() -> str:
     """Get challenge_id of the challenge."""
     parsed = urllib.parse.urlparse(window.location.href).query
+    print(parsed)
     query_dict = urllib.parse.parse_qs(parsed)
+    print(query_dict)
     challenge_id = query_dict.get("challenge_id")
+    if isinstance(challenge_id, list) and len(challenge_id) > 0:
+        challenge_id = challenge_id[0]
     if not isinstance(challenge_id, str):
         raise ValueError("Not a running challenge")
     return challenge_id
@@ -49,7 +55,7 @@ async def get_challenge() -> tuple[str, list[int]]:
 
 async def worker_on_message(e) -> None:
     content: str = e.data
-    key, value = content.split(",", maxsplit=1)
+    key, value = content.split(";", maxsplit=1)
     challenge_id = get_challenge_id()
     if key == "result":
         result = await send_result(json.loads(value))
@@ -63,6 +69,7 @@ async def worker_on_message(e) -> None:
     elif key == "run":
         progress_bar.value = 1 + int(value)
     elif key == "pyodide-loaded":
+        print("Pyodide loaded")
         loaded_item.has_loaded = True
 
 
@@ -101,19 +108,21 @@ window.submit = create_proxy(submit)
 worker.onmessage = create_proxy(worker_on_message)
 
 class PyodideHasLoaded(param.Parameterized):
-    has_loaded = param.Boolean(precedence=-1.0)
+    has_loaded = param.Boolean()
 
     @param.depends("has_loaded")
     def render(self):
+        print(self.has_loaded)
         if self.has_loaded:  # type: ignore[reportGeneralTypeIssues]
-            return initial_verify
-        else:
-            return pn.indicators.LoadingSpinner(size=20, value=True, color="secondary", bgcolor='light')
+            initial_verify.visible = True
+            initial_loading.visible = False
 
 
 loaded_item = PyodideHasLoaded()
-initial_verify = pn.widgets.Button(name='Verify', button_type='primary')
+initial_label = pn.pane.Str("Verify for are human")
+initial_verify = pn.widgets.Button(name='Verify', button_type='primary', visible=False)
 question = pn.pane.Str("")
+initial_loading = pn.indicators.LoadingSpinner(size=20, value=True, color="secondary", bgcolor='light', visible=True)
 question_loading = pn.indicators.LoadingSpinner(size=20, value=True, color="secondary", bgcolor='light', visible=False)
 code_editor = pn.widgets.CodeEditor(value="""
 def calc(x: int) -> int:
@@ -124,14 +133,24 @@ submit_button = pn.widgets.Button(name='Submit', button_type='primary', visible=
 progress_bar = pn.indicators.Progress(name='Progress', value=0, width=200, max=3, bar_color="primary")
 tasks: list[int] = []
 
+def _set_initial_visibility(status: bool):
+    initial_label.visible = status
+    initial_verify.visible = status
+
+def _set_after_visibility(status: bool):
+    question.visible = status
+    progress_bar.visible = status
+    code_editor.visible = status
+    submit_button.visible = status
+
 async def click_initial_verify(_):
     global tasks
-    initial.visible = False
+    _set_initial_visibility(False)
     question_loading.visible = True
     question_str, tasks = await get_challenge()
     question.object = question_str
     question_loading.visible = False
-    after.visible = True
+    _set_after_visibility(True)
     progress_bar.max = len(tasks) + 2
 
 
@@ -144,8 +163,10 @@ async def click_submit():
 initial_verify.on_click(click_initial_verify)
 
 initial = pn.Row(
-    pn.pane.Str("Very for are human"),
-    pn.panel(loaded_item)
+    initial_label,
+    initial_verify,
+    initial_loading,
+    loaded_item.render,
 )
 
 after = pn.Column(
@@ -155,8 +176,11 @@ after = pn.Column(
     submit_button
 )
 
+_set_after_visibility(False)
+
 pn.Column(
     initial,
     question_loading,
-    after
+    after,
 ).servable(target="captcha")
+# pn.pane.Str("Hello from Panel!").servable(target="captcha")

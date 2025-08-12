@@ -4,24 +4,42 @@
         <!-- Recommended meta tags -->
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+        <script
+            type="text/javascript"
+            src="https://cdn.bokeh.org/bokeh/release/bokeh-3.7.3.js"
+        ></script>
+        <script
+            type="text/javascript"
+            src="https://cdn.bokeh.org/bokeh/release/bokeh-widgets-3.7.3.min.js"
+        ></script>
+        <script
+            type="text/javascript"
+            src="https://cdn.bokeh.org/bokeh/release/bokeh-tables-3.7.3.min.js"
+        ></script>
+        <script
+            type="text/javascript"
+            src="https://cdn.jsdelivr.net/npm/@holoviz/panel@1.7.5/dist/panel.min.js"
+        ></script>
         <!-- PyScript CSS -->
         <link
             rel="stylesheet"
-            href="https://pyscript.net/snapshots/2023.09.1.RC2/core.css"
+            href="https://pyscript.net/releases/2025.8.1/core.css"
         />
         <!-- This script tag bootstraps PyScript -->
         <script
             type="module"
-            src="https://pyscript.net/snapshots/2023.09.1.RC2/core.js"
+            src="https://pyscript.net/releases/2025.8.1/core.js"
         ></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.43.2/ace.min.js" integrity="sha512-sdeAa6bnaA5ZaOGAM7GhwO8ascBi986gL7z7whljQdiISDOEQZKja2yqe7pD+l5HshKzcJtoxJVxVwHcO5SVAQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.43.2/mode-python.min.js" integrity="sha512-DUdq0nHbbCHQMqQNALNivk5tAdpFWOpm3mplXDwBqIpXD6/vfgXp8fESbfsnePQT3jZKVI3mCbEQumz/S4IHPA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    </head>
+    <body>
+        <!-- your code goes here... -->
+        <div id="captcha"></div>
         <script
             type="py"
             src="/static/captcha.py"
             config="pyscript.toml"
         ></script>
-    </head>
-    <body>
-        <!-- your code goes here... -->
-        <div id="captcha"></div>
     </body>
 </html>

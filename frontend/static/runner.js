@@ -1,5 +1,8 @@
-import { loadPyodide } from "https://cdn.jsdelivr.net/pyodide/v0.28.1/full/pyodide.js";
+console.log("[Worker] Downloading pyodide");
+import { loadPyodide } from "https://cdn.jsdelivr.net/pyodide/v0.28.1/full/pyodide.mjs";
+console.log("[Worker] Loading pyodide");
 let pyodide = await loadPyodide();
+console.log("[Worker] Complete pyodide load");
 self.onmessage = function (e) {
     let json_value = JSON.parse(e.data);
     let code = json_value.code;
