@@ -22,4 +22,4 @@ self.onmessage = function (e) {
     dict.destroy();
     postMessage(`result;${JSON.stringify(results)}`);
 };
-postMessage("pyodide-loaded");
+postMessage("pyodide-loaded;0");
