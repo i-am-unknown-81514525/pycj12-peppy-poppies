@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 import jwt
 
-from .key import get_pem
+from crypto.key import get_pem
 
 if TYPE_CHECKING:
     from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
@@ -24,15 +24,18 @@ class JWTGenerator:
         self,
         *,
         website: str,
-        session_id: str,
         challenge_id: str,
         valid_duration: float = 600,
         **kwargs: JSON,
     ) -> str:
-        """Generate JWT token based on website, session_id and challenge_id and any addition attributes."""
+        """Generate JWT token based on website and challenge_id and any addition attributes.
+
+        Returns:
+            str: The generated JWT token as a string.
+
+        """
         data = {
             **kwargs,
-            "session_id": session_id,
             "challenge_id": challenge_id,
         }
         current = datetime.now(UTC)
