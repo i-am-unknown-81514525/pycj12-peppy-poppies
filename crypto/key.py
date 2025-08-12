@@ -60,15 +60,15 @@ def import_private_key(pri_path: Path) -> Ed25519PrivateKey:
 
 
 def import_all(path: Path) -> tuple[Ed25519PrivateKey, Ed25519PublicKey]:
-    """Import a pair of Ed25519 private and public keys from `path/pub.pem` and `path/pri.pem`.
+    """Import a pair of Ed25519 private and public keys from `path/public.pem` and `path/private.pem`.
 
     Returns:
         tuple[Ed25519PrivateKey, Ed25519PublicKey]: The imported private and public key pair.
 
     """
     return (
-        import_private_key(path / "pri.pem"),
-        import_public_key(path / "pub.pem"),
+        import_private_key(path / "private.pem"),
+        import_public_key(path / "public.pem"),
     )
 
 
@@ -79,9 +79,9 @@ def export_key(key: Ed25519Key, path: Path) -> None:
 
 
 def export_all(path: Path, *, pub_key: Ed25519PublicKey, pri_key: Ed25519PrivateKey) -> None:
-    """Export both public and private Ed25519 key in path/pub.pem and path/pri.pem respectively."""
-    export_key(pub_key, path / "pub.pem")
-    export_key(pri_key, path / "pri.pem")
+    """Export both public and private Ed25519 key in path/public.pem and path/private.pem respectively."""
+    export_key(pub_key, path / "public.pem")
+    export_key(pri_key, path / "private.pem")
 
 
 def get_pem(key: Ed25519Key) -> bytes:

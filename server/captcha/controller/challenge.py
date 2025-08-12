@@ -1,9 +1,11 @@
+from pathlib import Path
 from uuid import UUID
 
+from crypto.jwt_generate import JWTGenerator
+from crypto.key import import_private_key
 from litestar import Response, get, post, status_codes
 from litestar.controller import Controller
 from litestar.di import Provide
-from server.captcha.lib.config import jwt_cookie_auth
 from server.captcha.lib.dependencies import provide_challenge_service
 from server.captcha.lib.services import ChallengeService
 from server.captcha.schema.challenge import (
@@ -21,7 +23,7 @@ class ChallengeController(Controller):  # noqa: D101
         "challenge_service": Provide(provide_challenge_service),
     }
 
-    @post("/generate-challenge", exclude_from_auth=True)
+    @post("/generate-challenge")
     async def generate_challenge(
         self,
         data: GenerateChallengeRequest,
@@ -50,7 +52,7 @@ class ChallengeController(Controller):  # noqa: D101
 
         return GenerateChallengeResponse(challenge_id=challenge.id)
 
-    @get("/get-challenge/{challenge_id:uuid}", exclude_from_auth=True)
+    @get("/get-challenge/{challenge_id:uuid}")
     async def get_challenge(
         self,
         challenge_service: ChallengeService,
@@ -69,7 +71,7 @@ class ChallengeController(Controller):  # noqa: D101
             tasks=challenge.task_list,
         )
 
-    @post("/submit-challenge", exclude_from_auth=True)
+    @post("/submit-challenge")
     async def submit_challenge(
         self,
         challenge_service: ChallengeService,
@@ -84,9 +86,17 @@ class ChallengeController(Controller):  # noqa: D101
         challenge = await challenge_service.get_one(id=data.challenge_id)
 
         if challenge.answer_list == data.answers:
-            return jwt_cookie_auth.login(
-                identifier=str(challenge.id),
-                send_token_as_response_body=True,
+            private_key = import_private_key(Path("./crypto/keys/private.pem"))
+            jwt_generator = JWTGenerator(issuer="captcha-server.com", private_key=private_key)
+
+            token = jwt_generator.generate(
+                website="captcha-server.com",
+                challenge_id=str(data.challenge_id),
+            )
+
+            return Response(
+                status_code=status_codes.HTTP_201_CREATED,
+                content={"token": token},
             )
 
         return Response(
