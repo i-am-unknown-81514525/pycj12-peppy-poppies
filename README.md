@@ -7,7 +7,7 @@ uv sync
 # windows
 .venv\Scripts\activate
 # linux / mac
-source .venv/bin/activate
+. .venv/bin/activate
 ```
 
 
