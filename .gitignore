@@ -33,3 +33,6 @@ build/
 *.pem
 backend.sqlite
 captcha.sqlite
+
+#Linter
+.ruff_cache
