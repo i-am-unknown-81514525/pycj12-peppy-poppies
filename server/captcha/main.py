@@ -19,7 +19,7 @@ app = Litestar(
     static_files_config=[
         StaticFilesConfig(
             directories=["frontend/captcha"],
-            path="/",
+            path="/static/",
             name="captcha-static",
         ),
     ],
