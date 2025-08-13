@@ -1,5 +1,7 @@
 from advanced_alchemy.exceptions import DuplicateKeyError, NotFoundError, RepositoryError
 from litestar import Litestar
+from litestar.static_files import StaticFilesConfig
+import os
 from litestar.config.cors import CORSConfig
 from litestar.exceptions import ClientException, NotAuthorizedException, NotFoundException
 from litestar.logging import LoggingConfig
@@ -13,6 +15,13 @@ app = Litestar(
     debug=True,
     route_handlers=[
         ChallengeController,
+    ],
+    static_files_config=[
+        StaticFilesConfig(
+            directories=["frontend/captcha"],
+            path="/",
+            name="captcha-static",
+        ),
     ],
     plugins=[
         alchemy_plugin,

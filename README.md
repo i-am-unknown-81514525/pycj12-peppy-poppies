@@ -32,6 +32,5 @@ litestar --app server.backend.main:app run --port 8000 --reload
 # Run captcha frontend
 
 ```bash
-cd frontend/captcha
-python -m http.server 8002
+uvicorn server.captcha.main:app --reload --port 5500
 ```
