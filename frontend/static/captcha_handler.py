@@ -91,7 +91,7 @@ if window.location.href == "/challenge":
     query_dict = urllib.parse.parse_qs(parsed)
     challenge_id = query_dict.get("challenge_id")
     iframe = document.createElement("iframe")
-    iframe.src = f"{DOMAIN}/challenge?challenge_id{challenge_id}"
+    iframe.src = f"{DOMAIN}/static/captcha.html?challenge_id{challenge_id}"
     iframe.id = "code_captcha_iframe"
     iframe.style.height = "100vw"
     iframe.style.height = "100vh"
