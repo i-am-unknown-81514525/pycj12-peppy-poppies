@@ -23,7 +23,7 @@ python .\crypto\_test.py
 # litestar
 litestar --app server.captcha.main:app run --port 8001 --reload
 # uvicorn
-uvicorn server.captcha.main:app --reload --port 5500
+uvicorn server.captcha.main:app --port 8001 --reload
 ```
 
 # Run backend server
