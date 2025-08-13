@@ -17,20 +17,17 @@ uv sync
 python .\crypto\_test.py
 ```
 
-# Run captcha server
+# Run captcha server & frontend
 
 ```bash
+# litestar
 litestar --app server.captcha.main:app run --port 8001 --reload
+# uvicorn
+uvicorn server.captcha.main:app --reload --port 5500
 ```
 
 # Run backend server
 
 ```bash
 litestar --app server.backend.main:app run --port 8000 --reload
-```
-
-# Run captcha frontend
-
-```bash
-uvicorn server.captcha.main:app --reload --port 5500
 ```
