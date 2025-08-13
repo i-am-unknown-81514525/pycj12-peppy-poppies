@@ -168,13 +168,14 @@ async def _click_initial_verify(_) -> None:  # noqa: ANN001
     progress_bar.max = len(tasks) + 2
 
 
-async def _click_submit() -> None:
+async def _click_submit(_) -> None:  # noqa: ANN001
     code_string: str = code_editor.value  # type: ignore[reportAssignmentType]
     submit_button.disabled = True
     await submit(code_string, tasks)
 
 
 initial_verify.on_click(_click_initial_verify)
+submit_button.on_click(_click_submit)
 
 initial = pn.Row(
     initial_label,
