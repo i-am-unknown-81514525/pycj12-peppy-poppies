@@ -52,6 +52,8 @@ async def get_challenge() -> tuple[str, list[int]]:
     """Endpoint to collect challenge data."""
     challenge_id = get_challenge_id()
     request = await pyfetch(f"/api/challenge/get-challenge/{challenge_id}")
+    if not request.ok:
+        return ("Not a question [Question cannot be fetched]", [1])
     response: GetChallengeResponse = await request.json()
     return (response["question"], response["task"])
 
@@ -125,8 +127,8 @@ class PyodideHasLoaded(param.Parameterized):
 
 
 loaded_item = PyodideHasLoaded()
-initial_label = pn.pane.Str("Verify for are human")
-initial_verify = pn.widgets.Button(name="Verify", button_type="primary", visible=False)
+initial_label = pn.pane.Str("Verify for are human", margin=(0, 25), align=("start", "center"))
+initial_verify = pn.widgets.Button(name="Verify", button_type="primary", visible=False, align=("end", "center"))
 question = pn.pane.Str("")
 initial_loading = pn.indicators.LoadingSpinner(size=20, value=True, color="secondary", bgcolor="light", visible=True)
 question_loading = pn.indicators.LoadingSpinner(size=20, value=True, color="secondary", bgcolor="light", visible=False)
@@ -139,9 +141,10 @@ def calc(x: int) -> int:
     language="python",
     theme="monokai",
     name="Put your solution here:",
+    sizing_mode='stretch_width',
 )
-submit_button = pn.widgets.Button(name="Submit", button_type="primary", visible=False)
-progress_bar = pn.indicators.Progress(name="Progress", value=0, width=200, max=3, bar_color="primary")
+submit_button = pn.widgets.Button(name="Submit", button_type="primary", visible=False, sizing_mode='stretch_width')
+progress_bar = pn.indicators.Progress(name="Progress", value=0, max=3, bar_color="primary", sizing_mode='stretch_width')
 tasks: list[int] = []
 
 
@@ -161,6 +164,7 @@ async def _click_initial_verify(_) -> None:  # noqa: ANN001
     global tasks
     _set_initial_visibility(False)  # noqa: FBT003
     question_loading.visible = True
+    _set_after_visibility(True)  # noqa: FBT003
     question_str, tasks = await get_challenge()
     question.object = question_str
     question_loading.visible = False
@@ -170,6 +174,7 @@ async def _click_initial_verify(_) -> None:  # noqa: ANN001
 
 async def _click_submit(_) -> None:  # noqa: ANN001
     code_string: str = code_editor.value  # type: ignore[reportAssignmentType]
+    print(f"{code_string=} {code_editor.value_input=}")
     submit_button.disabled = True
     await submit(code_string, tasks)
 
@@ -182,9 +187,10 @@ initial = pn.Row(
     initial_verify,
     initial_loading,
     loaded_item.render,
+    sizing_mode='stretch_width',
 )
 
-after = pn.Column(question, code_editor, progress_bar, submit_button)
+after = pn.Column(question, code_editor, progress_bar, submit_button,)
 
 _set_after_visibility(False)  # noqa: FBT003
 
@@ -192,4 +198,5 @@ pn.Column(
     initial,
     question_loading,
     after,
+    sizing_mode='stretch_width',
 ).servable(target="captcha")
