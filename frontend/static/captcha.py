@@ -9,6 +9,8 @@ from pyodide.ffi import create_proxy
 from pyodide.http import pyfetch
 from pyscript import document, window  # type: ignore[reportAttributeAccessIssue]
 
+API_BASE_URL = "http://localhost:8001"
+
 pn.extension("ace", "codeeditor", sizing_mode="stretch_width")
 
 body = document.body
@@ -35,7 +37,15 @@ class SolutionCorrectJWTPayload(TypedDict):
 
 
 def get_challenge_id() -> str:
-    """Get challenge_id of the challenge."""
+    """Get challenge_id of the challenge.
+
+    Returns:
+        str: The challenge_id extracted from the URL query parameters.
+
+    Raises:
+        ValueError: If the challenge_id is not found or is not a valid string.
+
+    """
     parsed = urllib.parse.urlparse(window.location.href).query
     print(parsed)
     query_dict = urllib.parse.parse_qs(parsed)
@@ -49,13 +59,18 @@ def get_challenge_id() -> str:
 
 
 async def get_challenge() -> tuple[str, list[int]]:
-    """Endpoint to collect challenge data."""
+    """Endpoint to collect challenge data.
+
+    Returns:
+        tuple[str, list[int]]: The question string and the associated task list.
+
+    """
     challenge_id = get_challenge_id()
-    request = await pyfetch(f"/api/challenge/get-challenge/{challenge_id}")
+    request = await pyfetch(f"{API_BASE_URL}/api/challenge/get-challenge/{challenge_id}")
     if not request.ok:
         return ("Not a question [Question cannot be fetched]", [1])
     response: GetChallengeResponse = await request.json()
-    return (response["question"], response["task"])
+    return (response["question"], response["tasks"])
 
 
 async def _worker_on_message(e) -> None:  # noqa: ANN001
@@ -78,21 +93,30 @@ async def _worker_on_message(e) -> None:  # noqa: ANN001
         loaded_item.has_loaded = True
 
 
-async def submit(code: str, task: list[int]) -> None:
+def submit(code: str, task: list[int]) -> None:
     """Submit the code to be executed locally with the given task."""
     get_challenge_id()
     worker.postMessage(json.dumps({"code": code, "task": task}))
 
 
 async def send_result(results: list[int]) -> bool:
-    """Send the calculated result to CAPTCHA service to obtain the JWT."""
-    challenge_id = get_challenge_id()
+    """Send the calculated result to CAPTCHA service to obtain the JWT.
+
+    Returns:
+        bool: True if the result was successfully sent and a valid JWT was received, False otherwise.
+
+    """
     req_data = json.dumps(
         {
-            "solutions": list(results),  # in case this is a JsProxy
+            "challenge_id": get_challenge_id(),
+            "answers": list(results),  # in case this is a JsProxy
         },
     )
-    response = await pyfetch(f"/api/challenge/submit-challenge/{challenge_id}", method="POST", body=req_data)
+    response = await pyfetch(
+        f"{API_BASE_URL}/api/challenge/submit-challenge",
+        method="POST",
+        body=req_data,
+    )
     if not response.ok:
         return False
     jwt = await response.text()
@@ -141,10 +165,16 @@ def calc(x: int) -> int:
     language="python",
     theme="monokai",
     name="Put your solution here:",
-    sizing_mode='stretch_width',
+    sizing_mode="stretch_width",
 )
-submit_button = pn.widgets.Button(name="Submit", button_type="primary", visible=False, sizing_mode='stretch_width')
-progress_bar = pn.indicators.Progress(name="Progress", value=0, max=3, bar_color="primary", sizing_mode='stretch_width')
+submit_button = pn.widgets.Button(name="Submit", button_type="primary", visible=False, sizing_mode="stretch_width")
+progress_bar = pn.indicators.Progress(
+    name="Progress",
+    value=0,
+    max=3,
+    bar_color="primary",
+    sizing_mode="stretch_width",
+)
 tasks: list[int] = []
 
 
@@ -172,11 +202,11 @@ async def _click_initial_verify(_) -> None:  # noqa: ANN001
     progress_bar.max = len(tasks) + 2
 
 
-async def _click_submit(_) -> None:  # noqa: ANN001
+def _click_submit(_) -> None:  # noqa: ANN001
     code_string: str = code_editor.value  # type: ignore[reportAssignmentType]
     print(f"{code_string=} {code_editor.value_input=}")
     submit_button.disabled = True
-    await submit(code_string, tasks)
+    submit(code_string, tasks)
 
 
 initial_verify.on_click(_click_initial_verify)
@@ -187,10 +217,10 @@ initial = pn.Row(
     initial_verify,
     initial_loading,
     loaded_item.render,
-    sizing_mode='stretch_width',
+    sizing_mode="stretch_width",
 )
 
-after = pn.Column(question, code_editor, progress_bar, submit_button,)
+after = pn.Column(question, code_editor, progress_bar, submit_button)
 
 _set_after_visibility(False)  # noqa: FBT003
 
@@ -198,5 +228,5 @@ pn.Column(
     initial,
     question_loading,
     after,
-    sizing_mode='stretch_width',
+    sizing_mode="stretch_width",
 ).servable(target="captcha")
