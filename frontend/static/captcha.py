@@ -21,7 +21,7 @@ class GetChallengeResponse(TypedDict):
     """Response schema for /get_challenge endpoint."""
 
     question: str
-    task: list[int]
+    tasks: list[int]
 
 
 class SolutionCorrectJWTPayload(TypedDict):
