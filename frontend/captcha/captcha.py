@@ -14,7 +14,7 @@ API_BASE_URL = "http://localhost:8001"
 pn.extension("ace", "codeeditor", sizing_mode="stretch_width")
 
 body = document.body
-worker = window.Worker.new("/static/runner.js", type="module")
+worker = window.Worker.new("runner.js", type="module")
 
 
 class GetChallengeResponse(TypedDict):
