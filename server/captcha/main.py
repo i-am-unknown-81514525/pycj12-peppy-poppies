@@ -1,12 +1,11 @@
 from advanced_alchemy.exceptions import DuplicateKeyError, NotFoundError, RepositoryError
 from litestar import Litestar
-from litestar.static_files import StaticFilesConfig
-import os
 from litestar.config.cors import CORSConfig
 from litestar.exceptions import ClientException, NotAuthorizedException, NotFoundException
 from litestar.logging import LoggingConfig
 from litestar.openapi import OpenAPIConfig
 from litestar.openapi.plugins import ScalarRenderPlugin
+from litestar.static_files import StaticFilesConfig
 from server.captcha.controller.challenge import ChallengeController
 from server.captcha.lib.config import alchemy_plugin
 from server.captcha.lib.utils import exception_handler

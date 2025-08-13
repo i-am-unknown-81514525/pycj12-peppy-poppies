@@ -9,8 +9,6 @@ from pyodide.ffi import create_proxy
 from pyodide.http import pyfetch
 from pyscript import document, window  # type: ignore[reportAttributeAccessIssue]
 
-API_BASE_URL = "http://localhost:8001"
-
 pn.extension("ace", "codeeditor", sizing_mode="stretch_width")
 
 body = document.body
@@ -66,7 +64,7 @@ async def get_challenge() -> tuple[str, list[int]]:
 
     """
     challenge_id = get_challenge_id()
-    request = await pyfetch(f"{API_BASE_URL}/api/challenge/get-challenge/{challenge_id}")
+    request = await pyfetch(f"/api/challenge/get-challenge/{challenge_id}")
     if not request.ok:
         return ("Not a question [Question cannot be fetched]", [1])
     response: GetChallengeResponse = await request.json()
@@ -113,7 +111,7 @@ async def send_result(results: list[int]) -> bool:
         },
     )
     response = await pyfetch(
-        f"{API_BASE_URL}/api/challenge/submit-challenge",
+        "/api/challenge/submit-challenge",
         method="POST",
         body=req_data,
     )
