@@ -22,7 +22,7 @@ class Cookie(TypedDict):
 curr_script = window.document.currentScript
 DOMAIN = curr_script.getAttribute(
     "domain",
-)  # <script type="py" domain"[domain]" src="[domain]/static/captcha_handler.py"></script>
+)  # <script type="py" domain="[domain]" src="[domain]/static/captcha_handler.py"></script>
 
 
 async def on_load() -> None:
