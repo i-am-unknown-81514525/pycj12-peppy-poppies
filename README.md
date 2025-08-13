@@ -26,12 +26,12 @@ litestar --app server.captcha.main:app run --port 8001 --reload
 # Run backend server
 
 ```bash
-litestar --app server.captcha.main:app run --port 8000 --reload
+litestar --app server.backend.main:app run --port 8000 --reload
 ```
 
-# Run frontend server
+# Run captcha frontend
 
 ```bash
-cd frontend
+cd frontend/captcha
 python -m http.server 8002
 ```
