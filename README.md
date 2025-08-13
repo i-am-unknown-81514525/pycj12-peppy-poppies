@@ -14,7 +14,7 @@ uv sync
 # Create public and private keys
 
 ```bash
-py .\crypto\_test.py
+python .\crypto\_test.py
 ```
 
 # Run captcha server
@@ -27,4 +27,11 @@ litestar --app server.captcha.main:app run --port 8001 --reload
 
 ```bash
 litestar --app server.captcha.main:app run --port 8000 --reload
+```
+
+# Run frontend server
+
+```bash
+cd frontend
+python -m http.server 8002
 ```
