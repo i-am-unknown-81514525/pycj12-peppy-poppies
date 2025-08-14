@@ -45,12 +45,16 @@ COOKIE_JWT = "CODECAPTCHA_JWT"
 
 
 curr_script = window.document.currentScript
-DOMAIN : str= curr_script.getAttribute(
+DOMAIN: str = curr_script.getAttribute(
     "domain",
 )  # <script type="py" domain="[domain]" src="[domain]/static/captcha_handler.py"></script>
-MIN_MODE: bool = curr_script.getAttribute(
-    "min_mode",
-).lower() == "true"
+MIN_MODE: bool = (
+    curr_script.getAttribute(
+        "min_mode",
+    ).lower()
+    == "true"
+)
+
 
 async def on_load() -> None:
     """Check for `CODECAPTCHA_REQUIRE_AUTH` and `CODECAPTCHA_CHALLENGE_ID` on script load."""
