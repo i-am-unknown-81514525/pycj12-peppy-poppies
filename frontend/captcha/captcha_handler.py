@@ -45,10 +45,12 @@ COOKIE_JWT = "CODECAPTCHA_JWT"
 
 
 curr_script = window.document.currentScript
-DOMAIN = curr_script.getAttribute(
+DOMAIN : str= curr_script.getAttribute(
     "domain",
 )  # <script type="py" domain="[domain]" src="[domain]/static/captcha_handler.py"></script>
-
+MIN_MODE: bool = curr_script.getAttribute(
+    "min_mode",
+).lower() == "true"
 
 async def on_load() -> None:
     """Check for `CODECAPTCHA_REQUIRE_AUTH` and `CODECAPTCHA_CHALLENGE_ID` on script load."""
@@ -93,6 +95,7 @@ def _process_cookie(cookies: list[Cookie]) -> None:
 
 def handle_message(message) -> None:  # noqa: ANN001
     """Handle JWT token from inner frame."""
+    print(f"[captcha_handler.py] {message.origin}: {message.data}")
     if message.origin != DOMAIN:  # type: ignore[reportAttributeAccessIssue]
         return
     content: str = message.data  # type: ignore[reportAttributeAccessIssue]
@@ -108,21 +111,26 @@ def handle_message(message) -> None:  # noqa: ANN001
         redirect = redirect[0] if len(redirect) > 0 else None
     if redirect is not None:
         window.location.href = unquote(redirect)
+    print("[captcha_handler.py]: captchaCompleted")
+    window.postMessage("captchaCompleted")
 
 
+window.handle_message = create_proxy(handle_message)
 if window.location.href == "/challenge":
-    body = document.body
-    parsed = urlparse(window.location.href).query
-    query_dict = parse_qs(parsed)
-    challenge_id = query_dict.get("challenge_id")
-    iframe = document.createElement("iframe")
-    iframe.src = f"{DOMAIN}/static/captcha.html?challenge_id{challenge_id}"
-    iframe.id = "code_captcha_iframe"
-    iframe.style.height = "100vw"
-    iframe.style.height = "100vh"
-    iframe.setAttribute("frameborder", "0")
-    body.appendChild(iframe)
     window.addEventListener("message", create_proxy(handle_message))
-else:
-    await on_load()  # type: ignore  # noqa: F704, PLE1142, PGH003
-    cookieStore.addEventListener("change", create_proxy(on_cookie_change))
+if not MIN_MODE:
+    if window.location.href == "/challenge":
+        body = document.body
+        parsed = urlparse(window.location.href).query
+        query_dict = parse_qs(parsed)
+        challenge_id = query_dict.get("challenge_id")
+        iframe = document.createElement("iframe")
+        iframe.src = f"{DOMAIN}/static/captcha.html?challenge_id{challenge_id}"
+        iframe.id = "code_captcha_iframe"
+        iframe.style.height = "100vw"
+        iframe.style.height = "100vh"
+        iframe.setAttribute("frameborder", "0")
+        body.appendChild(iframe)
+    else:
+        await on_load()  # type: ignore  # noqa: F704, PLE1142, PGH003
+        cookieStore.addEventListener("change", create_proxy(on_cookie_change))

@@ -4,7 +4,7 @@ from uuid import UUID
 
 from crypto.jwt_generate import JWTGenerator
 from crypto.key import import_private_key
-from litestar import Response, get, post, status_codes
+from litestar import Response, get, post, status_codes, Request
 from litestar.controller import Controller
 from litestar.di import Provide
 from server.captcha.lib.dependencies import provide_challenge_service
@@ -79,6 +79,7 @@ class ChallengeController(Controller):  # noqa: D101
         self,
         challenge_service: ChallengeService,
         data: SubmitChallengeRequest,
+        request: Request,
     ) -> Response:
         """Submit a captcha challenge.
 
@@ -86,14 +87,15 @@ class ChallengeController(Controller):  # noqa: D101
             Response: A response indicating whether the challenge was solved correctly or not.
 
         """
+        host = request.headers["Host"]
         challenge = await challenge_service.get_one(id=data.challenge_id)
 
         if challenge.answer_list == data.answers:
             private_key = import_private_key(KEY_PATH / "private.pem")
-            jwt_generator = JWTGenerator(issuer="captcha-server.com", private_key=private_key)
+            jwt_generator = JWTGenerator(issuer=host, private_key=private_key)
 
             token = jwt_generator.generate(
-                website="captcha-server.com",
+                website=challenge.website,
                 challenge_id=str(data.challenge_id),
             )
 

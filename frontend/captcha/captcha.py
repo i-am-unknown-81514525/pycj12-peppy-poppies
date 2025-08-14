@@ -116,8 +116,13 @@ async def send_result(results: list[int]) -> bool:
         body=req_data,
     )
     if not response.ok:
+        submit_button.disabled = False
         return False
-    jwt = await response.text()
+    try:
+        jwt = (await response.json())["token"]
+    except json.JSONDecodeError:
+        submit_button.disabled = False
+        return False
     splitted = jwt.split(".")
     if len(splitted) != 3:  # noqa: PLR2004
         submit_button.disabled = False
