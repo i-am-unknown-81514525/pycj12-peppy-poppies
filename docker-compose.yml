@@ -1,0 +1,21 @@
+services:
+    captcha:
+        build:
+            context: .
+            dockerfile: captcha.Dockerfile
+        volumes:
+            - "./captcha_data:/app/captcha_data"
+        ports:
+            - "9201:8001"
+        env_file: ".env"
+        restart: unless-stopped
+    demo:
+        build:
+            context: .
+            dockerfile: demo.Dockerfile
+        volumes:
+            - "./demo_data:/app/demo_data"
+        ports:
+            - "9200:8000"
+        env_file: ".env"
+        restart: unless-stopped

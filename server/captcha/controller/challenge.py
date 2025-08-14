@@ -1,3 +1,4 @@
+from os import getenv
 from pathlib import Path
 from uuid import UUID
 
@@ -15,6 +16,7 @@ from server.captcha.schema.challenge import (
     SubmitChallengeRequest,
 )
 
+KEY_PATH = Path(getenv("KEY_PATH", "./captcha_data"))
 
 class ChallengeController(Controller):  # noqa: D101
     path = "/api/challenge"
@@ -86,7 +88,7 @@ class ChallengeController(Controller):  # noqa: D101
         challenge = await challenge_service.get_one(id=data.challenge_id)
 
         if challenge.answer_list == data.answers:
-            private_key = import_private_key(Path("./crypto/keys/private.pem"))
+            private_key = import_private_key(KEY_PATH / "private.pem")
             jwt_generator = JWTGenerator(issuer="captcha-server.com", private_key=private_key)
 
             token = jwt_generator.generate(

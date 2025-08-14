@@ -9,7 +9,7 @@ load_dotenv(override=True)
 
 # Advanced Alchemy
 sqlalchemy_config = SQLAlchemyAsyncConfig(
-    connection_string="sqlite+aiosqlite:///captcha.sqlite",
+    connection_string="sqlite+aiosqlite:///captcha_data/captcha.sqlite",
     session_config=AsyncSessionConfig(expire_on_commit=False),
     before_send_handler="autocommit",
     create_all=True,
