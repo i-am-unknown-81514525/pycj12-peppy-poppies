@@ -18,6 +18,7 @@ from server.captcha.schema.challenge import (
 
 KEY_PATH = Path(getenv("KEY_PATH", "./captcha_data"))
 
+
 class ChallengeController(Controller):  # noqa: D101
     path = "/api/challenge"
     tags = ["Challenge"]
