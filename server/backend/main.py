@@ -4,12 +4,16 @@ from litestar.exceptions import ClientException, NotAuthorizedException, NotFoun
 from litestar.logging import LoggingConfig
 from litestar.openapi import OpenAPIConfig
 from litestar.openapi.plugins import ScalarRenderPlugin
+from litestar.static_files import create_static_files_router
 from server.backend.lib.config import alchemy_plugin
 from server.backend.lib.utils import exception_handler
+from server.backend.controller.web_controller import WebController
 
 app = Litestar(
     debug=True,
-    route_handlers=[],
+    route_handlers=[
+        WebController
+    ],
     plugins=[
         alchemy_plugin,
     ],
