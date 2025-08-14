@@ -11,7 +11,7 @@ from server.backend.lib.utils import exception_handler
 app = Litestar(
     debug=True,
     route_handlers=[
-        create_static_files_router(path="/", directories=["frontend/demo"], html_mode=True),
+        create_static_files_router(path="/", directories=["dist/frontend/demo"], html_mode=True),
     ],
     plugins=[alchemy_plugin],
     openapi_config=OpenAPIConfig(

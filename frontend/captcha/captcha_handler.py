@@ -4,8 +4,9 @@ from pyscript import document, window  # type: ignore[reportAttributeAccessIssue
 from pyscript.ffi import create_proxy  # type: ignore[reportAttributeAccessIssue]
 
 try:
-    from urllib.parse import quote, urlparse, parse_qs, unquote
-    from typing import TypedDict, TYPE_CHECKING
+    from typing import TYPE_CHECKING, TypedDict
+    from urllib.parse import parse_qs, quote, unquote, urlparse
+
     class Cookie(TypedDict):  # type: ignore[reportRedeclaration]
         """A Cookie dictionary with just `name` and `value`."""
 
@@ -14,21 +15,27 @@ try:
 except ImportError:  # micropython
     TYPE_CHECKING = False
     if TYPE_CHECKING:
-        from urllib.parse import quote, urlparse, parse_qs, unquote
+        from urllib.parse import parse_qs, quote, unquote, urlparse
+
         class Cookie(TypedDict):
             """A Cookie dictionary with just `name` and `value`."""
 
             name: str
             value: str
     else:
+
         class Cookie:
             """A Cookie dictionary with just `name` and `value`."""
 
             name: str
             value: str
-        import mip # type: ignore[reportMissingImport]
-        mip.install("https://gist.githubusercontent.com/i-am-unknown-81514525/088e4a1a19246b440d98515d0cbce44d/raw/f82fd0eaeaad55d49fa82aac858309f9b9b81816/parse.py")
-        from parse import quote, urlparse, parse_qs, unquote
+
+        import mip  # type: ignore[reportMissingImport]
+
+        mip.install(
+            "https://gist.githubusercontent.com/i-am-unknown-81514525/088e4a1a19246b440d98515d0cbce44d/raw/f82fd0eaeaad55d49fa82aac858309f9b9b81816/parse.py",
+        )
+        from parse import parse_qs, quote, unquote, urlparse
 
 cookieStore = window.cookieStore  # noqa: N816
 
@@ -54,7 +61,7 @@ async def on_load() -> None:
     _process_cookie(cookie_list)
 
 
-def on_cookie_change(event) -> None:  # event: CookieChangeEvent
+def on_cookie_change(event) -> None:  # event: CookieChangeEvent # noqa: ANN001
     """Check for `CODECAPTCHA_REQUIRE_AUTH` and `CODECAPTCHA_CHALLENGE_ID` on cookie changes (such as API requests)."""
     if window.location.href == "/challenge":
         return
@@ -84,7 +91,7 @@ def _process_cookie(cookies: list[Cookie]) -> None:
         window.location.href = url
 
 
-def handle_message(message) -> None:
+def handle_message(message) -> None:  # noqa: ANN001
     """Handle JWT token from inner frame."""
     if message.origin != DOMAIN:  # type: ignore[reportAttributeAccessIssue]
         return

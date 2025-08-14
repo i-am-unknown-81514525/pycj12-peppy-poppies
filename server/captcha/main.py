@@ -27,7 +27,7 @@ app = Litestar(
     debug=True,
     route_handlers=[
         ChallengeController,
-        create_static_files_router(path="/static", directories=["frontend/captcha"], html_mode=True),
+        create_static_files_router(path="/static", directories=["dist/frontend/captcha"], html_mode=True),
     ],
     on_startup=[ensure_key],
     plugins=[alchemy_plugin],

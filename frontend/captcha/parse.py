@@ -1,4 +1,4 @@
-# type: ignore # ruff: noqa
+# type: ignore # ruff: noqa # noqa: PGH004
 """Merge between Lib/urllib/parse.py and Lib/ipaddress.py, with removal of some unncessary import that isn't support on micropython"""
 
 """Parse (absolute and relative) URLs.

@@ -21,6 +21,11 @@ ADD crypto /app/crypto
 RUN --mount=type=cache,target=/root/.cache/uv    \
     uv sync --locked --only-group backend --compile-bytecode
 
+ADD build.py /app
+ARG CODECAPTCHA_DOMAIN
+ENV CODECAPTCHA_DOMAIN=$CODECAPTCHA_DOMAIN
+RUN ["uv", "run", "--no-sync", "python3", "build.py"]
+
 VOLUME ["/app/captcha_data"]
 
 CMD ["uv", "run", "--no-sync", "litestar", "--app", "server.captcha.main:app", "run", "--port", "8001", "--host", "0.0.0.0"]
