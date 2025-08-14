@@ -1,22 +1,40 @@
-import urllib.parse
-from datetime import UTC, datetime, timedelta
-from typing import TypedDict
+import time
 
-from pyodide.ffi import JsProxy, create_proxy
 from pyscript import document, window  # type: ignore[reportAttributeAccessIssue]
+from pyscript.ffi import create_proxy  # type: ignore[reportAttributeAccessIssue]
+
+try:
+    from urllib.parse import quote, urlparse, parse_qs, unquote
+    from typing import TypedDict, TYPE_CHECKING
+    class Cookie(TypedDict):  # type: ignore[reportRedeclaration]
+        """A Cookie dictionary with just `name` and `value`."""
+
+        name: str
+        value: str
+except ImportError:  # micropython
+    TYPE_CHECKING = False
+    if TYPE_CHECKING:
+        from urllib.parse import quote, urlparse, parse_qs, unquote
+        class Cookie(TypedDict):
+            """A Cookie dictionary with just `name` and `value`."""
+
+            name: str
+            value: str
+    else:
+        class Cookie:
+            """A Cookie dictionary with just `name` and `value`."""
+
+            name: str
+            value: str
+        import mip # type: ignore[reportMissingImport]
+        mip.install("https://gist.githubusercontent.com/i-am-unknown-81514525/088e4a1a19246b440d98515d0cbce44d/raw/f82fd0eaeaad55d49fa82aac858309f9b9b81816/parse.py")
+        from parse import quote, urlparse, parse_qs, unquote
 
 cookieStore = window.cookieStore  # noqa: N816
 
 COOKIE_REQ_AUTH = "CODECAPTCHA_REQUIRE_AUTH"
 COOKIE_CHALLENGE_ID = "CODECAPTCHA_CHALLENGE_ID"
 COOKIE_JWT = "CODECAPTCHA_JWT"
-
-
-class Cookie(TypedDict):
-    """A Cookie dictionary with just `name` and `value`."""
-
-    name: str
-    value: str
 
 
 curr_script = window.document.currentScript
@@ -36,7 +54,7 @@ async def on_load() -> None:
     _process_cookie(cookie_list)
 
 
-def on_cookie_change(event: JsProxy) -> None:  # event: CookieChangeEvent
+def on_cookie_change(event) -> None:  # event: CookieChangeEvent
     """Check for `CODECAPTCHA_REQUIRE_AUTH` and `CODECAPTCHA_CHALLENGE_ID` on cookie changes (such as API requests)."""
     if window.location.href == "/challenge":
         return
@@ -61,34 +79,34 @@ def _process_cookie(cookies: list[Cookie]) -> None:
     if req_auth and challenge_id:
         loc = window.location
         redirect = f"{loc.pathname}{loc.search}{loc.hash}"
-        encoded_redirect = urllib.parse.quote(redirect)
+        encoded_redirect = quote(redirect)
         url = f"/challenge?redirect={encoded_redirect}&=challenge_id={challenge_id}"
         window.location.href = url
 
 
-def handle_message(message: JsProxy) -> None:
+def handle_message(message) -> None:
     """Handle JWT token from inner frame."""
     if message.origin != DOMAIN:  # type: ignore[reportAttributeAccessIssue]
         return
     content: str = message.data  # type: ignore[reportAttributeAccessIssue]
-    expire_date = datetime.now(UTC) + timedelta(days=1)
-    expire_str = expire_date.strftime("%a, %d %b %Y %H:%H:%S GMT")
+    expire_date = time.time() + 86400
+    expire_str = time.strftime("%a, %d %b %Y %H:%H:%S GMT", time.gmtime(expire_date))
     document.cookie = f"{COOKIE_JWT}={content}; expires={expire_str}; path=/"
     # delete the cookie or at least set it to false since auth successed
     document.cookie = f"{COOKIE_REQ_AUTH}=false;Max-Age=0; path=/"
-    parsed = urllib.parse.urlparse(window.location.href).query
-    query_dict = urllib.parse.parse_qs(parsed)
+    parsed = urlparse(window.location.href).query
+    query_dict = parse_qs(parsed)
     redirect = query_dict.get("redirect", None)
     if isinstance(redirect, list):
         redirect = redirect[0] if len(redirect) > 0 else None
     if redirect is not None:
-        window.location.href = urllib.parse.unquote(redirect)
+        window.location.href = unquote(redirect)
 
 
 if window.location.href == "/challenge":
     body = document.body
-    parsed = urllib.parse.urlparse(window.location.href).query
-    query_dict = urllib.parse.parse_qs(parsed)
+    parsed = urlparse(window.location.href).query
+    query_dict = parse_qs(parsed)
     challenge_id = query_dict.get("challenge_id")
     iframe = document.createElement("iframe")
     iframe.src = f"{DOMAIN}/static/captcha.html?challenge_id{challenge_id}"
