@@ -22,3 +22,14 @@ if index_html_path.exists():
 
     with index_html_path.open("w") as fp:
         fp.write(content)
+
+app_js_path: Path = Path("./dist") / "frontend" / "demo" / "app.js"
+
+if index_html_path.exists():
+    with index_html_path.open("r") as fp:
+        content = fp.read()
+
+    content = content.replace("[domain]", getenv("CODECAPTCHA_DOMAIN", "localhost:8001"))
+
+    with index_html_path.open("w") as fp:
+        fp.write(content)

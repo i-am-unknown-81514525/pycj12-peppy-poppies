@@ -13,4 +13,5 @@ window.addEventListener("message", (e) => {
     if (redirect !== null) {
         window.location.href = decodeURIComponent(redirect);
     }
+    postMessage("captchaCompleted");
 });
