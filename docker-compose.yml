@@ -3,6 +3,8 @@ services:
         build:
             context: .
             dockerfile: captcha.Dockerfile
+            args:
+                CODECAPTCHA_DOMAIN: ${CODECAPTCHA_DOMAIN}
         volumes:
             - "./captcha_data:/app/captcha_data"
         ports:

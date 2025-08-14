@@ -21,11 +21,11 @@ ADD crypto /app/crypto
 RUN --mount=type=cache,target=/root/.cache/uv    \
     uv sync --locked --only-group backend --compile-bytecode
 
-ADD demo_setdomain.py /app
+ADD build.py /app
 
 ARG CODECAPTCHA_DOMAIN
 ENV CODECAPTCHA_DOMAIN=$CODECAPTCHA_DOMAIN
-RUN ["uv", "run", "--no-sync", "python3", "demo_setdomain.py"]
+RUN ["uv", "run", "--no-sync", "python3", "build.py"]
 
 VOLUME ["/app/demo_data"]
 
