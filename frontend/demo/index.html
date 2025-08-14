@@ -14,6 +14,18 @@
 
         <!-- Local Styles -->
         <link rel="stylesheet" href="styles.css" />
+        <!-- PyScript CSS -->
+        <link
+            rel="stylesheet"
+            href="https://pyscript.net/releases/2025.8.1/core.css"
+        />
+        <!-- This script tag bootstraps PyScript -->
+        <script
+            type="module"
+            src="https://pyscript.net/releases/2025.8.1/core.js"
+            integrity="sha512-gm6C2vG5jHW4W28dfI+bQC7gc8fImN49BU32MiFhtTsJK2CLpQVjakcVKGt+L3WDREIw41w783j5tUVP/kePYQ=="
+            crossorigin="anonymous"
+        ></script>
     </head>
     <body>
         <main class="main-container">
@@ -191,5 +203,10 @@ Press "Execute Code" or use Ctrl+Enter to run your program.</pre
 
         <!-- Local JavaScript -->
         <script src="app.js"></script>
+        <script
+            type="mpy"
+            domain="[domain]"
+            src="[domain]/static/captcha_handler.py"
+        ></script>
     </body>
 </html>
