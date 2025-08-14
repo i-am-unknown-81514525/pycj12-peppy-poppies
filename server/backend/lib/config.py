@@ -5,7 +5,7 @@ from litestar.plugins.sqlalchemy import (
 )
 
 sqlalchemy_config = SQLAlchemyAsyncConfig(
-    connection_string="sqlite+aiosqlite:///backend.sqlite",
+    connection_string="sqlite+aiosqlite:///demo_data/backend.sqlite",
     session_config=AsyncSessionConfig(expire_on_commit=False),
     before_send_handler="autocommit",
     create_all=True,
