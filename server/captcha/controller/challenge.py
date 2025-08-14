@@ -4,7 +4,7 @@ from uuid import UUID
 
 from crypto.jwt_generate import JWTGenerator
 from crypto.key import import_private_key
-from litestar import Response, get, post, status_codes, Request
+from litestar import Request, Response, get, post, status_codes
 from litestar.controller import Controller
 from litestar.di import Provide
 from server.captcha.lib.dependencies import provide_challenge_service
