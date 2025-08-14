@@ -23,8 +23,10 @@ RUN --mount=type=cache,target=/root/.cache/uv    \
 
 ADD demo_setdomain.py /app
 
-RUN ["uv", "run", "python3", "demo_setdomain.py"]
+ARG CODECAPTCHA_DOMAIN
+ENV CODECAPTCHA_DOMAIN=$CODECAPTCHA_DOMAIN
+RUN ["uv", "run", "--no-sync", "python3", "demo_setdomain.py"]
 
 VOLUME ["/app/demo_data"]
 
-CMD ["uv", "run", "litestar", "--app", "server.backend.main:app", "run", "--port", "8000", "--host", "0.0.0.0"]
+CMD ["uv", "run", "--no-sync", "litestar", "--app", "server.backend.main:app", "run", "--port", "8000", "--host", "0.0.0.0"]

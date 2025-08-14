@@ -23,4 +23,4 @@ RUN --mount=type=cache,target=/root/.cache/uv    \
 
 VOLUME ["/app/captcha_data"]
 
-CMD ["uv", "run", "litestar", "--app", "server.captcha.main:app", "run", "--port", "8001", "--host", "0.0.0.0"]
+CMD ["uv", "run", "--no-sync", "litestar", "--app", "server.captcha.main:app", "run", "--port", "8001", "--host", "0.0.0.0"]

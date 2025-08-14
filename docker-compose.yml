@@ -13,6 +13,8 @@ services:
         build:
             context: .
             dockerfile: demo.Dockerfile
+            args:
+                CODECAPTCHA_DOMAIN: ${CODECAPTCHA_DOMAIN}
         volumes:
             - "./demo_data:/app/demo_data"
         ports:
