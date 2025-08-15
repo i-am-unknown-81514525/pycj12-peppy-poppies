@@ -15,6 +15,8 @@ from server.captcha.schema.challenge import (
     GetChallengeResponse,
     SubmitChallengeRequest,
 )
+from server.captcha.lib.utils import question_generator
+from server.captcha.schema.questions import QuestionSet, GeneratedQuestion
 
 KEY_PATH = Path(getenv("KEY_PATH", "./captcha_data"))
 
@@ -31,6 +33,7 @@ class ChallengeController(Controller):  # noqa: D101
         self,
         data: GenerateChallengeRequest,
         challenge_service: ChallengeService,
+        request: Request,
     ) -> GenerateChallengeResponse:
         """Generate a new captcha challenge.
 
@@ -38,18 +41,17 @@ class ChallengeController(Controller):  # noqa: D101
             GenerateChallengeResponse: The response containing the generated challenge ID.
 
         """
+
+        question_set: QuestionSet = request.app.state["question_set"]
+        question: GeneratedQuestion = question_generator(question_set)
+
         temp_new_challenge_data = {
             "website": data.website,
             "session_id": data.session_id,
-            "question": "Write a function `calc(x: int)` that calculates 673+x",
-            "tasks": "[1, 1529]",
-            "answers": "[674, 2202]",
+            "question": question.question,
+            "tasks": str(question.tasks),
+            "answers": str(question.solutions),
         }
-
-        # TODO: LLM
-        # create question
-        # create tasks
-        # create answers for tasks
 
         challenge = await challenge_service.create(temp_new_challenge_data)
 
