@@ -44,7 +44,7 @@ math = [
 ]
 
 [tool.uv]
-default-groups = ["dev", "frontend", "backend"]
+default-groups = ["dev", "frontend", "backend", "math"]
 
 [tool.ruff]
 # Increase the line length. This breaks PEP8 but it is way easier to work with.
