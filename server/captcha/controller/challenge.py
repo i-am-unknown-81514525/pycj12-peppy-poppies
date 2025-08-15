@@ -3,7 +3,7 @@ from pathlib import Path
 from uuid import UUID
 
 from crypto.jwt_generate import JWTGenerator
-from crypto.key import import_private_key, import_public_key
+from crypto.key import import_private_key
 from litestar import Response, get, post, status_codes
 from litestar.controller import Controller
 from litestar.di import Provide
@@ -113,9 +113,9 @@ class ChallengeController(Controller):  # noqa: D101
 
         Returns:
             Response: A response containing the public key in PEM format.
+
         """
         try:
-            public_key = import_public_key(KEY_PATH / "public.pem")
             # Read the PEM file content directly
             with (KEY_PATH / "public.pem").open("r") as f:
                 public_key_pem = f.read()
@@ -123,11 +123,23 @@ class ChallengeController(Controller):  # noqa: D101
             return Response(
                 status_code=status_codes.HTTP_200_OK,
                 content={"public_key": public_key_pem},
-                headers={"Content-Type": "application/json"}
+                headers={"Content-Type": "application/json"},
             )
-        except Exception as e:
+        except (FileNotFoundError, PermissionError) as e:
             return Response(
                 status_code=status_codes.HTTP_500_INTERNAL_SERVER_ERROR,
-                content={"error": f"Failed to retrieve public key: {str(e)}"},
-                headers={"Content-Type": "application/json"}
+                content={"error": f"Public key file error: {e!s}"},
+                headers={"Content-Type": "application/json"},
+            )
+        except OSError as e:
+            return Response(
+                status_code=status_codes.HTTP_500_INTERNAL_SERVER_ERROR,
+                content={"error": f"System error accessing public key: {e!s}"},
+                headers={"Content-Type": "application/json"},
+            )
+        except (ValueError, TypeError) as e:
+            return Response(
+                status_code=status_codes.HTTP_500_INTERNAL_SERVER_ERROR,
+                content={"error": f"Invalid public key format: {e!s}"},
+                headers={"Content-Type": "application/json"},
             )

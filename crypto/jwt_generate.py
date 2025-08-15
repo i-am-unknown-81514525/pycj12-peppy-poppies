@@ -68,6 +68,7 @@ class JWTValidator:
             jwt.InvalidTokenError: If the token is invalid
             jwt.ExpiredSignatureError: If the token has expired
             jwt.InvalidAudienceError: If the audience doesn't match
+
         """
         options = {"verify_signature": True, "verify_exp": True, "verify_nbf": True}
 
@@ -77,12 +78,11 @@ class JWTValidator:
                 self._pub,
                 algorithms=["EdDSA"],
                 audience=audience,
-                options=options
+                options=options,
             )
-        else:
-            return jwt.decode(
-                token,
-                self._pub,
-                algorithms=["EdDSA"],
-                options=options
-            )
+        return jwt.decode(
+            token,
+            self._pub,
+            algorithms=["EdDSA"],
+            options=options,
+        )

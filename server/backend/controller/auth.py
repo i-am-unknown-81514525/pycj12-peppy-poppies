@@ -1,25 +1,24 @@
+import tempfile
 from os import getenv
-from uuid import uuid4
 from pathlib import Path
+from uuid import uuid4
 
 import httpx
-from litestar import Request, get, post, status_codes, Response
-from litestar.controller import Controller
-from litestar.di import Provide
-from msgspec import Struct
-
-from server.backend.schema.auth import GetChallengeResponse, LoginRequest, LoginResponse
-from server.backend.lib.dependencies import provide_user_service
-from server.backend.lib.services import UserService
 from crypto.jwt_generate import JWTValidator
 from crypto.key import import_public_key
+from litestar import Request, Response, get, post, status_codes
+from litestar.controller import Controller
+from litestar.di import Provide
+from server.backend.lib.dependencies import provide_user_service
+from server.backend.lib.services import UserService
+from server.backend.schema.auth import GetChallengeResponse, LoginRequest
 
 CAPTCHA_SERVER = getenv("CODECAPTCHA_DOMAIN_INTERNAL", getenv("CODECAPTCHA_DOMAIN", "localhost:8001"))
 
 
 class AuthController(Controller):
     """Authentication controller for handling login and JWT validation."""
-    
+
     path = "/api/auth"
     tags = ["Auth"]
     dependencies = {
@@ -32,6 +31,7 @@ class AuthController(Controller):
 
         Returns:
             GetChallengeResponse: A response with the challenge ID.
+
         """
         host = request.headers["Host"]
         async with httpx.AsyncClient() as client:
@@ -45,20 +45,21 @@ class AuthController(Controller):
 
     @post("/login")
     async def login(
-        self, 
-        data: LoginRequest, 
+        self,
+        data: LoginRequest,
         user_service: UserService,
-        request: Request
+        request: Request,
     ) -> Response:
         """Login endpoint that validates credentials and JWT token.
-        
+
         Args:
             data: Login request containing username, password, and JWT token
             user_service: User service for authentication
             request: HTTP request object
-            
+
         Returns:
             Response: Login response with success status and user info
+
         """
         # First validate the JWT token from captcha
         try:
@@ -69,44 +70,57 @@ class AuthController(Controller):
                     return Response(
                         status_code=status_codes.HTTP_500_INTERNAL_SERVER_ERROR,
                         content={"error": "Failed to retrieve public key from captcha server"},
-                        headers={"Content-Type": "application/json"}
+                        headers={"Content-Type": "application/json"},
                     )
-                
+
                 public_key_data = resp.json()
                 public_key_pem = public_key_data["public_key"]
-                
-                # Save public key temporarily to validate JWT
-                temp_key_path = Path("/tmp/temp_public.pem")
-                with temp_key_path.open("w") as f:
-                    f.write(public_key_pem)
-                
-                # Import and validate JWT
-                public_key = import_public_key(temp_key_path)
-                jwt_validator = JWTValidator(public_key)
-                
-                # Validate the JWT token
-                host = request.headers.get("Host", "localhost")
-                payload = jwt_validator.validate(data.jwt_token, audience=host)
-                
-                # Clean up temp file
-                temp_key_path.unlink(missing_ok=True)
-                
-        except Exception as e:
+
+                # Save public key temporarily to validate JWT using secure temp file
+                with tempfile.NamedTemporaryFile(mode="w", suffix=".pem", delete=False) as temp_file:
+                    temp_file.write(public_key_pem)
+                    temp_key_path = Path(temp_file.name)
+
+                try:
+                    # Import and validate JWT
+                    public_key = import_public_key(temp_key_path)
+                    jwt_validator = JWTValidator(public_key)
+
+                    # Validate the JWT token
+                    host = request.headers.get("Host", "localhost")
+                    payload = jwt_validator.validate(data.jwt_token, audience=host)
+                finally:
+                    # Clean up temp file
+                    temp_key_path.unlink(missing_ok=True)
+
+        except (ValueError, KeyError, TypeError) as e:
             return Response(
                 status_code=status_codes.HTTP_401_UNAUTHORIZED,
-                content={"error": f"Invalid JWT token: {str(e)}"},
-                headers={"Content-Type": "application/json"}
+                content={"error": f"Invalid JWT token: {e!s}"},
+                headers={"Content-Type": "application/json"},
             )
-        
+        except (ConnectionError, TimeoutError) as e:
+            return Response(
+                status_code=status_codes.HTTP_503_SERVICE_UNAVAILABLE,
+                content={"error": f"Captcha service unavailable: {e!s}"},
+                headers={"Content-Type": "application/json"},
+            )
+        except (OSError, RuntimeError) as e:
+            return Response(
+                status_code=status_codes.HTTP_500_INTERNAL_SERVER_ERROR,
+                content={"error": f"System error during authentication: {e!s}"},
+                headers={"Content-Type": "application/json"},
+            )
+
         # Now validate user credentials
         user = await user_service.authenticate_user(data.username, data.password)
         if not user:
             return Response(
                 status_code=status_codes.HTTP_401_UNAUTHORIZED,
                 content={"error": "Invalid username or password"},
-                headers={"Content-Type": "application/json"}
+                headers={"Content-Type": "application/json"},
             )
-        
+
         # Return success response
         return Response(
             status_code=status_codes.HTTP_200_OK,
@@ -116,9 +130,9 @@ class AuthController(Controller):
                 "user": {
                     "id": str(user.id),
                     "username": user.username,
-                    "email": user.email
+                    "email": user.email,
                 },
-                "jwt_payload": payload
+                "jwt_payload": payload,
             },
-            headers={"Content-Type": "application/json"}
+            headers={"Content-Type": "application/json"},
         )

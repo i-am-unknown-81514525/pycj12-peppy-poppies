@@ -4,20 +4,19 @@
 import asyncio
 from pathlib import Path
 
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy import text, select, func
 from advanced_alchemy.base import UUIDAuditBase
-
 from server.backend.models import User
+from sqlalchemy import func, select
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.orm import sessionmaker
 
 
-async def create_demo_users():
+async def create_demo_users() -> None:
     """Create demo users in the database."""
     # Create database engine
     db_path = Path("demo_data/backend.sqlite")
     db_path.parent.mkdir(exist_ok=True)
-    
+
     engine = create_async_engine(f"sqlite+aiosqlite:///{db_path}")
 
     # Create tables
@@ -26,46 +25,46 @@ async def create_demo_users():
 
     # Create session
     async_session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
-    
+
     async with async_session() as session:
         # Check if users already exist
         existing_users = await session.execute(
-            select(func.count(User.id))
+            select(func.count(User.id)),
         )
         count = existing_users.scalar()
-        
+
         if count > 0:
             print(f"Database already has {count} users. Skipping user creation.")
             return
-        
+
         # Create demo users
         demo_users = [
             {
                 "username": "demo",
                 "password": "password123",
-                "email": "demo@example.com"
+                "email": "demo@example.com",
             },
             {
                 "username": "admin",
                 "password": "admin123",
-                "email": "admin@example.com"
+                "email": "admin@example.com",
             },
             {
                 "username": "test",
                 "password": "test123",
-                "email": "test@example.com"
-            }
+                "email": "test@example.com",
+            },
         ]
-        
+
         for user_data in demo_users:
             user = User(
                 username=user_data["username"],
                 password_hash=User.hash_password(user_data["password"]),
                 email=user_data["email"],
-                is_active=True
+                is_active=True,
             )
             session.add(user)
-        
+
         await session.commit()
         print(f"Created {len(demo_users)} demo users:")
         for user_data in demo_users:

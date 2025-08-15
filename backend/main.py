@@ -1,7 +1,4 @@
-from litestar import Litestar, post, get
-from litestar.datastructures import State
-from litestar.exceptions import HTTPException
-from litestar.status_codes import HTTP_400_BAD_REQUEST, HTTP_500_INTERNAL_SERVER_ERROR
+from litestar import Litestar, get, post
 from litestar.config.cors import CORSConfig
 
 
@@ -13,7 +10,7 @@ async def health_check() -> dict[str, str]:
 
 @post("/solve")
 async def solve() -> dict[str, str]:
-    """Handles the solving of a challenge."""
+    """Handle the solving of a challenge."""
     return {"message": "Challenge received successfully"}
 
 
