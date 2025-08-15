@@ -57,8 +57,8 @@ class DefaulyDictByKey[K, V](dict[K, V]):
 
 def fill_question(question: Question | Part, random_obj: Random) -> QuestionSection:
     def gen_value(val_name: str):
-        if val_name in question.range.extras:
-            return random_obj.randint(*question.range.extras[val_name])
+        if val_name in question.range:
+            return random_obj.randint(*question.range[val_name])
         return random_obj.randint(1, 65536)
     values = DefaulyDictByKey(gen_value)
     def sub_function(match: re.Match) -> str:
@@ -91,7 +91,7 @@ def question_generator(question_set: QuestionSet, seed: Optional[int] = None) ->
                 options = question_set.base
                 picked = random_obj.choice(options)
                 section: QuestionSection = fill_question(picked, random_obj)
-                value_range = picked.range.base
+                value_range = picked.input
                 validator_part.insert(0, section.validator)
                 return section.question
             case "part":
