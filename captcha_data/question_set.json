@@ -128,7 +128,26 @@
         "Write `calc(x: int) -> int` such that it calculate",
         "Write `calc(x: int) -> int` such that it get",
         "Write `calc(x: int)` such that it calculate",
-        "Write `calc(x: int)` such that it get"
+        "Write `calc(x: int)` such that it get",
+        "Create a function `calc(x: int) -> int` that returns",
+        "Create a function `calc(x: int)` that returns",
+        "Implement a Python function `calc(x: int) -> int` which returns",
+        "Implement a Python function `calc(x: int)` which returns",
+        "Define a function `calc(x: int) -> int` to find",
+        "Define a function `calc(x: int)` to find",
+        "Your task is to write a function `calc(x: int) -> int` that computes",
+        "Your task is to write a function `calc(x: int)` that computes",
+        "Your task is to write a function `calc(x: int) -> int` that calculates",
+        "Your task is to write a function `calc(x: int)` that calculates",
+        "Your task is to write a function `calc(x: int) -> int` that finds",
+        "Your task is to write a function `calc(x: int)` that finds"
     ],
-    "continue": [", then", ", and then"]
+    "continue": [
+        ", then",
+        ", and then",
+        ", followed by",
+        ", following with",
+        ", and afterwards,",
+        "with the result then being used to"
+    ]
 }
