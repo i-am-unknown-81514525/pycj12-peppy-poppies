@@ -1,8 +1,8 @@
 {
     "construct": [
         "{init} {dyn:base}",
-        "{init} {dyn:base} {continue} {dyn:part}",
-        "{init} {dyn:base} {continue} {dyn:part} {continue} {dyn:part}"
+        "{init} {dyn:base} {cont} {dyn:part}",
+        "{init} {dyn:base} {cont} {dyn:part} {cont} {dyn:part}"
     ],
     "base": [
         {
@@ -225,7 +225,7 @@
         "Your task is to write a function `calc(x: int) -> int` that finds",
         "Your task is to write a function `calc(x: int)` that finds"
     ],
-    "continue": [
+    "cont": [
         ", then",
         ", and then",
         ", followed by",
