@@ -1,4 +1,4 @@
-from msgspec import Struct
+from msgspec import Struct, field
 
 class Range(Struct):
     """Range of result that is valid for the question."""
@@ -6,7 +6,7 @@ class Range(Struct):
 
 class RangeWithBase(Range):
     """Additional valid constraint on the tasks given to the human."""
-    __base__: tuple[int, int]
+    base: tuple[int, int] = field(name="__base__")
 
 class _Question(Struct):
     question: str
