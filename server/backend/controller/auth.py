@@ -6,7 +6,7 @@ from litestar import Request, get
 from litestar.controller import Controller
 from server.backend.schema.auth import GetChallengeResponse
 
-CAPTCHA_SERVER = getenv("CODECAPTCHA_DOMAIN_INTERNAL", getenv("CODECAPTCHA_DOMAIN", "localhost:8001"))
+CAPTCHA_SERVER = getenv("CODECAPTCHA_DOMAIN_INTERNAL", getenv("CODECAPTCHA_DOMAIN", "http://localhost:8001"))
 
 
 class AuthController(Controller):  # noqa: D101
