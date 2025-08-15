@@ -40,7 +40,7 @@ litestar --app server.captcha.main:app run --port 8001 --reload
 ```
 
 # Run project with docker
-```sh
+```bash
 # Remember, for docker, the default port is picked to :9201 for captcha server, so you must create the `.env` for it to work
 docker compose up -d --build
 ```
