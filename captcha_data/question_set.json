@@ -321,7 +321,7 @@
         },
         {
             "question": "{y}-x",
-            "validator": "lambda x:{y}-x",
+            "validator": "validator=lambda x:{y}-x",
             "range": {
                 "__base__": [1, 65536],
                 "y": [-65536, 65536]
@@ -329,7 +329,7 @@
         },
         {
             "question": "x-{y}",
-            "validator": "lambda x:x-{y}",
+            "validator": "validator=lambda x:x-{y}",
             "range": {
                 "__base__": [1, 65536],
                 "y": [-65536, 65536]
@@ -337,7 +337,7 @@
         },
         {
             "question": "{y}*x",
-            "validator": "lambda x:{y}*x",
+            "validator": "validator=lambda x:{y}*x",
             "range": {
                 "__base__": [1, 65536],
                 "y": [-65536, 65536]
@@ -345,7 +345,7 @@
         },
         {
             "question": "the x-th natural number(exclude 0), k that have a remainder of {y} when divide by {z}",
-            "validator": "lambda x:(x-1)*{z}+{y}",
+            "validator": "validator=lambda x:(x-1)*{z}+{y}",
             "range": {
                 "__base__": [1, 65536],
                 "y": [1, 20],
@@ -507,7 +507,7 @@
             }
         },
         {
-            "question": "negate the value",
+            "question": "get the negative of the value",
             "validator": "validator=lambda x: -x",
             "range": {}
         },
@@ -522,7 +522,7 @@
             "range": {}
         },
         {
-            "question": "negate the result",
+            "question": "get the negative of the result",
             "validator": "validator=lambda x: -x",
             "range": {}
         },
@@ -535,7 +535,7 @@
             "question": "ceiling divide by {y}",
             "validator": "import math; validator=lambda x: math.ceil(x / {y})",
             "range": {
-                "y": [1, 65536]
+                "y": [1, 256]
             }
         },
         {
@@ -554,19 +554,21 @@
             }
         },
         {
-            "question": "find the remainder of {y} when divided by the result",
-            "validator": "validator=lambda x: {y} % x",
+            "question": "find the remainder of {y} when divided by the result or return 0 if the result is 0",
+            "validator": "validator=lambda x: {y} % x if result else 0",
             "range": {
                 "y": [1, 65536]
             }
         },
         {
-            "question": "return 1 if the result is even, otherwise 0",
-            "validator": "validator=lambda x: 1 if x % 2 == 0 else 0",
-            "range": {}
+            "question": "find the remainder of the result when divided by the {y]}",
+            "validator": "validator=lambda x: x % {y}",
+            "range": {
+                "y": [1, 256]
+            }
         },
         {
-            "question": "count the number of set bits in its binary representation (for its absolute value)",
+            "question": "count the number of set bits in its binary representation of the absolute value",
             "validator": "validator=lambda x: bin(abs(x)).count('1')",
             "range": {}
         },
@@ -600,16 +602,6 @@
             "range": {}
         },
         {
-            "question": "get the sign of the value (1 for positive, -1 for negative, 0 for zero)",
-            "validator": "validator=lambda x: 1 if x > 0 else (-1 if x < 0 else 0)",
-            "range": {}
-        },
-        {
-            "question": "check if the absolute value is a power of two (returns 1 if true, 0 if false)",
-            "validator": "validator=lambda x: 1 if (abs(x) > 0 and (abs(x) & (abs(x) - 1)) == 0) else 0",
-            "range": {}
-        },
-        {
             "question": "sum the decimal digits of the absolute value",
             "validator": "validator=lambda x: sum(int(d) for d in str(abs(x)))",
             "range": {}
@@ -629,36 +621,11 @@
             }
         },
         {
-            "question": "find the next prime number greater than the absolute value",
-            "validator": "from sympy import nextprime; validator=lambda x: nextprime(abs(x))",
-            "range": {}
-        },
-        {
             "question": "find the integer part of the {y}-th root of the absolute value",
             "validator": "validator=lambda x: int(abs(x)**(1/{y}))",
             "range": {
                 "y": [2, 10]
             }
-        },
-        {
-            "question": "compute the factorial of the current value",
-            "validator": "from math import factorial; validator=lambda x: factorial(abs(x))",
-            "range": {}
-        },
-        {
-            "question": "compute the sine of the current value (in radians, rounded to nearest integer)",
-            "validator": "import numpy as np; validator=lambda x: int(round(np.sin(x)))",
-            "range": {}
-        },
-        {
-            "question": "compute the cosine of the current value (in radians, rounded to nearest integer)",
-            "validator": "import numpy as np; validator=lambda x: int(round(np.cos(x)))",
-            "range": {}
-        },
-        {
-            "question": "compute the tangent of the current value (in radians, rounded to nearest integer)",
-            "validator": "import numpy as np; validator=lambda x: int(round(np.tan(x)))",
-            "range": {}
         },
         {
             "question": "compute the floor of the current value divided by {y}",
@@ -711,31 +678,6 @@
             "range": {}
         },
         {
-            "question": "compute the exponential of the result (e^result, rounded down to integer)",
-            "validator": "import math; validator=lambda x: int(math.exp(x))",
-            "range": {}
-        },
-        {
-            "question": "compute the sine of the result (rounded to nearest integer)",
-            "validator": "import math; validator=lambda x: round(math.sin(x))",
-            "range": {}
-        },
-        {
-            "question": "compute the cosine of the result (rounded to nearest integer)",
-            "validator": "import math; validator=lambda x: round(math.cos(x))",
-            "range": {}
-        },
-        {
-            "question": "compute the tangent of the result (rounded to nearest integer)",
-            "validator": "import math; validator=lambda x: round(math.tan(x))",
-            "range": {}
-        },
-        {
-            "question": "return the reciprocal of the result (rounded down to integer)",
-            "validator": "validator=lambda x: 1//x if x!=0 else 0",
-            "range": {}
-        },
-        {
             "question": "compute the absolute value of the negative of the result",
             "validator": "validator=lambda x: abs(-x)",
             "range": {}
@@ -755,24 +697,25 @@
             }
         },
         {
-            "question": "compute the number of divisors of the result",
-            "validator": "from sympy import divisors; validator=lambda x: len(divisors(abs(x)))",
-            "range": {}
+            "question": "compute the number of divisors of the result mod {y}",
+            "validator": "from sympy import divisors; validator=lambda x: len(divisors(abs(x % {y})))",
+            "range": {
+                "y": [2048, 65536]
+            }
         },
         {
-            "question": "compute the sum of all divisors of the result",
-            "validator": "from sympy import divisors; validator=lambda x: sum(divisors(abs(x)))",
-            "range": {}
+            "question": "compute the sum of all divisors of the result mod {y}",
+            "validator": "from sympy import divisors; validator=lambda x: sum(divisors(abs(x % {y})))",
+            "range": {
+                "y": [2048, 65536]
+            }
         },
         {
-            "question": "return 1 if result is a prime number, else 0",
-            "validator": "from sympy import isprime; validator=lambda x: 1 if isprime(abs(x)) else 0",
-            "range": {}
-        },
-        {
-            "question": "return the largest prime less than or equal to the result",
+            "question": "return the largest prime less than or equal to the result mod {y}",
             "validator": "from sympy import prevprime; validator=lambda x: prevprime(abs(x))",
-            "range": {}
+            "range": {
+                "y": [1000, 4000]
+            }
         },
         {
             "question": "compute the factorial of the last digit of the result",
@@ -780,18 +723,20 @@
             "range": {}
         },
         {
+            "question": "compute the factorial of the result mod {y}",
+            "validator": "from math import factorial; validator=lambda x: factorial(abs(x)%{y})",
+            "range": {
+                "y": [10, 200]
+            }
+        },
+        {
             "question": "compute the sum of squares of the digits of the result",
             "validator": "validator=lambda x: sum(int(d)**2 for d in str(abs(x)))",
             "range": {}
         },
         {
-            "question": "compute the product of the digits of the result",
-            "validator": "import math; validator=lambda x: math.prod([int(d) for d in str(abs(x))])",
-            "range": {}
-        },
-        {
-            "question": "return 1 if the result is a perfect square, else 0",
-            "validator": "validator=lambda x: 1 if int(abs(x)**0.5)**2==abs(x) else 0",
+            "question": "compute the product of the digits of the result, ignoring 0",
+            "validator": "import math; validator=lambda x: math.prod([int(d) for d in str(abs(x)) if int(d)])",
             "range": {}
         }
     ],
