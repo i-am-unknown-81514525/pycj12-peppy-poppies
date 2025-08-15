@@ -1,24 +1,17 @@
-from msgspec import Struct, field
+from msgspec import Struct
 
-class Range(Struct):
-    """Range of result that is valid for the question."""
-    extras: dict[str, tuple[int, int]]
+type Ranges = dict[str, tuple[int, int]]
 
-class RangeWithBase(Range):
-    """Additional valid constraint on the tasks given to the human."""
-    base: tuple[int, int] = field(name="__base__")
-
-class _Question(Struct):
+class Part(Struct):
+    """A part in question_set.json."""
     question: str
     validator: str
+    range: Ranges
 
-class Question(_Question):
+class Question(Part):
     """A question in question_set.json."""
-    range: RangeWithBase
+    input: tuple[int, int]
 
-class Part(_Question):
-    """A part in question_set.json."""
-    range: Range
 
 class QuestionSet(Struct):
     """Schema for question_set.json."""
