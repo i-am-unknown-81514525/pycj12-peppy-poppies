@@ -1,4 +1,9 @@
 {
+    "construct": [
+        "{init} {dyn:base}",
+        "{init} {dyn:base} {continue} {dyn:part}",
+        "{init} {dyn:base} {continue} {dyn:part} {continue} {dyn:part}"
+    ],
     "base": [
         {
             "question": "{y}+x",
@@ -114,5 +119,16 @@
                 "y": [-65536, 65536]
             }
         }
-    ]
+    ],
+    "init": [
+        "Write a function `calc(x: int) -> int` to calculate",
+        "Write a function `calc(x: int) -> int` to get",
+        "Write a function `calc(x: int)` to calculate",
+        "Write a function `calc(x: int)` to get",
+        "Write `calc(x: int) -> int` such that it calculate",
+        "Write `calc(x: int) -> int` such that it get",
+        "Write `calc(x: int)` such that it calculate",
+        "Write `calc(x: int)` such that it get"
+    ],
+    "continue": [", then", ", and then"]
 }
