@@ -8,32 +8,40 @@
         {
             "question": "add {y} squared to x",
             "validator": "validator=lambda x: x + {y}**2",
-            "range": { "__base__": [1, 500], "y": [1, 50] }
+            "range": { "__base__": [1, 65536], "y": [1, 50] }
         },
         {
             "question": "subtract {y} cubed from x",
             "validator": "validator=lambda x: x - {y}**3",
-            "range": { "__base__": [1, 500], "y": [1, 20] }
+            "range": { "__base__": [1, 65536], "y": [1, 20] }
         },
         {
             "question": "multiply x by {y} and then add {z}",
             "validator": "validator=lambda x: x*{y}+{z}",
-            "range": { "__base__": [1, 500], "y": [2, 20], "z": [-50, 50] }
+            "range": {
+                "__base__": [1, 65536],
+                "y": [2, 200],
+                "z": [-65536, 65536]
+            }
         },
         {
             "question": "divide x by {y} and then subtract {z}",
             "validator": "validator=lambda x: x//{y}-{z}",
-            "range": { "__base__": [1, 1000], "y": [2, 20], "z": [-10, 10] }
+            "range": {
+                "__base__": [1, 65536],
+                "y": [2, 200],
+                "z": [-65536, 65536]
+            }
         },
         {
             "question": "x squared plus {y} squared",
             "validator": "validator=lambda x: x**2 + {y}**2",
-            "range": { "__base__": [1, 50], "y": [1, 50] }
+            "range": { "__base__": [1, 65536], "y": [1, 32768] }
         },
         {
             "question": "x cubed minus {y} squared",
             "validator": "validator=lambda x: x**3 - {y}**2",
-            "range": { "__base__": [1, 20], "y": [1, 20] }
+            "range": { "__base__": [1, 4096], "y": [1, 32768] }
         },
         {
             "question": "bitwise XOR x with {y} then add {z}",
@@ -57,62 +65,72 @@
         {
             "question": "compute the sum of x and {y} cubed",
             "validator": "validator=lambda x: x + {y}**3",
-            "range": { "__base__": [1, 50], "y": [1, 10] }
+            "range": { "__base__": [1, 65536], "y": [1, 1024] }
         },
         {
             "question": "x subtract by {y} cubed",
             "validator": "validator=lambda x: x - {y}**3",
-            "range": { "__base__": [1, 1000], "y": [1, 10] }
+            "range": { "__base__": [1, 65536], "y": [1, 1024] }
         },
         {
             "question": "x subtract from {y} cubed",
             "validator": "validator=lambda x: {y}**3 - x",
-            "range": { "__base__": [1, 1000], "y": [1, 10] }
+            "range": { "__base__": [1, 65536], "y": [1, 10] }
         },
         {
             "question": "the product of x and {y} squared",
             "validator": "validator=lambda x: x * {y}**2",
-            "range": { "__base__": [1, 100], "y": [1, 10] }
+            "range": { "__base__": [1, 65536], "y": [1, 256] }
         },
         {
             "question": "x modulo {y} plus {z}",
             "validator": "validator=lambda x: x % {y} + {z}",
-            "range": { "__base__": [1, 1000], "y": [1, 100], "z": [-50, 50] }
+            "range": { "__base__": [1, 65536], "y": [1, 100], "z": [-50, 50] }
         },
         {
             "question": "compute x divided by {y} plus {z} squared",
-            "validator": "validator=lambda x: x//{y} + {z}**2",
-            "range": { "__base__": [1, 1000], "y": [1, 20], "z": [-10, 10] }
+            "validator": "validator=lambda x: x//{y} + ({z})**2",
+            "range": { "__base__": [1, 65536], "y": [1, 20], "z": [-10, 10] }
         },
         {
             "question": "x plus the factorial of {y}",
             "validator": "from math import factorial; validator=lambda x: x + factorial({y})",
-            "range": { "__base__": [1, 100], "y": [0, 6] }
+            "range": { "__base__": [1, 65536], "y": [0, 6] }
         },
         {
             "question": "x minus the factorial of {y}",
             "validator": "from math import factorial; validator=lambda x: x - factorial({y})",
-            "range": { "__base__": [1, 100], "y": [0, 6] }
+            "range": { "__base__": [1, 65536], "y": [0, 6] }
         },
         {
             "question": "x plus the {y}-th prime number",
             "validator": "from sympy import prime; validator=lambda x: x + prime({y})",
-            "range": { "__base__": [1, 1000], "y": [1, 200] }
+            "range": { "__base__": [1, 65536], "y": [1, 4000] }
         },
         {
             "question": "x minus the {y}-th prime number",
             "validator": "from sympy import prime; validator=lambda x: x - prime({y})",
-            "range": { "__base__": [1, 1000], "y": [1, 200] }
+            "range": { "__base__": [1, 65536], "y": [1, 4000] }
         },
         {
             "question": "x plus the sum of first {y} natural numbers",
             "validator": "validator=lambda x: x + {y}*({y}+1)//2",
-            "range": { "__base__": [1, 1000], "y": [1, 50] }
+            "range": { "__base__": [1, 65536], "y": [1, 65536] }
         },
         {
             "question": "x minus the sum of first {y} natural numbers",
             "validator": "validator=lambda x: x - {y}*({y}+1)//2",
-            "range": { "__base__": [1, 1000], "y": [1, 50] }
+            "range": { "__base__": [1, 65536], "y": [1, 65536] }
+        },
+        {
+            "question": "{y} plus the sum of first x natural numbers",
+            "validator": "validator=lambda x: x + {y}*({y}+1)//2",
+            "range": { "y": [1, 65536], "__base__": [1, 65536] }
+        },
+        {
+            "question": "{y} minus the sum of first x natural numbers",
+            "validator": "validator=lambda x: x - {y}*({y}+1)//2",
+            "range": { "y": [1, 65536], "__base__": [1, 65536] }
         },
         {
             "question": "add {y} to x and then multiply by {z}",
@@ -160,7 +178,7 @@
             "question": "multiply x by 2 and add {y}",
             "validator": "validator=lambda x: x*2 + {y}",
             "range": {
-                "__base__": [1, 1000],
+                "__base__": [1, 65536],
                 "y": [-50, 50]
             }
         },
@@ -168,15 +186,15 @@
             "question": "divide x by 2 and subtract {y}",
             "validator": "validator=lambda x: x//2 - {y}",
             "range": {
-                "__base__": [1, 1000],
-                "y": [-50, 50]
+                "__base__": [1, 65536],
+                "y": [-65536, 65536]
             }
         },
         {
             "question": "compute x modulo {y}",
             "validator": "validator=lambda x: x % {y}",
             "range": {
-                "__base__": [1, 1000],
+                "__base__": [1, 65536],
                 "y": [1, 100]
             }
         },
@@ -184,98 +202,98 @@
             "question": "compute {y} minus x",
             "validator": "validator=lambda x: {y} - x",
             "range": {
-                "__base__": [1, 1000],
-                "y": [1, 1000]
+                "__base__": [1, 65536],
+                "y": [1, 65536]
             }
         },
         {
             "question": "square x and add {y}",
             "validator": "validator=lambda x: x**2 + {y}",
             "range": {
-                "__base__": [1, 100],
-                "y": [-100, 100]
+                "__base__": [1, 65536],
+                "y": [-65536, 65536]
             }
         },
         {
             "question": "cube x and subtract {y}",
             "validator": "validator=lambda x: x**3 - {y}",
             "range": {
-                "__base__": [1, 50],
-                "y": [-50, 50]
+                "__base__": [1, 1024],
+                "y": [-65536, 65536]
             }
         },
         {
             "question": "shift x left by {y} bits",
             "validator": "validator=lambda x: x << {y}",
             "range": {
-                "__base__": [1, 1024],
-                "y": [0, 8]
+                "__base__": [1, 65536],
+                "y": [0, 50]
             }
         },
         {
             "question": "shift x right by {y} bits",
             "validator": "validator=lambda x: x >> {y}",
             "range": {
-                "__base__": [1, 1024],
-                "y": [0, 8]
+                "__base__": [1, 65536],
+                "y": [0, 50]
             }
         },
         {
             "question": "compute the sum of x and {y} squared",
             "validator": "validator=lambda x: x + {y}**2",
             "range": {
-                "__base__": [1, 100],
-                "y": [1, 20]
+                "__base__": [1, 65536],
+                "y": [1, 65536]
             }
         },
         {
             "question": "compute the difference between x and {y} squared",
-            "validator": "validator=lambda x: x - {y}**2",
+            "validator": "validator=lambda x: x - ({y})**2",
             "range": {
-                "__base__": [1, 100],
-                "y": [1, 20]
+                "__base__": [1, 65536],
+                "y": [-65536, 65536]
             }
         },
         {
             "question": "compute the product of x and {y} plus {z}",
             "validator": "validator=lambda x: x*{y} + {z}",
             "range": {
-                "__base__": [1, 100],
-                "y": [1, 20],
-                "z": [-50, 50]
+                "__base__": [1, 65536],
+                "y": [1, 65536],
+                "z": [-65536, 65536]
             }
         },
         {
             "question": "compute the integer division of x by {y} minus {z}",
             "validator": "validator=lambda x: x//{y} - {z}",
             "range": {
-                "__base__": [1, 1000],
-                "y": [1, 20],
-                "z": [-10, 10]
+                "__base__": [1, 65536],
+                "y": [1, 200],
+                "z": [-65536, 65536]
             }
         },
         {
             "question": "compute the absolute difference between x and {y}",
             "validator": "validator=lambda x: abs(x - {y})",
             "range": {
-                "__base__": [1, 1000],
-                "y": [0, 1000]
+                "__base__": [1, 65536],
+                "y": [0, 65536]
             }
         },
         {
             "question": "compute the next multiple of {y} greater than or equal to x",
             "validator": "import math; validator=lambda x: math.ceil(x/{y})*{y}",
             "range": {
-                "__base__": [1, 1000],
-                "y": [1, 50]
+                "__base__": [1, 65536],
+                "y": [1, 200]
             }
         },
         {
             "question": "compute the largest multiple of {y} less than or equal to x",
             "validator": "import math; validator=lambda x: math.floor(x/{y})*{y}",
             "range": {
-                "__base__": [1, 1000],
-                "y": [1, 50]
+                "__base__": [1, 65536],
+                "y": [1, 200]
             }
         },
         {
@@ -290,7 +308,7 @@
             "question": "x-th prime number",
             "validator": "from sympy import prime; validator=prime",
             "range": {
-                "__base__": [1, 2000]
+                "__base__": [1, 4000]
             }
         },
         {
