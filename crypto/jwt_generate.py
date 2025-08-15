@@ -8,7 +8,7 @@ import jwt
 from crypto.key import get_pem
 
 if TYPE_CHECKING:
-    from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
+    from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey, Ed25519PublicKey
 
 type JSON = dict[str, JSON | list[JSON] | str | float | int | bool | None]
 
@@ -46,3 +46,43 @@ class JWTGenerator:
         data["iat"] = current.timestamp()  # Issue timestamp
 
         return jwt.encode(data, self._priv, algorithm="EdDSA")
+
+
+class JWTValidator:
+    """Validates JSON Web Tokens (JWTs) using an Ed25519 public key."""
+
+    def __init__(self, public_key: Ed25519PublicKey) -> None:
+        self._pub: bytes = get_pem(public_key)
+
+    def validate(self, token: str, audience: str | None = None) -> dict[str, JSON]:
+        """Validate JWT token and return the payload.
+
+        Args:
+            token: The JWT token to validate
+            audience: Expected audience (optional)
+
+        Returns:
+            dict: The validated JWT payload
+
+        Raises:
+            jwt.InvalidTokenError: If the token is invalid
+            jwt.ExpiredSignatureError: If the token has expired
+            jwt.InvalidAudienceError: If the audience doesn't match
+        """
+        options = {"verify_signature": True, "verify_exp": True, "verify_nbf": True}
+
+        if audience:
+            return jwt.decode(
+                token,
+                self._pub,
+                algorithms=["EdDSA"],
+                audience=audience,
+                options=options
+            )
+        else:
+            return jwt.decode(
+                token,
+                self._pub,
+                algorithms=["EdDSA"],
+                options=options
+            )

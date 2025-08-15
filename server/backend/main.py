@@ -5,16 +5,22 @@ from litestar.logging import LoggingConfig
 from litestar.openapi import OpenAPIConfig
 from litestar.openapi.plugins import ScalarRenderPlugin
 from litestar.static_files import create_static_files_router
-from server.backend.controller.auth import AuthController
+from litestar.config.cors import CORSConfig
+
 from server.backend.lib.config import alchemy_plugin
 from server.backend.lib.utils import exception_handler
+from server.backend.lib.middleware import JWTAuthMiddleware
+from server.backend.controller.auth import AuthController
+from server.backend.controller.protected import ProtectedController
 
 app = Litestar(
     debug=True,
     route_handlers=[
         AuthController,
+        ProtectedController,
         create_static_files_router(path="/", directories=["dist/frontend/demo"], html_mode=True),
     ],
+    middleware=[JWTAuthMiddleware],
     plugins=[alchemy_plugin],
     openapi_config=OpenAPIConfig(
         title="Backend API",
@@ -42,4 +48,5 @@ app = Litestar(
         Exception: exception_handler,
         RepositoryError: exception_handler,
     },
+    cors_config=CORSConfig(allow_origins=["*"], allow_methods=["*"], allow_headers=["*"]),
 )

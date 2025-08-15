@@ -4,6 +4,9 @@ from litestar.plugins.sqlalchemy import (
     SQLAlchemyPlugin,
 )
 
+# Import models to ensure they are registered
+from server.backend.models import User
+
 sqlalchemy_config = SQLAlchemyAsyncConfig(
     connection_string="sqlite+aiosqlite:///demo_data/backend.sqlite",
     session_config=AsyncSessionConfig(expire_on_commit=False),

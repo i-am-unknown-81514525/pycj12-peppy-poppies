@@ -3,8 +3,8 @@ from pathlib import Path
 from uuid import UUID
 
 from crypto.jwt_generate import JWTGenerator
-from crypto.key import import_private_key
-from litestar import Request, Response, get, post, status_codes
+from crypto.key import import_private_key, import_public_key
+from litestar import Response, get, post, status_codes
 from litestar.controller import Controller
 from litestar.di import Provide
 from server.captcha.lib.dependencies import provide_challenge_service
@@ -79,7 +79,6 @@ class ChallengeController(Controller):  # noqa: D101
         self,
         challenge_service: ChallengeService,
         data: SubmitChallengeRequest,
-        request: Request,
     ) -> Response:
         """Submit a captcha challenge.
 
@@ -87,12 +86,11 @@ class ChallengeController(Controller):  # noqa: D101
             Response: A response indicating whether the challenge was solved correctly or not.
 
         """
-        host = request.headers["Host"]
         challenge = await challenge_service.get_one(id=data.challenge_id)
 
         if challenge.answer_list == data.answers:
             private_key = import_private_key(KEY_PATH / "private.pem")
-            jwt_generator = JWTGenerator(issuer=host, private_key=private_key)
+            jwt_generator = JWTGenerator(issuer="captcha-server.com", private_key=private_key)
 
             token = jwt_generator.generate(
                 website=challenge.website,
@@ -108,3 +106,28 @@ class ChallengeController(Controller):  # noqa: D101
             status_code=status_codes.HTTP_400_BAD_REQUEST,
             content="Challenge not solved correctly.",
         )
+
+    @get("/get-public-key")
+    async def get_public_key(self) -> Response:
+        """Get the public key for JWT validation.
+
+        Returns:
+            Response: A response containing the public key in PEM format.
+        """
+        try:
+            public_key = import_public_key(KEY_PATH / "public.pem")
+            # Read the PEM file content directly
+            with (KEY_PATH / "public.pem").open("r") as f:
+                public_key_pem = f.read()
+
+            return Response(
+                status_code=status_codes.HTTP_200_OK,
+                content={"public_key": public_key_pem},
+                headers={"Content-Type": "application/json"}
+            )
+        except Exception as e:
+            return Response(
+                status_code=status_codes.HTTP_500_INTERNAL_SERVER_ERROR,
+                content={"error": f"Failed to retrieve public key: {str(e)}"},
+                headers={"Content-Type": "application/json"}
+            )

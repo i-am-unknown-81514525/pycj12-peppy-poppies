@@ -74,17 +74,116 @@
                         aria-live="polite"
                     ></div>
 
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        id="captchaBtn"
+                        onclick="showPythonCaptcha()"
+                    >
+                        <i class="fas fa-code"></i> Complete Programming
+                        Challenge
+                    </button>
+
                     <section id="python-captcha" class="hidden">
-                        <iframe
-                            id="captchaFrame"
-                            class="hidden"
-                            title="Python Captcha Challenge"
-                            aria-label="Python Captcha Challenge"
-                            data-src="[domain]/static/captcha.html?challenge_id=[challenge_id]"
-                            sandbox="allow-scripts allow-same-origin"
-                            aria-hidden="true"
-                            style="width: 100%"
-                        ></iframe>
+                        <div class="captcha-header">
+                            <h3>
+                                <i class="fab fa-python"></i> Python Programming
+                                Challenge
+                            </h3>
+                        </div>
+
+                        <div class="captcha-challenge">
+                            <i class="fas fa-code"></i> Loading challenge...
+                            <div class="code-highlight">
+                                <strong
+                                    >Please wait while we load your programming
+                                    challenge.</strong
+                                >
+                            </div>
+                        </div>
+
+                        <div class="captcha-grid">
+                            <div class="code-section">
+                                <div class="input-group">
+                                    <label for="python-code"
+                                        >Python Code Editor</label
+                                    >
+                                    <div class="code-editor-wrapper">
+                                        <div class="code-editor-header">
+                                            <span
+                                                >Python Interactive
+                                                Console</span
+                                            >
+                                            <span>Press Ctrl+Enter to run</span>
+                                        </div>
+                                        <textarea
+                                            id="python-code"
+                                            placeholder="# Loading challenge...
+# Please wait while we fetch your programming challenge.
+
+def calc(x: int):
+    # Your implementation here
+    pass"
+                                            title="Python Code Editor"
+                                        ></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="btn-group">
+                                    <button
+                                        type="button"
+                                        class="btn btn-primary"
+                                        id="runCodeBtn"
+                                        onclick="runPythonCode()"
+                                    >
+                                        <div
+                                            class="loading-spinner"
+                                            id="loadingSpinner"
+                                        ></div>
+                                        <i class="fas fa-play"></i> Execute Code
+                                    </button>
+                                    <button
+                                        type="button"
+                                        class="btn btn-secondary"
+                                        onclick="clearCode()"
+                                        id="clearCodeBtn"
+                                    >
+                                        <i class="fas fa-eraser"></i> Clear
+                                        Editor
+                                    </button>
+                                </div>
+
+                                <div class="btn-group">
+                                    <button
+                                        type="button"
+                                        class="btn btn-success"
+                                        id="submitChallengeBtn"
+                                        onclick="submitCaptcha()"
+                                        disabled
+                                    >
+                                        <div
+                                            class="loading-spinner"
+                                            id="submitLoadingSpinner"
+                                        ></div>
+                                        <i class="fas fa-check"></i> Submit
+                                        Challenge
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="output-section">
+                                <div id="output-container">
+                                    <label for="output"
+                                        ><i class="fas fa-terminal"></i> Console
+                                        Output:</label
+                                    >
+                                    <pre id="output" aria-live="polite">
+Ready to execute Python code...
+Press "Execute Code" or use Ctrl+Enter to run your program.</pre
+                                    >
+                                </div>
+                            </div>
+                        </div>
                     </section>
 
                     <div class="action-buttons">
@@ -93,13 +192,25 @@
                             class="btn btn-primary"
                             id="loginBtn"
                             onclick="handleLogin()"
-                            disabled
                         >
                             <i class="fas fa-sign-in-alt"></i> Sign In to
                             Account
                         </button>
                     </div>
                 </form>
+            </div>
+
+            <div>
+                <p>Test</p>
+                <iframe
+                    id="captchaFrame"
+                    class="hidden"
+                    title="Python Captcha Challenge"
+                    aria-label="Python Captcha Challenge"
+                    src="[domain]/static/captcha.html?challenge_id=test"
+                    sandbox="allow-scripts allow-same-origin"
+                    aria-hidden="true"
+                ></iframe>
             </div>
         </main>
 
@@ -108,7 +219,6 @@
         <script
             type="mpy"
             domain="[domain]"
-            min_mode="true"
             src="[domain]/static/captcha_handler.py"
         ></script>
     </body>

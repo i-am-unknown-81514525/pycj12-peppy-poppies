@@ -1,0 +1,6 @@
+litestar[sqlalchemy,standard]
+advanced-alchemy
+cryptography
+PyJWT
+aiosqlite
+uvicorn
