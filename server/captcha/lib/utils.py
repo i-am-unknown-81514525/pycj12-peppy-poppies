@@ -91,7 +91,7 @@ def question_generator(question_set: QuestionSet, seed: Optional[int] = None) ->
                 options = question_set.base
                 picked = random_obj.choice(options)
                 section: QuestionSection = fill_question(picked, random_obj)
-                value_range = picked.range.__base__
+                value_range = picked.range.base
                 validator_part.insert(0, section.validator)
                 return section.question
             case "part":
