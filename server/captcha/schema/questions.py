@@ -1,9 +1,11 @@
 from msgspec import Struct
 
 class Range(Struct):
+    """Range of result that is valid for the question."""
     extras: dict[str, tuple[int, int]]
 
 class RangeWithBase(Range):
+    """Additional valid constraint on the tasks given to the human."""
     __base__: tuple[int, int]
 
 class _Question(Struct):
@@ -11,12 +13,15 @@ class _Question(Struct):
     validator: str
 
 class Question(_Question):
+    """A question in question_set.json."""
     range: RangeWithBase
 
 class Part(_Question):
+    """A part in question_set.json."""
     range: Range
 
 class QuestionSet(Struct):
+    """Schema for question_set.json."""
     construct: list[str]
     base: list[Question]
     part: list[Part]
@@ -24,10 +29,12 @@ class QuestionSet(Struct):
     cont: list[str]
 
 class QuestionSection(Struct):
+    """A generated part of question that is either a `base` or `part`."""
     question: str
     validator: str
 
 class GeneratedQuestion(Struct):
+    """A fully generated question that include the question in string form, a list of tasks for the user to solve and the list of solutions."""
     question: str
     tasks: list[int]
     solutions: list[int]
