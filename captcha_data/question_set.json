@@ -167,6 +167,40 @@
             "range": {
                 "y": [-65536, 65536]
             }
+        },
+        {
+            "question": "modulo by {y}",
+            "validator": "validator=lambda x:x%{y}",
+            "range": {
+                "y": [1, 65536]
+            }
+        },
+        {
+            "question": "raise to the power of {y}",
+            "validator": "validator=lambda x:x**{y}",
+            "range": {
+                "base": [1, 100],
+                "y": [1, 5]
+            }
+        },
+        {
+            "question": "bitwise left shift by {y}",
+            "validator": "validator=lambda x:x<<{y}",
+            "range": {
+                "y": [0, 31]
+            }
+        },
+        {
+            "question": "bitwise right shift by {y}",
+            "validator": "validator=lambda x:x>>{y}",
+            "range": {
+                "y": [0, 31]
+            }
+        },
+        {
+            "question": "get the absolute value",
+            "validator": "validator=lambda x:abs(x)",
+            "range": {}
         }
     ],
     "init": [
