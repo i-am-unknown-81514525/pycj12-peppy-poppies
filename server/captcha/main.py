@@ -62,7 +62,7 @@ app = Litestar(
         ChallengeController,
         create_static_files_router(path="/static", directories=["dist/frontend/captcha"], html_mode=True),
     ],
-    on_startup=[ensure_key],
+    on_startup=[ensure_key, ensure_questions],
     plugins=[alchemy_plugin],
     openapi_config=OpenAPIConfig(
         title="Captcha API",
