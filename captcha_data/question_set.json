@@ -6,6 +6,270 @@
     ],
     "base": [
         {
+            "question": "add {y} squared to x",
+            "validator": "validator=lambda x: x + {y}**2",
+            "range": {"__base__": [1, 500], "y": [1, 50]}
+        },
+        {
+            "question": "subtract {y} cubed from x",
+            "validator": "validator=lambda x: x - {y}**3",
+            "range": {"__base__": [1, 500], "y": [1, 20]}
+        },
+        {
+            "question": "multiply x by {y} and then add {z}",
+            "validator": "validator=lambda x: x*{y}+{z}",
+            "range": {"__base__": [1, 500], "y": [2, 20], "z": [-50, 50]}
+        },
+        {
+            "question": "divide x by {y} and then subtract {z}",
+            "validator": "validator=lambda x: x//{y}-{z}",
+            "range": {"__base__": [1, 1000], "y": [2, 20], "z": [-10, 10]}
+        },
+        {
+            "question": "x squared plus {y} squared",
+            "validator": "validator=lambda x: x**2 + {y}**2",
+            "range": {"__base__": [1, 50], "y": [1, 50]}
+        },
+        {
+            "question": "x cubed minus {y} squared",
+            "validator": "validator=lambda x: x**3 - {y}**2",
+            "range": {"__base__": [1, 20], "y": [1, 20]}
+        },
+        {
+            "question": "bitwise XOR x with {y} then add {z}",
+            "validator": "validator=lambda x: (x ^ {y}) + {z}",
+            "range": {"__base__": [1, 65536], "y": [0, 65535], "z": [-100, 100]}
+        },
+        {
+            "question": "bitwise AND x with {y} then multiply by {z}",
+            "validator": "validator=lambda x: (x & {y}) * {z}",
+            "range": {"__base__": [1, 65536], "y": [0, 65535], "z": [1, 20]}
+        },
+        {
+            "question": "bitwise OR x with {y} then subtract {z}",
+            "validator": "validator=lambda x: (x | {y}) - {z}",
+            "range": {"__base__": [1, 65536], "y": [0, 65535], "z": [-50, 50]}
+        },
+        {
+            "question": "compute the sum of x and {y} cubed",
+            "validator": "validator=lambda x: x + {y}**3",
+            "range": {"__base__": [1, 50], "y": [1, 10]}
+        },
+        {
+            "question": "compute the difference of x and {y} cubed",
+            "validator": "validator=lambda x: x - {y}**3",
+            "range": {"__base__": [1, 50], "y": [1, 10]}
+        },
+        {
+            "question": "compute the product of x and {y} squared",
+            "validator": "validator=lambda x: x * {y}**2",
+            "range": {"__base__": [1, 100], "y": [1, 10]}
+        },
+        {
+            "question": "compute x modulo {y} plus {z}",
+            "validator": "validator=lambda x: x % {y} + {z}",
+            "range": {"__base__": [1, 1000], "y": [1, 100], "z": [-50, 50]}
+        },
+        {
+            "question": "compute x divided by {y} plus {z} squared",
+            "validator": "validator=lambda x: x//{y} + {z}**2",
+            "range": {"__base__": [1, 1000], "y": [1, 20], "z": [-10, 10]}
+        },
+        {
+            "question": "x plus the factorial of {y}",
+            "validator": "from math import factorial; validator=lambda x: x + factorial({y})",
+            "range": {"__base__": [1, 100], "y": [0, 6]}
+        },
+        {
+            "question": "x minus the factorial of {y}",
+            "validator": "from math import factorial; validator=lambda x: x - factorial({y})",
+            "range": {"__base__": [1, 100], "y": [0, 6]}
+        },
+        {
+            "question": "x plus the {y}-th prime number",
+            "validator": "from sympy import prime; validator=lambda x: x + prime({y})",
+            "range": {"__base__": [1, 1000], "y": [1, 200]}
+        },
+        {
+            "question": "x minus the {y}-th prime number",
+            "validator": "from sympy import prime; validator=lambda x: x - prime({y})",
+            "range": {"__base__": [1, 1000], "y": [1, 200]}
+        },
+        {
+            "question": "x plus the sum of first {y} natural numbers",
+            "validator": "validator=lambda x: x + {y}*({y}+1)//2",
+            "range": {"__base__": [1, 1000], "y": [1, 50]}
+        },
+        {
+            "question": "x minus the sum of first {y} natural numbers",
+            "validator": "validator=lambda x: x - {y}*({y}+1)//2",
+            "range": {"__base__": [1, 1000], "y": [1, 50]}
+        },
+        {
+            "question": "add {y} to x and then multiply by {z}",
+            "validator": "validator=lambda x: (x + {y}) * {z}",
+            "range": {
+                "__base__": [1, 1000],
+                "y": [1, 100],
+                "z": [1, 20]
+            }
+        },
+        {
+            "question": "subtract {y} from x and then divide by {z}",
+            "validator": "validator=lambda x: (x - {y}) // {z}",
+            "range": {
+                "__base__": [1, 1000],
+                "y": [1, 100],
+                "z": [1, 10]
+            }
+        },
+        {
+            "question": "bitwise AND x with {y}",
+            "validator": "validator=lambda x: x & {y}",
+            "range": {
+                "__base__": [1, 65536],
+                "y": [0, 65535]
+            }
+        },
+        {
+            "question": "bitwise OR x with {y}",
+            "validator": "validator=lambda x: x | {y}",
+            "range": {
+                "__base__": [1, 65536],
+                "y": [0, 65535]
+            }
+        },
+        {
+            "question": "bitwise XOR x with {y}",
+            "validator": "validator=lambda x: x ^ {y}",
+            "range": {
+                "__base__": [1, 65536],
+                "y": [0, 65535]
+            }
+        },
+        {
+            "question": "multiply x by 2 and add {y}",
+            "validator": "validator=lambda x: x*2 + {y}",
+            "range": {
+                "__base__": [1, 1000],
+                "y": [-50, 50]
+            }
+        },
+        {
+            "question": "divide x by 2 and subtract {y}",
+            "validator": "validator=lambda x: x//2 - {y}",
+            "range": {
+                "__base__": [1, 1000],
+                "y": [-50, 50]
+            }
+        },
+        {
+            "question": "compute x modulo {y}",
+            "validator": "validator=lambda x: x % {y}",
+            "range": {
+                "__base__": [1, 1000],
+                "y": [1, 100]
+            }
+        },
+        {
+            "question": "compute {y} minus x",
+            "validator": "validator=lambda x: {y} - x",
+            "range": {
+                "__base__": [1, 1000],
+                "y": [1, 1000]
+            }
+        },
+        {
+            "question": "square x and add {y}",
+            "validator": "validator=lambda x: x**2 + {y}",
+            "range": {
+                "__base__": [1, 100],
+                "y": [-100, 100]
+            }
+        },
+        {
+            "question": "cube x and subtract {y}",
+            "validator": "validator=lambda x: x**3 - {y}",
+            "range": {
+                "__base__": [1, 50],
+                "y": [-50, 50]
+            }
+        },
+        {
+            "question": "shift x left by {y} bits",
+            "validator": "validator=lambda x: x << {y}",
+            "range": {
+                "__base__": [1, 1024],
+                "y": [0, 8]
+            }
+        },
+        {
+            "question": "shift x right by {y} bits",
+            "validator": "validator=lambda x: x >> {y}",
+            "range": {
+                "__base__": [1, 1024],
+                "y": [0, 8]
+            }
+        },
+        {
+            "question": "compute the sum of x and {y} squared",
+            "validator": "validator=lambda x: x + {y}**2",
+            "range": {
+                "__base__": [1, 100],
+                "y": [1, 20]
+            }
+        },
+        {
+            "question": "compute the difference between x and {y} squared",
+            "validator": "validator=lambda x: x - {y}**2",
+            "range": {
+                "__base__": [1, 100],
+                "y": [1, 20]
+            }
+        },
+        {
+            "question": "compute the product of x and {y} plus {z}",
+            "validator": "validator=lambda x: x*{y} + {z}",
+            "range": {
+                "__base__": [1, 100],
+                "y": [1, 20],
+                "z": [-50, 50]
+            }
+        },
+        {
+            "question": "compute the integer division of x by {y} minus {z}",
+            "validator": "validator=lambda x: x//{y} - {z}",
+            "range": {
+                "__base__": [1, 1000],
+                "y": [1, 20],
+                "z": [-10, 10]
+            }
+        },
+        {
+            "question": "compute the absolute difference between x and {y}",
+            "validator": "validator=lambda x: abs(x - {y})",
+            "range": {
+                "__base__": [1, 1000],
+                "y": [0, 1000]
+            }
+        },
+        {
+            "question": "compute the next multiple of {y} greater than or equal to x",
+            "validator": "import math; validator=lambda x: math.ceil(x/{y})*{y}",
+            "range": {
+                "__base__": [1, 1000],
+                "y": [1, 50]
+            }
+        },
+        {
+            "question": "compute the largest multiple of {y} less than or equal to x",
+            "validator": "import math; validator=lambda x: math.floor(x/{y})*{y}",
+            "range": {
+                "__base__": [1, 1000],
+                "y": [1, 50]
+            }
+        },
+        {
             "question": "{y}+x",
             "validator": "validator=lambda x: {y}+x",
             "range": {
@@ -200,7 +464,325 @@
             "question": "get the absolute value",
             "validator": "validator=lambda x:abs(x)",
             "range": {}
+        },
+        {
+            "question": "get the minimum of the current value and {y}",
+            "validator": "validator=lambda x: min(x, {y})",
+            "range": {
+                "y": [
+                    -65536,
+                    65536
+                ]
+            }
+        },
+        {
+            "question": "get the maximum of the current value and {y}",
+            "validator": "validator=lambda x: max(x, {y})",
+            "range": {
+                "y": [
+                    -65536,
+                    65536
+                ]
+            }
+        },
+        {
+            "question": "negate the value",
+            "validator": "validator=lambda x: -x",
+            "range": {}
+        },
+        {
+            "question": "get the integer square root of the absolute value",
+            "validator": "validator=lambda x: int(abs(x)**0.5)",
+            "range": {}
+        },
+        {
+            "question": "count the number of set bits (1s) in the absolute value's binary representation",
+            "validator": "validator=lambda x: bin(abs(x)).count('1')",
+            "range": {}
+        },
+        {
+            "question": "negate the result",
+            "validator": "validator=lambda x: -x",
+            "range": {}
+        },
+        {
+            "question": "find the integer part of its square root (of its absolute value)",
+            "validator": "validator=lambda x: int(abs(x)**0.5)",
+            "range": {}
+        },
+        {
+            "question": "ceiling divide by {y}",
+            "validator": "import math; validator=lambda x: math.ceil(x / {y})",
+            "range": {
+                "y": [1, 65536]
+            }
+        },
+        {
+            "question": "find the absolute difference from {y}",
+            "validator": "validator=lambda x: abs(x - {y})",
+            "range": {
+                "y": [-65536, 65536]
+            }
+        },
+        {
+            "question": "raise the result to the power of {y}, then modulo by {z}",
+            "validator": "validator=lambda x: pow(x, {y}, {z})",
+            "range": {
+                "y": [1, 5],
+                "z": [2, 1000]
+            }
+        },
+        {
+            "question": "find the remainder of {y} when divided by the result",
+            "validator": "validator=lambda x: {y} % x",
+            "range": {
+                "y": [1, 65536]
+            }
+        },
+        {
+            "question": "return 1 if the result is even, otherwise 0",
+            "validator": "validator=lambda x: 1 if x % 2 == 0 else 0",
+            "range": {}
+        },
+        {
+            "question": "count the number of set bits in its binary representation (for its absolute value)",
+            "validator": "validator=lambda x: bin(abs(x)).count('1')",
+            "range": {}
+        },
+        {
+            "question": "find the greatest common divisor with {y}",
+            "validator": "import math; validator=lambda x: math.gcd(x, {y})",
+            "range": {
+                "y": [1, 65536]
+            }
+        },
+        {
+            "question": "find the least common multiple with {y}",
+            "validator": "import math; validator=lambda x: abs((x // math.gcd(x, {y})) * {y})",
+            "range": {
+                "y": [1, 65536]
+            }
+        },
+        {
+            "question": "square the value",
+            "validator": "validator=lambda x: x*x",
+            "range": {}
+        },
+        {
+            "question": "cube the value",
+            "validator": "validator=lambda x: x**3",
+            "range": {}
+        },
+        {
+            "question": "find the number of decimal digits in the absolute value",
+            "validator": "validator=lambda x: len(str(abs(x)))",
+            "range": {}
+        },
+        {
+            "question": "get the sign of the value (1 for positive, -1 for negative, 0 for zero)",
+            "validator": "validator=lambda x: 1 if x > 0 else (-1 if x < 0 else 0)",
+            "range": {}
+        },
+        {
+            "question": "check if the absolute value is a power of two (returns 1 if true, 0 if false)",
+            "validator": "validator=lambda x: 1 if (abs(x) > 0 and (abs(x) & (abs(x) - 1)) == 0) else 0",
+            "range": {}
+        },
+        {
+            "question": "sum the decimal digits of the absolute value",
+            "validator": "validator=lambda x: sum(int(d) for d in str(abs(x)))",
+            "range": {}
+        },
+        {
+            "question": "find the smallest multiple of {y} that is greater than or equal to the current value",
+            "validator": "import math; validator=lambda x: math.ceil(x / {y}) * {y}",
+            "range": {
+                "y": [
+                    1,
+                    1000
+                ]
+            }
+        },
+        {
+            "question": "find the largest multiple of {y} that is less than or equal to the current value",
+            "validator": "import math; validator=lambda x: math.floor(x / {y}) * {y}",
+            "range": {
+                "y": [
+                    1,
+                    1000
+                ]
+            }
+        },
+        {
+            "question": "find the next prime number greater than the absolute value",
+            "validator": "from sympy import nextprime; validator=lambda x: nextprime(abs(x))",
+            "range": {}
+        },
+        {
+            "question": "find the integer part of the {y}-th root of the absolute value",
+            "validator": "validator=lambda x: int(abs(x)**(1/{y}))",
+            "range": {
+                "y": [
+                    2,
+                    10
+                ]
+            }
+        },
+        {
+            "question": "compute the factorial of the current value",
+            "validator": "from math import factorial; validator=lambda x: factorial(abs(x))",
+            "range": {}
+        },
+        {
+            "question": "compute the sine of the current value (in radians, rounded to nearest integer)",
+            "validator": "import numpy as np; validator=lambda x: int(round(np.sin(x)))",
+            "range": {}
+        },
+        {
+            "question": "compute the cosine of the current value (in radians, rounded to nearest integer)",
+            "validator": "import numpy as np; validator=lambda x: int(round(np.cos(x)))",
+            "range": {}
+        },
+        {
+            "question": "compute the tangent of the current value (in radians, rounded to nearest integer)",
+            "validator": "import numpy as np; validator=lambda x: int(round(np.tan(x)))",
+            "range": {}
+        },
+        {
+            "question": "compute the floor of the current value divided by {y}",
+            "validator": "import math; validator=lambda x: math.floor(x/{y})",
+            "range": {"y": [1, 100]}
+        },
+        {
+            "question": "compute the ceiling of the current value divided by {y}",
+            "validator": "import math; validator=lambda x: math.ceil(x/{y})",
+            "range": {"y": [1, 100]}
+        },
+        {
+            "question": "compute the number of divisors of the current value",
+            "validator": "from sympy import divisors; validator=lambda x: len(divisors(abs(x)))",
+            "range": {}
+        },
+        {
+            "question": "compute the sum of divisors of the current value",
+            "validator": "from sympy import divisors; validator=lambda x: sum(divisors(abs(x)))",
+            "range": {}
+        },
+        {
+            "question": "compute the next triangular number from the current value",
+            "validator": "validator=lambda x: ((int((8*x+1)**0.5)+1)//2)*(((int((8*x+1)**0.5)+1)//2)+1)//2",
+            "range": {}
+        },
+        {
+            "question": "compute the next pentagonal number from the current value",
+            "validator": "validator=lambda x: ((int((24*x+1)**0.5)+1)//6)*((3*((int((24*x+1)**0.5)+1)//6)-1)//2)",
+            "range": {}
+        },
+        {
+            "question": "take the factorial of the result",
+            "validator": "from math import factorial; validator=lambda x: factorial(x)",
+            "range": {}
+        },
+        {
+            "question": "compute the square root of the result (rounded down to integer)",
+            "validator": "validator=lambda x: int(x**0.5)",
+            "range": {}
+        },
+        {
+            "question": "compute the natural logarithm of the result (rounded down to integer)",
+            "validator": "import math; validator=lambda x: int(math.log(x)) if x>0 else 0",
+            "range": {}
+        },
+        {
+            "question": "compute the base-10 logarithm of the result (rounded down to integer)",
+            "validator": "import math; validator=lambda x: int(math.log10(x)) if x>0 else 0",
+            "range": {}
+        },
+        {
+            "question": "compute the exponential of the result (e^result, rounded down to integer)",
+            "validator": "import math; validator=lambda x: int(math.exp(x))",
+            "range": {}
+        },
+        {
+            "question": "compute the sine of the result (rounded to nearest integer)",
+            "validator": "import math; validator=lambda x: round(math.sin(x))",
+            "range": {}
+        },
+        {
+            "question": "compute the cosine of the result (rounded to nearest integer)",
+            "validator": "import math; validator=lambda x: round(math.cos(x))",
+            "range": {}
+        },
+        {
+            "question": "compute the tangent of the result (rounded to nearest integer)",
+            "validator": "import math; validator=lambda x: round(math.tan(x))",
+            "range": {}
+        },
+        {
+            "question": "return the reciprocal of the result (rounded down to integer)",
+            "validator": "validator=lambda x: 1//x if x!=0 else 0",
+            "range": {}
+        },
+        {
+            "question": "compute the absolute value of the negative of the result",
+            "validator": "validator=lambda x: abs(-x)",
+            "range": {}
+        },
+        {
+            "question": "round the result up to nearest multiple of {y}",
+            "validator": "import math; validator=lambda x: math.ceil(x/{y})*{y}",
+            "range": {
+                "y": [1, 50]
+            }
+        },
+        {
+            "question": "round the result down to nearest multiple of {y}",
+            "validator": "import math; validator=lambda x: math.floor(x/{y})*{y}",
+            "range": {
+                "y": [1, 50]
+            }
+        },
+        {
+            "question": "compute the number of divisors of the result",
+            "validator": "from sympy import divisors; validator=lambda x: len(divisors(abs(x)))",
+            "range": {}
+        },
+        {
+            "question": "compute the sum of all divisors of the result",
+            "validator": "from sympy import divisors; validator=lambda x: sum(divisors(abs(x)))",
+            "range": {}
+        },
+        {
+            "question": "return 1 if result is a prime number, else 0",
+            "validator": "from sympy import isprime; validator=lambda x: 1 if isprime(abs(x)) else 0",
+            "range": {}
+        },
+        {
+            "question": "return the largest prime less than or equal to the result",
+            "validator": "from sympy import prevprime; validator=lambda x: prevprime(abs(x))",
+            "range": {}
+        },
+        {
+            "question": "compute the factorial of the last digit of the result",
+            "validator": "from math import factorial; validator=lambda x: factorial(abs(x)%10)",
+            "range": {}
+        },
+        {
+            "question": "compute the sum of squares of the digits of the result",
+            "validator": "validator=lambda x: sum(int(d)**2 for d in str(abs(x)))",
+            "range": {}
+        },
+        {
+            "question": "compute the product of the digits of the result",
+            "validator": "import math; validator=lambda x: math.prod([int(d) for d in str(abs(x))])",
+            "range": {}
+        },
+        {
+            "question": "return 1 if the result is a perfect square, else 0",
+            "validator": "validator=lambda x: 1 if int(abs(x)**0.5)**2==abs(x) else 0",
+            "range": {}
         }
+
     ],
     "init": [
         "Write a function `calc(x: int) -> int` to calculate",
