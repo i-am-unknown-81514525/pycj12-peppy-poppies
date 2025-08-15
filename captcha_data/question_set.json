@@ -24,5 +24,95 @@
             }
         }
     ],
-    "part": []
+    "part": [
+        {
+            "question": "add {y}",
+            "validator": "validator=lambda x:x+{y}",
+            "range": {
+                "y": [-65536, 65536]
+            }
+        },
+        {
+            "question": "subtract {y}",
+            "validator": "validator=lambda x:x-{y}",
+            "range": {
+                "y": [-65536, 65536]
+            }
+        },
+        {
+            "question": "subtract from {y}",
+            "validator": "validator=lambda x:{y}-x",
+            "range": {
+                "y": [-65536, 65536]
+            }
+        },
+        {
+            "question": "multiply by {y}",
+            "validator": "validator=lambda x:x*{y}",
+            "range": {
+                "y": [1, 65536]
+            }
+        },
+        {
+            "question": "multiply by {y}",
+            "validator": "validator=lambda x:x*{y}",
+            "range": {
+                "y": [-65536, -1]
+            }
+        },
+        {
+            "question": "integer divide {y}",
+            "validator": "validator=lambda x:x//{y}",
+            "range": {
+                "y": [1, 65536]
+            }
+        },
+        {
+            "question": "integer divide from {y}",
+            "validator": "validator=lambda x:{y}//x",
+            "range": {
+                "y": [1, 65536]
+            }
+        },
+        {
+            "question": "integer divide {y}",
+            "validator": "validator=lambda x:x//{y}",
+            "range": {
+                "y": [-65536, -1]
+            }
+        },
+        {
+            "question": "integer divide from {y}",
+            "validator": "validator=lambda x:{y}//x",
+            "range": {
+                "y": [-65536, -1]
+            }
+        },
+        {
+            "question": "bitwise XOR by {y}",
+            "validator": "validator=lambda x:x^{y}",
+            "range": {
+                "y": [-65536, 65536]
+            }
+        },
+        {
+            "question": "bitwise invert",
+            "validator": "validator=lambda x:~x",
+            "range": {}
+        },
+        {
+            "question": "bitwise AND by {y}",
+            "validator": "validator=lambda x:x&{y}",
+            "range": {
+                "y": [-65536, 65536]
+            }
+        },
+        {
+            "question": "bitwise OR by {y}",
+            "validator": "validator=lambda x:x|{y}",
+            "range": {
+                "y": [-65536, 65536]
+            }
+        }
+    ]
 }
