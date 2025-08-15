@@ -1,4 +1,5 @@
 from typing import Optional
+from random import Random
 
 from advanced_alchemy.exceptions import IntegrityError, NotFoundError, RepositoryError
 from advanced_alchemy.extensions.litestar.exception_handler import (
@@ -43,4 +44,5 @@ def exception_handler(  # noqa: D103
 
 
 def question_generator(question_set: QuestionSet, seed: Optional[int] = None):
+    random_obj = Random(seed)
     raise NotImplementedError("")

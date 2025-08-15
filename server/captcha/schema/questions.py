@@ -22,3 +22,8 @@ class QuestionSet(Struct):
     part: Part
     init: list[str]
     cont: list[str]
+
+class GeneratedQuestion(Struct):
+    question: str
+    tasks: list[int]
+    solutions: list[int]

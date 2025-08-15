@@ -70,7 +70,7 @@
         },
         {
             "question": "find the x-th fibonacci number with starting point at ({y}, {z}) (for clarity, fib(1)={y}, fib(2)={z})",
-            "validator": "from sympy import fibonacci; validator=lambda x:{y}*fibonacci(x-1)+{z}*fibonacci(x) # Since __base__>=3, no handling needed for 1,2",
+            "validator": "from sympy import fibonacci; validator=lambda x:{y}*fibonacci(x-2)+{z}*fibonacci(x-1) # Since __base__>=3, no handling needed for 0,1,2",
             "range": {
                 "__base__": [3, 4000],
                 "y": [0, 9],
@@ -179,7 +179,6 @@
             "question": "raise to the power of {y}",
             "validator": "validator=lambda x:x**{y}",
             "range": {
-                "base": [1, 100],
                 "y": [1, 5]
             }
         },
