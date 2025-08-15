@@ -1,4 +1,28 @@
 {
-    "base": [],
+    "base": [
+        {
+            "question": "{y}+x",
+            "validator": "validator=lambda x: {y}+x",
+            "range": {
+                "__base__": [1, 65536],
+                "y": [-65536, 65536]
+            }
+        },
+        {
+            "question": "x-th prime number",
+            "validator": "def validator(x):\n    if x == 1:\n        return 2\n    primes_found = 1\n    num = 3\n    while True:\n        if all(num % i != 0 for i in range(3, int(num**0.5) + 1, 2)):\n            primes_found += 1\n            if primes_found == x:\n                return num\n        num += 2",
+            "range": {
+                "__base__": [1, 2000]
+            }
+        },
+        {
+            "question": "[x+{y}]-th prime number",
+            "validator": "def validator(x):\n    x+={y}\n    if x == 1:\n        return 2\n    primes_found = 1\n    num = 3\n    while True:\n        if all(num % i != 0 for i in range(3, int(num**0.5) + 1, 2)):\n            primes_found += 1\n            if primes_found == x:\n                return num\n        num += 2",
+            "range": {
+                "__base__": [1, 2000],
+                "y": [1, 2000]
+            }
+        }
+    ],
     "part": []
 }
