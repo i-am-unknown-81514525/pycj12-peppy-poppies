@@ -49,3 +49,13 @@ litestar --app server.captcha.main:app run --port 8001 --reload
 ```bash
 litestar --app server.backend.main:app run --port 8000 --reload
 ```
+<!--
+# Potential dependency when using `math` group (gmpy2)
+```bash
+sudo apt-get install libgmp-dev libmpfr-dev libmpc-dev # Ubuntu/Debian alike
+
+# macOS
+brew install gmp
+brew install libmpc
+brew install mpfr
+```-->

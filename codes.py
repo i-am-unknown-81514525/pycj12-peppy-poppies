@@ -1,3 +1,5 @@
+from sympy import prime
+
 def find_xth_prime_sqrt(x):
     if x == 1:
         return 2
@@ -9,3 +11,6 @@ def find_xth_prime_sqrt(x):
             if primes_found == x:
                 return num
         num += 2
+
+def find_xth_prime_sympy(x):
+    return prime(x)

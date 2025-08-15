@@ -38,6 +38,10 @@ backend = [
     "litestar[standard]>=2.17.0",
     "python-dotenv>=1.1.1",
 ]
+math = [
+    "numpy>=2.3.2",
+    "sympy>=1.14.0",
+]
 
 [tool.uv]
 default-groups = ["dev", "frontend", "backend"]
