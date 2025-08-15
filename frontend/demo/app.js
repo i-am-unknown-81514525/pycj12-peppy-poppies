@@ -68,18 +68,29 @@ const handleLogin = () => {
         }
     }, 1500);
 };
-// Initialize Application
-const initApp = async () => {
+
+const configIFrame = async () => {
     const resp = await fetch("/api/auth/get-challenge"); // Get a challenge ID from website server
     const json = await resp.json();
     const challenge_id = json.challenge_id;
     const element = elements.captchaIframe();
     const url = element.getAttribute("data-src");
     element.src = url.replace("[challenge_id]", challenge_id);
+};
+
+// Initialize Application
+const initApp = async () => {
+    await configIFrame();
     showStatus("Loading challenge...", "info");
     const div = elements.pythonCaptchaDiv();
     div.classList.remove("hidden");
     console.log("Completed init");
+};
+
+const captchaReset = async () => {
+    appState.captchaCompleted = false;
+    elements.loginBtn().disabled = true;
+    await configIFrame();
 };
 
 const captchaCompletionListener = (e) => {
