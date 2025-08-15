@@ -18,10 +18,14 @@ class Part(_Question):
 
 class QuestionSet(Struct):
     construct: list[str]
-    base: Question
-    part: Part
+    base: list[Question]
+    part: list[Part]
     init: list[str]
     cont: list[str]
+
+class QuestionSection(Struct):
+    question: str
+    validator: str
 
 class GeneratedQuestion(Struct):
     question: str
