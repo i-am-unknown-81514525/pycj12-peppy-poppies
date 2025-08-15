@@ -1,7 +1,6 @@
 from os import getenv
 from pathlib import Path
 
-import sympy  # noqa: F401 preload sympy
 from advanced_alchemy.exceptions import DuplicateKeyError, NotFoundError, RepositoryError
 from crypto.key import export_all, generate_key_pair, import_all
 from litestar import Litestar

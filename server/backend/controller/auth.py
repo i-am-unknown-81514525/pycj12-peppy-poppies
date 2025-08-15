@@ -21,12 +21,11 @@ class AuthController(Controller):  # noqa: D101
             GetChallengeResponse: A response with the challenge ID.
 
         """
-        host = request.headers["Host"]
         async with httpx.AsyncClient() as client:
             resp = await client.post(
                 f"{CAPTCHA_SERVER}/api/challenge/generate-challenge",
                 headers={"Content-Type": "application/json"},
-                json={"website": host, "session_id": uuid4().hex},
+                json={"website": request.headers["Host"], "session_id": uuid4().hex},
             )
             resp_json = resp.json()
             return GetChallengeResponse(challenge_id=resp_json["challenge_id"])

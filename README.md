@@ -1,54 +1,50 @@
 # Setup environment
 
-> Install [uv](https://docs.astral.sh/uv/getting-started/installation/) if you haven't already.
+> Install [uv](https://docs.astral.sh/uv/getting-started/installation/) if you haven't already
+
+### 1: Create `.env` with template from `.env.example`
+
+### 2: Install dependencies
 ```bash
 uv sync
+```
 
+### 3: Activate virtual environment
+```bash
 # windows
 .venv\Scripts\activate
+
 # linux / mac
 . .venv/bin/activate || source .venv/bin/activate
 ```
 
-# Run the whole thing without docker
+# Run project without docker
+
+> Make sure you have activated the virtual environment before running the commands below, and you have installed the dependencies using `uv sync` command.
+
+### 1: Build the project
 ```bash
- # Make sure you have both activate venv, if you have, skip this
-. .venv/bin/activate
- # Make sure you have both frontend and dev group, if you have, skip this
-uv sync --locked --group frontend --group dev
-
-# Create .env with template from .env.example
-
 uv run python build.py
 ```
-Now go to 2 different terminal
-```sh
-litestar --app server.backend.main:app run --port 8000 --reload # In terminal 1
-```
-```sh
+
+### 2: Start website backend
 ```bash
-# litestar
-litestar --app server.captcha.main:app run --port 8001 --reload # In terminal 2
+# In terminal 1
+litestar --app server.backend.main:app run --port 8000 --reload
 ```
 
-# Run the whole thing with docker
-```sh
-# Create .env with template from .env.example
-# Remember, for docker, the default port is picked to :9201 for captcha server, so you must create the .env for it to work
-docker compose up -d --build
-```
-
-# Run captcha server only
-
+### 3: Open another terminal and start captcha server
 ```bash
+# In terminal 2
 litestar --app server.captcha.main:app run --port 8001 --reload
 ```
 
-# Run backend server only
-
-```bash
-litestar --app server.backend.main:app run --port 8000 --reload
+# Run project with docker
+```sh
+# Remember, for docker, the default port is picked to :9201 for captcha server, so you must create the `.env` for it to work
+docker compose up -d --build
 ```
+
 <!--
 # Potential dependency when using `math` group (gmpy2)
 ```bash
@@ -58,4 +54,5 @@ sudo apt-get install libgmp-dev libmpfr-dev libmpc-dev # Ubuntu/Debian alike
 brew install gmp
 brew install libmpc
 brew install mpfr
-```-->
+```
+-->

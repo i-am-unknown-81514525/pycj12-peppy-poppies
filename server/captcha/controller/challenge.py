@@ -47,15 +47,15 @@ class ChallengeController(Controller):  # noqa: D101
         question_set: QuestionSet = request.app.state["question_set"]
         question: GeneratedQuestion = question_generator(question_set)
 
-        temp_new_challenge_data = {
-            "website": data.website,
-            "session_id": data.session_id,
-            "question": question.question,
-            "tasks": str(question.tasks),
-            "answers": str(question.solutions),
-        }
-
-        challenge = await challenge_service.create(temp_new_challenge_data)
+        challenge = await challenge_service.create(
+            {
+                "website": data.website,
+                "session_id": data.session_id,
+                "question": question.question,
+                "tasks": str(question.tasks),
+                "answers": str(question.solutions),
+            },
+        )
 
         return GenerateChallengeResponse(challenge_id=challenge.id)
 
@@ -91,12 +91,11 @@ class ChallengeController(Controller):  # noqa: D101
             Response: A response indicating whether the challenge was solved correctly or not.
 
         """
-        host = request.headers["Host"]
         challenge = await challenge_service.get_one(id=data.challenge_id)
 
         if challenge.answer_list == data.answers:
             private_key = import_private_key(KEY_PATH / "private.pem")
-            jwt_generator = JWTGenerator(issuer=host, private_key=private_key)
+            jwt_generator = JWTGenerator(issuer=request.headers["Host"], private_key=private_key)
 
             token = jwt_generator.generate(
                 website=challenge.website,

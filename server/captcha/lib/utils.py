@@ -60,7 +60,12 @@ class DefaulyDictByKey[K, V](dict[K, V]):
 
 
 def fill_question(question: Question | Part, random_obj: Random) -> QuestionSection:
-    """Fill the question detail with random value."""
+    """Fill the question detail with random value.
+
+    Returns:
+        QuestionSection: The filled question section with generated values.
+
+    """
 
     def gen_value(val_name: str) -> int:
         if val_name in question.range:
@@ -82,7 +87,19 @@ def fill_question(question: Question | Part, random_obj: Random) -> QuestionSect
 
 
 def question_generator(question_set: QuestionSet, seed: int | None = None) -> GeneratedQuestion:  # noqa: C901
-    """Generate a random question from QuestionSet."""
+    """Generate a random question from QuestionSet.
+
+    Args:
+        question_set: The set of questions to generate from.
+        seed: Optional seed for deterministic random generation.
+
+    Returns:
+        GeneratedQuestion: The generated question with tasks and solutions.
+
+    Raises:
+        ValueError: If `construct` or `base` placeholders are used incorrectly.
+
+    """
     random_obj = Random(seed)  # noqa: S311 it was decided to be determistic
     construct = random_obj.choice(question_set.construct)
     validator_part: list[str] = []
@@ -117,10 +134,12 @@ def question_generator(question_set: QuestionSet, seed: int | None = None) -> Ge
                 return match.group(0)
 
     question = GROUP_VALUE_COMPILED.sub(sub_function, construct)
+
     if TYPE_CHECKING:
         value_range = (0, 0)
     if value_range is None:
         raise ValueError("`base` should exist only once")
+
     task_amount = random_obj.randint(5, 12)
     tasks = list({random_obj.randint(*value_range) for _ in range(task_amount)})
     answers = tasks.copy()
@@ -130,6 +149,7 @@ def question_generator(question_set: QuestionSet, seed: int | None = None) -> Ge
         exec(validator_fn_str, globals, locals)  # noqa: S102 it run limited subset of questions in question_part.json
         validateor_fn: Callable[[int], int] = locals["validator"]
         answers = list(map(validateor_fn, answers))
+
     return GeneratedQuestion(
         question=question,
         tasks=tasks,
