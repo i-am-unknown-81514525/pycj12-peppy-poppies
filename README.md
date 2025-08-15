@@ -31,7 +31,7 @@ litestar --app server.backend.main:app run --port 8000 --reload # In terminal 1
 litestar --app server.captcha.main:app run --port 8001 --reload # In terminal 2
 ```
 
-# Run the whole thing without docker
+# Run the whole thing with docker
 ```sh
 # Create .env with template from .env.example
 # Remember, for docker, the default port is picked to :9201 for captcha server, so you must create the .env for it to work
