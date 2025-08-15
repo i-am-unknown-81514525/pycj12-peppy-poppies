@@ -1,5 +1,6 @@
 from os import getenv
 from pathlib import Path
+from typing import TYPE_CHECKING
 from uuid import UUID
 
 from crypto.jwt_generate import JWTGenerator
@@ -9,14 +10,16 @@ from litestar.controller import Controller
 from litestar.di import Provide
 from server.captcha.lib.dependencies import provide_challenge_service
 from server.captcha.lib.services import ChallengeService
+from server.captcha.lib.utils import question_generator
 from server.captcha.schema.challenge import (
     GenerateChallengeRequest,
     GenerateChallengeResponse,
     GetChallengeResponse,
     SubmitChallengeRequest,
 )
-from server.captcha.lib.utils import question_generator
-from server.captcha.schema.questions import QuestionSet, GeneratedQuestion
+
+if TYPE_CHECKING:
+    from server.captcha.schema.questions import GeneratedQuestion, QuestionSet
 
 KEY_PATH = Path(getenv("KEY_PATH", "./captcha_data"))
 
@@ -41,7 +44,6 @@ class ChallengeController(Controller):  # noqa: D101
             GenerateChallengeResponse: The response containing the generated challenge ID.
 
         """
-
         question_set: QuestionSet = request.app.state["question_set"]
         question: GeneratedQuestion = question_generator(question_set)
 
