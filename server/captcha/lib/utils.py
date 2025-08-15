@@ -1,3 +1,5 @@
+from typing import Optional
+
 from advanced_alchemy.exceptions import IntegrityError, NotFoundError, RepositoryError
 from advanced_alchemy.extensions.litestar.exception_handler import (
     ConflictError,
@@ -9,6 +11,7 @@ from litestar.exceptions import (
 )
 from litestar.exceptions.responses import create_exception_response
 from litestar.status_codes import HTTP_409_CONFLICT, HTTP_500_INTERNAL_SERVER_ERROR
+from server.captcha.schema.questions import QuestionSet
 
 
 class _HTTPConflictException(HTTPException):
@@ -37,3 +40,7 @@ def exception_handler(  # noqa: D103
         )
 
     return create_exception_response(request, http_exc(detail=str(exc.detail)))
+
+
+def question_generator(question_set: QuestionSet, seed: Optional[int] = None):
+    raise NotImplementedError("")
