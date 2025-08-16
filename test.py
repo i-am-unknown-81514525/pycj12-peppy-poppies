@@ -1,6 +1,6 @@
-import httpx, time
-from pathlib import Path
 from os import getenv
+from pathlib import Path
+
 from dotenv import load_dotenv
 from msgspec.json import decode
 from server.captcha.lib.utils import QuestionSet, question_generator
@@ -15,6 +15,6 @@ with (CONFIG_PATH / "question_set.json").open("rb") as fp:
 i = 0
 while True:
     question_generator(question_set, i)
-    i+=1
-    if i %100 ==0:
+    i += 1
+    if i % 100 == 0:
         print(i)
