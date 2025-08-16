@@ -4,10 +4,8 @@ from typing import TYPE_CHECKING
 from uuid import UUID
 import base64
 from io import BytesIO
-
 from PIL import Image, ImageDraw, ImageFont
 import textwrap
-
 import anyio
 from crypto.jwt_generate import JWTGenerator
 from crypto.key import import_private_key
@@ -30,7 +28,16 @@ if TYPE_CHECKING:
 
 KEY_PATH = Path(getenv("KEY_PATH", "./captcha_data"))
 
+
 def text_to_image(text: str, width: int = 800, font_size: int = 16) -> str:
+    """Convert text to base64 encoded PNG image.
+    Args:
+        text: The text to convert to image
+        width: Width of the image
+        font_size: Font size for the text
+    Returns:
+        str: Base64 encoded PNG image as data URL
+    """
     try:
         font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf", font_size)
     except (OSError, IOError):
@@ -38,34 +45,26 @@ def text_to_image(text: str, width: int = 800, font_size: int = 16) -> str:
             font = ImageFont.truetype("arial.ttf", font_size)
         except (OSError, IOError):
             font = ImageFont.load_default()
-
-#Wrapred the text to fit the image width
-
     wrapped_lines = []
-    for line in text.split('\n'):
+    for line in text.split("\n"):
         if line.strip():
             wrapped = textwrap.fill(line, width=80)
-            wrapped_lines.extend(wrapped.split('\n'))
+            wrapped_lines.extend(wrapped.split("\n"))
         else:
-            wrapped_lines.append('')
-
+            wrapped_lines.append("")
     line_height = font_size + 4
     img_height = max(200, len(wrapped_lines) * line_height + 40)
-
-    img = Image.new('RGB', (width, img_height), color='white')
+    img = Image.new("RGB", (width, img_height), color="white")
     draw = ImageDraw.Draw(img)
-
     y_position = 20
     for line in wrapped_lines:
-        draw.text((20, y_position), line, fill='black', font=font)
+        draw.text((20, y_position), line, fill="black", font=font)
         y_position += line_height
-
     buffer = BytesIO()
-    img.save(buffer, format='PNG')
+    img.save(buffer, format="PNG")
     img_data = buffer.getvalue()
     buffer.close()
-
-    img_base64 = base64.b64encode(img_data).decode('utf-8')
+    img_base64 = base64.b64encode(img_data).decode("utf-8")
     return f"data:image/png;base64,{img_base64}"
 
 
@@ -83,6 +82,10 @@ class ChallengeController(Controller):
         challenge_service: ChallengeService,
         request: Request,
     ) -> GenerateChallengeResponse:
+        """Generate a new captcha challenge.
+        Returns:
+            GenerateChallengeResponse: The response containing the generated challenge ID.
+        """
         question_set: QuestionSet = request.app.state["question_set"]
         question: GeneratedQuestion = question_generator(question_set)
         challenge = await challenge_service.create(
@@ -103,13 +106,10 @@ class ChallengeController(Controller):
         challenge_id: UUID,
     ) -> GetChallengeResponse:
         """Get the current captcha challenge.
-
         Returns:
             GetChallengeResponse: The response containing the challenge details.
-
         """
         challenge = await challenge_service.get_one(id=challenge_id)
-
         return GetChallengeResponse(
             question=challenge.question,
             tasks=challenge.task_list,
@@ -123,27 +123,21 @@ class ChallengeController(Controller):
         request: Request,
     ) -> Response:
         """Submit a captcha challenge.
-
         Returns:
             Response: A response indicating whether the challenge was solved correctly or not.
-
         """
         challenge = await challenge_service.get_one(id=data.challenge_id)
-
         if challenge.answer_list == data.answers:
             private_key = import_private_key(KEY_PATH / "private.pem")
             jwt_generator = JWTGenerator(issuer=request.headers["Host"], private_key=private_key)
-
             token = jwt_generator.generate(
                 website=challenge.website,
                 challenge_id=str(data.challenge_id),
             )
-
             return Response(
                 status_code=status_codes.HTTP_201_CREATED,
                 content={"token": token},
             )
-
         return Response(
             status_code=status_codes.HTTP_400_BAD_REQUEST,
             content="Challenge not solved correctly.",
@@ -152,10 +146,8 @@ class ChallengeController(Controller):
     @get("/get-public-key")
     async def get_public_key(self) -> Response:
         """Get CAPTCHA server public key.
-
         Returns:
             Response: A response of the server public key used to sign the JWT.
-
         """
         async with await anyio.open_file(KEY_PATH / "public.pem") as file:
             return Response(content=await file.read(), status_code=HTTP_200_OK, media_type="application/x-pem-file")

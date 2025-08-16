@@ -92,11 +92,13 @@ async def _worker_on_message(e) -> None:
         print("Pyodide loaded")
         loaded_item.has_loaded = True
 
+
 def _to_int(x: str) -> int:
     try:
         return int(x)
     except ValueError:
         return int(float(x))
+
 
 async def _worker_on_message(e) -> None:  # noqa: ANN001
     content: str = e.data
@@ -132,6 +134,7 @@ async def _worker_on_message(e) -> None:  # noqa: ANN001
     elif key == "pyodide-loaded":
         print("Pyodide loaded")
         loaded_item.has_loaded = True
+
 
 def submit(code: str, task: list[int]) -> None:
     """Submit the code to be executed locally with the given task."""
@@ -192,6 +195,7 @@ class PyodideHasLoaded(param.Parameterized):
         return None
         return pn.Spacer(width=0)
 
+
 loaded_item = PyodideHasLoaded()
 initial_label = pn.pane.Str(
     "Verify you are human",
@@ -217,11 +221,7 @@ question_loading = pn.indicators.LoadingSpinner(size=20, value=True, color="seco
 initial_label = pn.pane.Str("Verify for are human", margin=(0, 25), align=("start", "center"))
 initial_verify = pn.widgets.Button(name="Verify", button_type="primary", visible=False, align=("end", "center"))
 
-question = pn.pane.Image(
-    sizing_mode="stretch_width",
-    height=300,
-    margin=(10, 0)
-)
+question = pn.pane.Image(sizing_mode="stretch_width", height=300, margin=(10, 0))
 initial_loading = pn.indicators.LoadingSpinner(size=18, value=True, color="secondary", bgcolor="light", visible=True)
 question_loading = pn.indicators.LoadingSpinner(size=18, value=True, color="secondary", bgcolor="light", visible=False)
 code_editor = pn.widgets.CodeEditor(
@@ -257,6 +257,7 @@ def _set_after_visibility(status: bool) -> None:
     code_editor.visible = status
     submit_button.visible = status
     error_str.visible = status
+
 
 async def _click_initial_verify(_) -> None:
     global tasks
