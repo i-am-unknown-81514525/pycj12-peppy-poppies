@@ -1,9 +1,9 @@
-import multiprocessing
-import math
 import logging
+import math
+import multiprocessing
+import os
 import re
 import time
-import os
 from collections.abc import Callable
 from random import Random
 from typing import TYPE_CHECKING, Literal
@@ -93,10 +93,6 @@ def fill_question(question: Question | Part, random_obj: Random) -> QuestionSect
     )
 
 
-def _validator_fn(v: int, global_dict: dict, local_dict: dict) -> int:
-    return eval("validator(v)", {**global_dict, **local_dict, "v": v}, {**global_dict, **local_dict, "v": v})  # noqa: S307
-
-
 def _runner(answers: list[int], fn_part: list[str], queue: multiprocessing.Queue) -> None:
     safe_globals = {
         "__builtins__": __builtins__,
@@ -123,10 +119,11 @@ def _runner(answers: list[int], fn_part: list[str], queue: multiprocessing.Queue
             validateor_fn: Callable[[int], int] = locals_dict["validator"]
             answers = list(map(validateor_fn, answers))
         queue.put(answers)
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         queue.put(e)
 
-def question_generator(question_set: QuestionSet, seed: int | None = None) -> GeneratedQuestion:  # noqa: C901
+
+def question_generator(question_set: QuestionSet, seed: int | None = None) -> GeneratedQuestion:  # noqa: C901, PLR0915
     """Generate a random question from QuestionSet.
 
     Args:
@@ -198,12 +195,11 @@ def question_generator(question_set: QuestionSet, seed: int | None = None) -> Ge
                 process.kill()
             else:
                 process.terminate()
-            raise TimeoutError()
-        else:
-            answers = queue.get()
-            if isinstance(answers, Exception):
-                raise answers
-            str(answers)
+            raise TimeoutError  # noqa: TRY301
+        answers = queue.get()
+        if isinstance(answers, Exception):
+            raise answers  # noqa: TRY301
+        str(answers)
     except Exception as e:
         issue_id = "".join(random_obj.choices("0123456789abcdef", k=32))
         LOGGER.exception(
@@ -217,7 +213,7 @@ Locals: {local_dict}
 Last ran validator: {validator_fn_str}
 Seed: {seed or "N/A"}
 Issue ID: {issue_id}
-Delta: {time.perf_counter()-start}s
+Delta: {time.perf_counter() - start}s
 """,
             exc_info=e,
         )
@@ -227,7 +223,7 @@ Delta: {time.perf_counter()-start}s
         )
         answers = tasks.copy()
         if isinstance(e, KeyboardInterrupt):
-            raise e
+            raise e  # noqa: TRY201
     return GeneratedQuestion(
         question=question,
         tasks=tasks,
