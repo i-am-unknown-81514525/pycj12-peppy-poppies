@@ -145,12 +145,13 @@ class PyodideHasLoaded(param.Parameterized):
     has_loaded = param.Boolean()
 
     @param.depends("has_loaded")
-    def render(self) -> pn.Spacer:
+    def render(self) -> pn.Spacer | None:
         """Update visibility of component on pyodide load."""
         print(self.has_loaded)
         if self.has_loaded:  # type: ignore[reportGeneralTypeIssues]
             initial_verify.visible = True
             initial_loading.visible = False
+        return None
         return pn.Spacer(width=0)
 
 
@@ -159,15 +160,16 @@ initial_label = pn.pane.Str(
     "Verify for are human",
     align=("start", "center"),
     styles={"text-wrap": "pretty"},
-    sizing_mode="stretch_width",
+    # sizing_mode="stretch_width",
+    min_width=150,
 )
-initial_spacer = pn.Spacer(sizing_mode="stretch_width")
+# initial_spacer = pn.Spacer(sizing_mode="stretch_width")
+# initial_spacer2 = pn.Spacer(width=20)
 initial_verify = pn.widgets.Button(
     name="Verify",
     button_type="primary",
     visible=False,
     align=("end", "center"),
-    margin=(0, 25),
 )
 question = pn.pane.Str("", styles={"text-wrap": "pretty"}, sizing_mode="stretch_width")
 initial_loading = pn.indicators.LoadingSpinner(
@@ -176,7 +178,6 @@ initial_loading = pn.indicators.LoadingSpinner(
     color="secondary",
     bgcolor="light",
     visible=True,
-    margin=(0, 25),
 )
 question_loading = pn.indicators.LoadingSpinner(size=20, value=True, color="secondary", bgcolor="light", visible=False)
 code_editor = pn.widgets.CodeEditor(
@@ -203,7 +204,8 @@ tasks: list[int] = []
 
 def _set_initial_visibility(status: bool) -> None:  # noqa: FBT001
     initial_label.visible = status
-    initial_spacer.visible = status
+    # initial_spacer.visible = status
+    # initial_spacer2.visible = status
     initial_verify.visible = status
 
 
@@ -238,10 +240,10 @@ submit_button.on_click(_click_submit)
 
 initial = pn.Row(
     initial_label,
-    initial_spacer,
+    # initial_spacer,
+    # initial_spacer2,
     initial_verify,
     initial_loading,
-    loaded_item.render,
     sizing_mode="stretch_width",
 )
 
@@ -254,5 +256,6 @@ pn.Column(
     initial,
     question_loading,
     after,
+    loaded_item.render,
     sizing_mode="stretch_width",
 ).servable(target="captcha")
