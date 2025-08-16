@@ -20,16 +20,8 @@ dependencies = []
 # This `dev` group contains all the development requirements for our linting toolchain.
 # Don't forget to pin your dependencies!
 # This list will have to be migrated if you wish to use another dependency manager.
-dev = [
-    "pre-commit~=4.2.0",
-    "python-dotenv>=1.1.1",
-    "ruff~=0.12.2",
-]
-frontend = [
-    "panel>=1.7.5",
-    "pyodide-py>=0.27.7",
-    "pyscript>=0.3.3",
-]
+dev = ["pre-commit~=4.2.0", "python-dotenv>=1.1.1", "ruff~=0.12.2"]
+frontend = ["panel>=1.7.5", "pyodide-py>=0.27.7", "pyscript>=0.3.3"]
 backend = [
     "cryptography>=45.0.6",
     "pyjwt[crypto]>=2.10.1",
@@ -38,10 +30,7 @@ backend = [
     "litestar[standard]>=2.17.0",
     "python-dotenv>=1.1.1",
 ]
-math = [
-    "numpy>=2.3.2",
-    "sympy>=1.14.0",
-]
+math = ["numpy>=2.3.2", "sympy>=1.14.0"]
 
 [tool.uv]
 default-groups = ["dev", "frontend", "backend", "math"]
@@ -59,7 +48,11 @@ fix = true
 # The directory containing the source code. If you choose a different project layout
 # you will need to update this value.
 src = ["src"]
-extend-exclude = ["js.pyi", "dist/", "frontend/captcha/parse.py"]  # File from external source for only typehint
+extend-exclude = [
+    "js.pyi",
+    "dist/",
+    "frontend/captcha/parse.py",
+] # File from external source for only typehint
 
 [tool.ruff.lint]
 # Enable all linting rules.
@@ -95,4 +88,5 @@ ignore = [
     "CPY001",
     "RUF012",
     "PLR6301",
+    "G004",
 ]
