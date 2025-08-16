@@ -350,22 +350,8 @@
             }
         },
         {
-            "question": "integer divide from {y}",
-            "validator": "validator=lambda x:{y}//x",
-            "range": {
-                "y": [1, 65536]
-            }
-        },
-        {
-            "question": "integer divide {y}",
+            "question": "integer divide by {y}",
             "validator": "validator=lambda x:x//{y}",
-            "range": {
-                "y": [-65536, -1]
-            }
-        },
-        {
-            "question": "integer divide from {y}",
-            "validator": "validator=lambda x:{y}//x",
             "range": {
                 "y": [-65536, -1]
             }
@@ -469,13 +455,6 @@
             "range": {}
         },
         {
-            "question": "ceiling divide by {y}",
-            "validator": "import math; validator=lambda x: math.ceil(x / {y})",
-            "range": {
-                "y": [1, 256]
-            }
-        },
-        {
             "question": "find the absolute difference from {y}",
             "validator": "validator=lambda x: abs(x - {y})",
             "range": {
@@ -510,13 +489,6 @@
             }
         },
         {
-            "question": "find the least common multiple with {y}",
-            "validator": "import math; validator=lambda x: abs((x // math.gcd(x, {y})) * {y})",
-            "range": {
-                "y": [1, 65536]
-            }
-        },
-        {
             "question": "square the value",
             "validator": "validator=lambda x: x*x",
             "range": {}
@@ -537,15 +509,15 @@
             "range": {}
         },
         {
-            "question": "find the smallest multiple of {y} that is greater than or equal to the current value",
-            "validator": "import math; validator=lambda x: math.ceil(x / {y}) * {y}",
+            "question": "find the smallest multiple of {y} that is greater than or equal to the absolute value of the current value",
+            "validator": "import math; validator=lambda x: x//{y} * {y} + (0 if x%{y}==0 else {y})",
             "range": {
                 "y": [1, 1000]
             }
         },
         {
-            "question": "find the largest multiple of {y} that is less than or equal to the current value",
-            "validator": "import math; validator=lambda x: math.floor(x / {y}) * {y}",
+            "question": "find the largest multiple of {y} that is less than or equal to the absolute value of the current value",
+            "validator": "import math; validator=lambda x: x//{y} * {y}",
             "range": {
                 "y": [1, 1000]
             }
@@ -558,53 +530,13 @@
             }
         },
         {
-            "question": "compute the floor of the current value divided by {y}",
-            "validator": "import math; validator=lambda x: math.floor(x/{y})",
-            "range": { "y": [1, 100] }
-        },
-        {
-            "question": "compute the ceiling of the current value divided by {y}",
-            "validator": "import math; validator=lambda x: math.ceil(x/{y})",
-            "range": { "y": [1, 100] }
-        },
-        {
-            "question": "compute the number of divisors of the current value",
-            "validator": "from sympy import divisors; validator=lambda x: len(divisors(abs(x)))",
-            "range": {}
-        },
-        {
-            "question": "compute the sum of divisors of the current value",
-            "validator": "from sympy import divisors; validator=lambda x: sum(divisors(abs(x)))",
-            "range": {}
-        },
-        {
-            "question": "compute the next triangular number from the current value",
-            "validator": "validator=lambda x: ((int((8*x+1)**0.5)+1)//2)*(((int((8*x+1)**0.5)+1)//2)+1)//2",
-            "range": {}
-        },
-        {
-            "question": "compute the next pentagonal number from the current value",
-            "validator": "validator=lambda x: ((int((24*x+1)**0.5)+1)//6)*((3*((int((24*x+1)**0.5)+1)//6)-1)//2)",
-            "range": {}
-        },
-        {
-            "question": "take the factorial of the result",
-            "validator": "from math import factorial; validator=lambda x: factorial(x)",
-            "range": {}
-        },
-        {
-            "question": "compute the square root of the result (rounded down to integer)",
-            "validator": "validator=lambda x: int(x**0.5)",
-            "range": {}
-        },
-        {
-            "question": "compute the natural logarithm of the result (rounded down to integer)",
-            "validator": "import math; validator=lambda x: int(math.log(x)) if x>0 else 0",
+            "question": "compute the natural logarithm of the (absolute value of the result + 1) and rounded down to integer",
+            "validator": "import math; validator=lambda x: int(math.log(abs(x)+1)) if x>0 else 0",
             "range": {}
         },
         {
             "question": "compute the base-10 logarithm of the result (rounded down to integer)",
-            "validator": "import math; validator=lambda x: int(math.log10(x)) if x>0 else 0",
+            "validator": "import math; validator=lambda x: int(math.log10(abs(x)+1)) if x>0 else 0",
             "range": {}
         },
         {
@@ -613,15 +545,15 @@
             "range": {}
         },
         {
-            "question": "round the result up to nearest multiple of {y}",
-            "validator": "import math; validator=lambda x: math.ceil(x/{y})*{y}",
+            "question": "round the absolute value of the result up to nearest multiple of {y}",
+            "validator": "import math; validator=lambda x: x//{y} * {y} + (0 if x%{y}==0 else {y})",
             "range": {
                 "y": [1, 50]
             }
         },
         {
-            "question": "round the result down to nearest multiple of {y}",
-            "validator": "import math; validator=lambda x: math.floor(x/{y})*{y}",
+            "question": "round the absolute value of the result down to nearest multiple of {y}",
+            "validator": "import math; validator=lambda x: x//{y} * {y}",
             "range": {
                 "y": [1, 50]
             }
@@ -641,8 +573,8 @@
             }
         },
         {
-            "question": "return the largest prime less than or equal to the result mod {y}",
-            "validator": "from sympy import prevprime; validator=lambda x: prevprime(abs(x))",
+            "question": "return the largest prime less than or equal to the ((result mod {y}) + 4)",
+            "validator": "from sympy import prevprime; validator=lambda x: prevprime((x % {y})+4)",
             "range": {
                 "y": [1000, 4000]
             }
