@@ -1,4 +1,5 @@
 import math
+import logging
 import re
 from collections.abc import Callable
 from random import Random
@@ -20,6 +21,7 @@ from server.captcha.schema.questions import GeneratedQuestion, Part, Question, Q
 
 GROUP_VALUE_REGEX = r"{(dyn:)?([a-zA-Z_\-]+)}"
 GROUP_VALUE_COMPILED = re.compile(GROUP_VALUE_REGEX)
+LOGGER = logging.getLogger("app")
 
 
 class _HTTPConflictException(HTTPException):
@@ -88,6 +90,10 @@ def fill_question(question: Question | Part, random_obj: Random) -> QuestionSect
     )
 
 
+def _validator_fn(v: int, global_dict: dict, local_dict: dict) -> int:
+    return eval("validator(v)", {**global_dict, **local_dict, "v": v}, {**global_dict, **local_dict, "v": v})  # noqa: S307
+
+
 def question_generator(question_set: QuestionSet, seed: int | None = None) -> GeneratedQuestion:  # noqa: C901
     """Generate a random question from QuestionSet.
 
@@ -146,32 +152,56 @@ def question_generator(question_set: QuestionSet, seed: int | None = None) -> Ge
     tasks = list({random_obj.randint(*value_range) for _ in range(task_amount)})
     answers = tasks.copy()
 
-    for validator_fn_str in validator_part:
-        # Create a safe globals dict with necessary modules for validator functions
-        safe_globals = {
-            "__builtins__": __builtins__,
-            "abs": abs,
-            "min": min,
-            "max": max,
-            "bin": bin,
-            "int": int,
-            "len": len,
-            "sum": sum,
-            "pow": pow,
-            "math": math,
-            "sympy": sympy,
-            "factorial": math.factorial,
-            "prime": sympy.prime,
-            "fibonacci": sympy.fibonacci,
-            "divisors": sympy.divisors,
-            "prevprime": sympy.prevprime,
-        }
+    validator_fn_str = "N/A"
+    global_dict = {}
+    local_dict = {}
+    try:
+        for validator_fn_str in validator_part:
+            # Create a safe globals dict with necessary modules for validator functions
+            safe_globals = {
+                "__builtins__": __builtins__,
+                "abs": abs,
+                "min": min,
+                "max": max,
+                "bin": bin,
+                "int": int,
+                "len": len,
+                "sum": sum,
+                "pow": pow,
+                "math": math,
+                "sympy": sympy,
+                "factorial": math.factorial,
+                "prime": sympy.prime,
+                "fibonacci": sympy.fibonacci,
+                "divisors": sympy.divisors,
+                "prevprime": sympy.prevprime,
+            }
 
-        locals_dict = {}
-        exec(validator_fn_str, safe_globals, locals_dict)  # noqa: S102 it run limited subset of questions in question_part.json
-        validateor_fn: Callable[[int], int] = locals_dict["validator"]
-        answers = list(map(validateor_fn, answers))
-
+            locals_dict = {}
+            exec(validator_fn_str, safe_globals, locals_dict)  # noqa: S102 it run limited subset of questions in question_part.json
+            validateor_fn: Callable[[int], int] = locals_dict["validator"]
+            answers = list(map(validateor_fn, answers))
+    except Exception as e:
+        issue_id = "".join(random_obj.choices("0123456789abcdef", k=32))
+        LOGGER.exception(
+            f"""Failed to generate question
+Questions: {question}
+Tasks: {tasks}
+Validators:
+{"\n".join(f"  {fn!r}" for fn in validator_part)}
+Globals: {global_dict}
+Locals: {local_dict}
+Last ran validator: {validator_fn_str}
+Seed: {seed or "N/A"}
+Issue ID: {issue_id}
+""",
+            exc_info=e,
+        )
+        question = (
+            "You found an invalid question, Congrat :)"
+            f"Notify server owner with issue id: `{issue_id}`. Your task is just output exactly the input"
+        )
+        answers = tasks.copy()
     return GeneratedQuestion(
         question=question,
         tasks=tasks,

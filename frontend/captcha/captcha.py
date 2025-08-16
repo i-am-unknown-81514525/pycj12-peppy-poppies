@@ -154,13 +154,29 @@ class PyodideHasLoaded(param.Parameterized):
 
 
 loaded_item = PyodideHasLoaded()
-initial_label = pn.pane.Str("Verify for are human", align=("start", "center"),
-    styles={"text-wrap": "pretty"}, sizing_mode="stretch_width")
+initial_label = pn.pane.Str(
+    "Verify for are human",
+    align=("start", "center"),
+    styles={"text-wrap": "pretty"},
+    sizing_mode="stretch_width",
+)
 initial_spacer = pn.Spacer(sizing_mode="stretch_width")
-initial_verify = pn.widgets.Button(name="Verify", button_type="primary", visible=False,
-    align=("end", "center"), margin=(0, 25))
-question = pn.pane.Str("",styles={"text-wrap": "pretty"}, sizing_mode="stretch_width")
-initial_loading = pn.indicators.LoadingSpinner(size=20, value=True, color="secondary", bgcolor="light", visible=True, margin=(0, 25))
+initial_verify = pn.widgets.Button(
+    name="Verify",
+    button_type="primary",
+    visible=False,
+    align=("end", "center"),
+    margin=(0, 25),
+)
+question = pn.pane.Str("", styles={"text-wrap": "pretty"}, sizing_mode="stretch_width")
+initial_loading = pn.indicators.LoadingSpinner(
+    size=20,
+    value=True,
+    color="secondary",
+    bgcolor="light",
+    visible=True,
+    margin=(0, 25),
+)
 question_loading = pn.indicators.LoadingSpinner(size=20, value=True, color="secondary", bgcolor="light", visible=False)
 code_editor = pn.widgets.CodeEditor(
     value="""
