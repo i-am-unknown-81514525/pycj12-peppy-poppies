@@ -2,6 +2,11 @@ from os import getenv
 from pathlib import Path
 from typing import TYPE_CHECKING
 from uuid import UUID
+import base64
+from io import BytesIO
+
+from PIL import Image, ImageDraw, ImageFont
+import textwrap
 
 from crypto.jwt_generate import JWTGenerator
 from crypto.key import import_private_key
@@ -23,8 +28,46 @@ if TYPE_CHECKING:
 
 KEY_PATH = Path(getenv("KEY_PATH", "./captcha_data"))
 
+def text_to_image(text: str, width: int = 800, font_size: int = 16) -> str:
+    try:
+        font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf", font_size)
+    except (OSError, IOError):
+        try:
+            font = ImageFont.truetype("arial.ttf", font_size)
+        except (OSError, IOError):
+            font = ImageFont.load_default()
 
-class ChallengeController(Controller):  # noqa: D101
+#Wrapred the text to fit the image width
+
+    wrapped_lines = []
+    for line in text.split('\n'):
+        if line.strip():
+            wrapped = textwrap.fill(line, width=80)
+            wrapped_lines.extend(wrapped.split('\n'))
+        else:
+            wrapped_lines.append('')
+    
+    line_height = font_size + 4
+    img_height = max(200, len(wrapped_lines) * line_height + 40)
+    
+    img = Image.new('RGB', (width, img_height), color='white')
+    draw = ImageDraw.Draw(img)
+    
+    y_position = 20
+    for line in wrapped_lines:
+        draw.text((20, y_position), line, fill='black', font=font)
+        y_position += line_height
+    
+    buffer = BytesIO()
+    img.save(buffer, format='PNG')
+    img_data = buffer.getvalue()
+    buffer.close()
+    
+    img_base64 = base64.b64encode(img_data).decode('utf-8')
+    return f"data:image/png;base64,{img_base64}"
+
+
+class ChallengeController(Controller):
     path = "/api/challenge"
     tags = ["Challenge"]
     dependencies = {
@@ -38,15 +81,8 @@ class ChallengeController(Controller):  # noqa: D101
         challenge_service: ChallengeService,
         request: Request,
     ) -> GenerateChallengeResponse:
-        """Generate a new captcha challenge.
-
-        Returns:
-            GenerateChallengeResponse: The response containing the generated challenge ID.
-
-        """
         question_set: QuestionSet = request.app.state["question_set"]
         question: GeneratedQuestion = question_generator(question_set)
-
         challenge = await challenge_service.create(
             {
                 "website": data.website,
@@ -56,58 +92,7 @@ class ChallengeController(Controller):  # noqa: D101
                 "answers": str(question.solutions),
             },
         )
-
         return GenerateChallengeResponse(challenge_id=challenge.id)
 
     @get("/get-challenge/{challenge_id:uuid}")
     async def get_challenge(
-        self,
-        challenge_service: ChallengeService,
-        challenge_id: UUID,
-    ) -> GetChallengeResponse:
-        """Get the current captcha challenge.
-
-        Returns:
-            GetChallengeResponse: The response containing the challenge details.
-
-        """
-        challenge = await challenge_service.get_one(id=challenge_id)
-
-        return GetChallengeResponse(
-            question=challenge.question,
-            tasks=challenge.task_list,
-        )
-
-    @post("/submit-challenge")
-    async def submit_challenge(
-        self,
-        challenge_service: ChallengeService,
-        data: SubmitChallengeRequest,
-        request: Request,
-    ) -> Response:
-        """Submit a captcha challenge.
-
-        Returns:
-            Response: A response indicating whether the challenge was solved correctly or not.
-
-        """
-        challenge = await challenge_service.get_one(id=data.challenge_id)
-
-        if challenge.answer_list == data.answers:
-            private_key = import_private_key(KEY_PATH / "private.pem")
-            jwt_generator = JWTGenerator(issuer=request.headers["Host"], private_key=private_key)
-
-            token = jwt_generator.generate(
-                website=challenge.website,
-                challenge_id=str(data.challenge_id),
-            )
-
-            return Response(
-                status_code=status_codes.HTTP_201_CREATED,
-                content={"token": token},
-            )
-
-        return Response(
-            status_code=status_codes.HTTP_400_BAD_REQUEST,
-            content="Challenge not solved correctly.",
-        )
