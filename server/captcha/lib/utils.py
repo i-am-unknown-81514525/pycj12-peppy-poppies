@@ -147,7 +147,6 @@ def question_generator(question_set: QuestionSet, seed: int | None = None) -> Ge
     answers = tasks.copy()
 
     for validator_fn_str in validator_part:
-<<<<<<< HEAD
         # Create a safe globals dict with necessary modules for validator functions
         safe_globals = {
             "__builtins__": __builtins__,
@@ -172,14 +171,6 @@ def question_generator(question_set: QuestionSet, seed: int | None = None) -> Ge
         exec(validator_fn_str, safe_globals, locals_dict)  # noqa: S102 it run limited subset of questions in question_part.json
         validateor_fn: Callable[[int], int] = locals_dict["validator"]
         answers = list(map(validateor_fn, answers))
-=======
-        globals = {}
-        locals = {}
-        exec(validator_fn_str, globals, locals)  # noqa: S102 it run limited subset of questions in question_part.json
-        def validator_fn(v: int) -> int:
-            return eval("validator(v)", globals, {**locals, "v": v})
-        answers = list(map(validator_fn, answers))
->>>>>>> 51fbd48 (Fix import issue)
 
     return GeneratedQuestion(
         question=question,
