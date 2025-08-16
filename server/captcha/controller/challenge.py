@@ -48,23 +48,23 @@ def text_to_image(text: str, width: int = 800, font_size: int = 16) -> str:
             wrapped_lines.extend(wrapped.split('\n'))
         else:
             wrapped_lines.append('')
-    
+
     line_height = font_size + 4
     img_height = max(200, len(wrapped_lines) * line_height + 40)
-    
+
     img = Image.new('RGB', (width, img_height), color='white')
     draw = ImageDraw.Draw(img)
-    
+
     y_position = 20
     for line in wrapped_lines:
         draw.text((20, y_position), line, fill='black', font=font)
         y_position += line_height
-    
+
     buffer = BytesIO()
     img.save(buffer, format='PNG')
     img_data = buffer.getvalue()
     buffer.close()
-    
+
     img_base64 = base64.b64encode(img_data).decode('utf-8')
     return f"data:image/png;base64,{img_base64}"
 
@@ -98,7 +98,6 @@ class ChallengeController(Controller):
 
     @get("/get-challenge/{challenge_id:uuid}")
     async def get_challenge(
-<<<<<<< HEAD
         self,
         challenge_service: ChallengeService,
         challenge_id: UUID,
@@ -160,5 +159,3 @@ class ChallengeController(Controller):
         """
         async with await anyio.open_file(KEY_PATH / "public.pem") as file:
             return Response(content=await file.read(), status_code=HTTP_200_OK, media_type="application/x-pem-file")
-=======
->>>>>>> 11a31af (Update challenge.py)

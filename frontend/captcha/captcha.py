@@ -17,11 +17,15 @@ worker = window.Worker.new("runner.js", type="module")
 
 
 class GetChallengeResponse(TypedDict):
+    """Response schema for /get_challenge endpoint."""
+
     question: str
     tasks: list[int]
 
 
 class SolutionCorrectJWTPayload(TypedDict):
+    """Payload data of the JWT token returned from /solution endpoint."""
+
     session_id: str
     challenge_id: str
     nbf: float
@@ -32,6 +36,15 @@ class SolutionCorrectJWTPayload(TypedDict):
 
 
 def get_challenge_id() -> str:
+    """Get challenge_id of the challenge.
+
+    Returns:
+        str: The challenge_id extracted from the URL query parameters.
+
+    Raises:
+        ValueError: If the challenge_id is not found or is not a valid string.
+
+    """
     parsed = urllib.parse.urlparse(window.location.href).query
     print(parsed)
     query_dict = urllib.parse.parse_qs(parsed)
@@ -45,6 +58,12 @@ def get_challenge_id() -> str:
 
 
 async def get_challenge() -> tuple[str, list[int]]:
+    """Endpoint to collect challenge data.
+
+    Returns:
+        tuple[str, list[int]]: The question image data URL and the associated task list.
+
+    """
     challenge_id = get_challenge_id()
     request = await pyfetch(f"/api/challenge/get-challenge/{challenge_id}")
     if not request.ok:
@@ -54,18 +73,32 @@ async def get_challenge() -> tuple[str, list[int]]:
     return (response["question"], response["tasks"])
 
 
-<<<<<<< HEAD
+async def _worker_on_message(e) -> None:
+    content: str = e.data
+    key, value = content.split(";", maxsplit=1)
+    get_challenge_id()
+    if key == "result":
+        result = await send_result(json.loads(value))
+        progress_bar.value = progress_bar.max
+        if result:
+            progress_bar.bar_color = "success"
+        else:
+            progress_bar.bar_color = "danger"
+    elif key == "load":
+        progress_bar.value = 1
+    elif key == "run":
+        progress_bar.value = 1 + int(value)
+    elif key == "pyodide-loaded":
+        print("Pyodide loaded")
+        loaded_item.has_loaded = True
+
 def _to_int(x: str) -> int:
     try:
         return int(x)
     except ValueError:
         return int(float(x))
 
-
 async def _worker_on_message(e) -> None:  # noqa: ANN001
-=======
-async def _worker_on_message(e) -> None:
->>>>>>> 7f71c10 (Update captcha.py to accomodate images)
     content: str = e.data
     key, value = content.split(";", maxsplit=1)
     get_challenge_id()
@@ -96,18 +129,23 @@ async def _worker_on_message(e) -> None:
         progress_bar.bar_color = "danger"
         submit_button.disabled = False
         error_str.object = value
-
     elif key == "pyodide-loaded":
         print("Pyodide loaded")
         loaded_item.has_loaded = True
 
-
 def submit(code: str, task: list[int]) -> None:
+    """Submit the code to be executed locally with the given task."""
     get_challenge_id()
     worker.postMessage(json.dumps({"code": code, "task": task}))
 
 
 async def send_result(results: list[int]) -> bool:
+    """Send the calculated result to CAPTCHA service to obtain the JWT.
+
+    Returns:
+        bool: True if the result was successfully sent and a valid JWT was received, False otherwise.
+
+    """
     req_data = json.dumps(
         {
             "challenge_id": get_challenge_id(),
@@ -144,15 +182,9 @@ worker.onmessage = create_proxy(_worker_on_message)
 
 
 class PyodideHasLoaded(param.Parameterized):
-    has_loaded = param.Boolean()
-
     @param.depends("has_loaded")
-<<<<<<< HEAD
     def render(self) -> pn.Spacer | None:
         """Update visibility of component on pyodide load."""
-=======
-    def render(self) -> None:
->>>>>>> 7f71c10 (Update captcha.py to accomodate images)
         print(self.has_loaded)
         if self.has_loaded:
             initial_verify.visible = True
@@ -160,10 +192,7 @@ class PyodideHasLoaded(param.Parameterized):
         return None
         return pn.Spacer(width=0)
 
-#changed some stuff to accomodate the images, the margins can be wiggled with
-
 loaded_item = PyodideHasLoaded()
-<<<<<<< HEAD
 initial_label = pn.pane.Str(
     "Verify you are human",
     align=("start", "center"),
@@ -185,7 +214,6 @@ initial_loading = pn.indicators.LoadingSpinner(
     visible=True,
 )
 question_loading = pn.indicators.LoadingSpinner(size=20, value=True, color="secondary", bgcolor="light", visible=False)
-=======
 initial_label = pn.pane.Str("Verify for are human", margin=(0, 25), align=("start", "center"))
 initial_verify = pn.widgets.Button(name="Verify", button_type="primary", visible=False, align=("end", "center"))
 
@@ -194,10 +222,8 @@ question = pn.pane.Image(
     height=300,
     margin=(10, 0)
 )
-
 initial_loading = pn.indicators.LoadingSpinner(size=18, value=True, color="secondary", bgcolor="light", visible=True)
 question_loading = pn.indicators.LoadingSpinner(size=18, value=True, color="secondary", bgcolor="light", visible=False)
->>>>>>> 7f71c10 (Update captcha.py to accomodate images)
 code_editor = pn.widgets.CodeEditor(
     value="""
 def calc(x: int) -> int:
@@ -232,7 +258,6 @@ def _set_after_visibility(status: bool) -> None:
     submit_button.visible = status
     error_str.visible = status
 
-
 async def _click_initial_verify(_) -> None:
     global tasks
     _set_initial_visibility(False)
@@ -264,7 +289,6 @@ initial = pn.Row(
     initial_loading,
     sizing_mode="stretch_width",
 )
-
 
 after = pn.Column(question, code_editor, progress_bar, submit_button, error_str)
 
