@@ -154,10 +154,13 @@ class PyodideHasLoaded(param.Parameterized):
 
 
 loaded_item = PyodideHasLoaded()
-initial_label = pn.pane.Str("Verify for are human", margin=(0, 25), align=("start", "center"))
-initial_verify = pn.widgets.Button(name="Verify", button_type="primary", visible=False, align=("end", "center"))
-question = pn.pane.Str("")
-initial_loading = pn.indicators.LoadingSpinner(size=20, value=True, color="secondary", bgcolor="light", visible=True)
+initial_label = pn.pane.Str("Verify for are human", align=("start", "center"),
+    styles={"text-wrap": "pretty"}, sizing_mode="stretch_width")
+initial_spacer = pn.Spacer(sizing_mode="stretch_width")
+initial_verify = pn.widgets.Button(name="Verify", button_type="primary", visible=False,
+    align=("end", "center"), margin=(0, 25))
+question = pn.pane.Str("",styles={"text-wrap": "pretty"}, sizing_mode="stretch_width")
+initial_loading = pn.indicators.LoadingSpinner(size=20, value=True, color="secondary", bgcolor="light", visible=True, margin=(0, 25))
 question_loading = pn.indicators.LoadingSpinner(size=20, value=True, color="secondary", bgcolor="light", visible=False)
 code_editor = pn.widgets.CodeEditor(
     value="""
@@ -183,6 +186,7 @@ tasks: list[int] = []
 
 def _set_initial_visibility(status: bool) -> None:  # noqa: FBT001
     initial_label.visible = status
+    initial_spacer.visible = status
     initial_verify.visible = status
 
 
@@ -217,11 +221,13 @@ submit_button.on_click(_click_submit)
 
 initial = pn.Row(
     initial_label,
+    initial_spacer,
     initial_verify,
     initial_loading,
     loaded_item.render,
     sizing_mode="stretch_width",
 )
+
 
 after = pn.Column(question, code_editor, progress_bar, submit_button)
 
