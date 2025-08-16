@@ -203,6 +203,7 @@ def question_generator(question_set: QuestionSet, seed: int | None = None) -> Ge
             answers = queue.get()
             if isinstance(answers, Exception):
                 raise answers
+            str(answers)
     except Exception as e:
         issue_id = "".join(random_obj.choices("0123456789abcdef", k=32))
         LOGGER.exception(

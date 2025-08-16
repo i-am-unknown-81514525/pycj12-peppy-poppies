@@ -282,6 +282,18 @@
             "input": [1, 2000]
         },
         {
+            "question": "find the x-th fibonacci number with starting point at (1, 1) (for clarity, fib(1)=1, fib(2)=1)",
+            "validator": "from sympy import fibonacci; validator=fibonacci",
+            "range": {},
+            "input": [3, 50]
+        },
+        {
+            "question": "find the x-th fibonacci number with starting point at ({y}, {z}) (for clarity, fib(1)={y}, fib(2)={z})",
+            "validator": "from sympy import fibonacci; validator=lambda x:{y}*fibonacci(x-2)+{z}*fibonacci(x-1) # Since __base__>=3, no handling needed for 0,1,2",
+            "range": { "y": [0, 9], "z": [1, 9] },
+            "input": [3, 50]
+        },
+        {
             "question": "{y}-x",
             "validator": "validator=lambda x:{y}-x",
             "range": { "y": [-65536, 65536] },
@@ -536,7 +548,7 @@
         },
         {
             "question": "compute the base-10 logarithm of the result (rounded down to integer)",
-            "validator": "import math; validator=lambda x: int(math.log10(abs(x)+1)) if x>0 else 0",
+            "validator": "import math; validator=lambda x: len(str(abs(x)+1)) if x>0 else 0",
             "range": {}
         },
         {
