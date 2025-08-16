@@ -1,6 +1,9 @@
+import multiprocessing
 import math
 import logging
 import re
+import time
+import os
 from collections.abc import Callable
 from random import Random
 from typing import TYPE_CHECKING, Literal
@@ -94,6 +97,35 @@ def _validator_fn(v: int, global_dict: dict, local_dict: dict) -> int:
     return eval("validator(v)", {**global_dict, **local_dict, "v": v}, {**global_dict, **local_dict, "v": v})  # noqa: S307
 
 
+def _runner(answers: list[int], fn_part: list[str], queue: multiprocessing.Queue) -> None:
+    safe_globals = {
+        "__builtins__": __builtins__,
+        "abs": abs,
+        "min": min,
+        "max": max,
+        "bin": bin,
+        "int": int,
+        "len": len,
+        "sum": sum,
+        "pow": pow,
+        "math": math,
+        "sympy": sympy,
+        "factorial": math.factorial,
+        "prime": sympy.prime,
+        "fibonacci": sympy.fibonacci,
+        "divisors": sympy.divisors,
+        "prevprime": sympy.prevprime,
+    }
+    locals_dict = {}
+    try:
+        for fn_str in fn_part:
+            exec(fn_str, safe_globals, locals_dict)  # noqa: S102 it run limited subset of questions in question_part.json
+            validateor_fn: Callable[[int], int] = locals_dict["validator"]
+            answers = list(map(validateor_fn, answers))
+        queue.put(answers)
+    except Exception as e:
+        queue.put(e)
+
 def question_generator(question_set: QuestionSet, seed: int | None = None) -> GeneratedQuestion:  # noqa: C901
     """Generate a random question from QuestionSet.
 
@@ -155,32 +187,22 @@ def question_generator(question_set: QuestionSet, seed: int | None = None) -> Ge
     validator_fn_str = "N/A"
     global_dict = {}
     local_dict = {}
+    start = time.perf_counter()
     try:
-        for validator_fn_str in validator_part:
-            # Create a safe globals dict with necessary modules for validator functions
-            safe_globals = {
-                "__builtins__": __builtins__,
-                "abs": abs,
-                "min": min,
-                "max": max,
-                "bin": bin,
-                "int": int,
-                "len": len,
-                "sum": sum,
-                "pow": pow,
-                "math": math,
-                "sympy": sympy,
-                "factorial": math.factorial,
-                "prime": sympy.prime,
-                "fibonacci": sympy.fibonacci,
-                "divisors": sympy.divisors,
-                "prevprime": sympy.prevprime,
-            }
-
-            locals_dict = {}
-            exec(validator_fn_str, safe_globals, locals_dict)  # noqa: S102 it run limited subset of questions in question_part.json
-            validateor_fn: Callable[[int], int] = locals_dict["validator"]
-            answers = list(map(validateor_fn, answers))
+        queue = multiprocessing.Queue()
+        process = multiprocessing.Process(target=_runner, args=(answers, validator_part, queue))
+        process.start()
+        process.join(timeout=0.5)
+        if process.is_alive():
+            if hasattr(os, "kill"):
+                process.kill()
+            else:
+                process.terminate()
+            raise TimeoutError()
+        else:
+            answers = queue.get()
+            if isinstance(answers, Exception):
+                raise answers
     except Exception as e:
         issue_id = "".join(random_obj.choices("0123456789abcdef", k=32))
         LOGGER.exception(
@@ -194,6 +216,7 @@ Locals: {local_dict}
 Last ran validator: {validator_fn_str}
 Seed: {seed or "N/A"}
 Issue ID: {issue_id}
+Delta: {time.perf_counter()-start}s
 """,
             exc_info=e,
         )
@@ -202,6 +225,8 @@ Issue ID: {issue_id}
             f"Notify server owner with issue id: `{issue_id}`. Your task is just output exactly the input"
         )
         answers = tasks.copy()
+        if isinstance(e, KeyboardInterrupt):
+            raise e
     return GeneratedQuestion(
         question=question,
         tasks=tasks,
