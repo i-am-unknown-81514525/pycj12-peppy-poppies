@@ -27,16 +27,16 @@ uv sync
 uv run python build.py
 ```
 
-### 2: Start website backend
+### 2: Start captcha server
 ```bash
 # In terminal 1
-litestar --app server.backend.main:app run --port 8000 --reload
+litestar --app server.captcha.main:app run --port 8001 --reload
 ```
 
-### 3: Open another terminal and start captcha server
+### 3: Open another terminal and start website backend
 ```bash
 # In terminal 2
-litestar --app server.captcha.main:app run --port 8001 --reload
+litestar --app server.backend.main:app run --port 8000 --reload
 ```
 
 # Run project with docker
