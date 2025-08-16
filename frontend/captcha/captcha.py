@@ -145,12 +145,13 @@ class PyodideHasLoaded(param.Parameterized):
     has_loaded = param.Boolean()
 
     @param.depends("has_loaded")
-    def render(self) -> None:
+    def render(self) -> pn.Spacer:
         """Update visibility of component on pyodide load."""
         print(self.has_loaded)
         if self.has_loaded:  # type: ignore[reportGeneralTypeIssues]
             initial_verify.visible = True
             initial_loading.visible = False
+        return pn.Spacer(width=0)
 
 
 loaded_item = PyodideHasLoaded()
