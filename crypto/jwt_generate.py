@@ -8,7 +8,7 @@ import jwt
 from crypto.key import get_pem
 
 if TYPE_CHECKING:
-    from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
+    from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey, Ed25519PublicKey
 
 type JSON = dict[str, JSON | list[JSON] | str | float | int | bool | None]
 
@@ -46,3 +46,23 @@ class JWTGenerator:
         data["iat"] = current.timestamp()  # Issue timestamp
 
         return jwt.encode(data, self._priv, algorithm="EdDSA")
+
+class JWTValidator:
+    """Validate the JSON Web TOken (JWT) with the public key."""
+
+    def __init__(self, issuer: str, public_key: Ed25519PublicKey) -> None:
+        self._issuer: str = issuer
+        self._pub: Ed25519PublicKey = public_key
+
+    def validate(self, website: str | list[str], jwt_token: str, *, leeway: float=5) -> JSON:
+        """Validate whether the JWT is valid and return the payload."""
+        return jwt.decode(
+            jwt_token,
+            key=self._pub,
+            algorithms=["EdDSA"],
+            verify=True,
+            audience=website,
+            issuer=self._issuer,
+            leeway=leeway,
+            options={"require": ["exp", "iss", "iat", "challenge_id", "aud"]},
+        )
