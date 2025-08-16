@@ -45,6 +45,12 @@ litestar --app server.captcha.main:app run --port 8001 --reload
 docker compose up -d --build
 ```
 
+# Test creditials
+```bash
+username: codejam12
+password: py-discord
+```
+
 <!--
 # Potential dependency when using `math` group (gmpy2)
 ```bash

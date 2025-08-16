@@ -47,6 +47,7 @@ class JWTGenerator:
 
         return jwt.encode(data, self._priv, algorithm="EdDSA")
 
+
 class JWTValidator:
     """Validate the JSON Web TOken (JWT) with the public key."""
 
@@ -54,8 +55,13 @@ class JWTValidator:
         self._issuer: str = issuer
         self._pub: Ed25519PublicKey = public_key
 
-    def validate(self, website: str | list[str], jwt_token: str, *, leeway: float=5) -> JSON:
-        """Validate whether the JWT is valid and return the payload."""
+    def validate(self, website: str | list[str], jwt_token: str, *, leeway: float = 5) -> JSON:
+        """Validate whether the JWT is valid and return the payload.
+
+        Returns:
+            JSON: The decoded JWT payload if the token is valid.
+
+        """
         return jwt.decode(
             jwt_token,
             key=self._pub,
