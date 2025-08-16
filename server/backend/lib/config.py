@@ -74,8 +74,8 @@ async def after_response(request: Request) -> None:
     request.app.state["store_last_cleared"] = now
 
 
-# Load public key from CAPTCHA server and store it in the app state.
-def load_pub_key(app: Litestar) -> None:  # noqa: D103
+# Add JWT Validator to the app state
+def load_jwt_validator(app: Litestar) -> None:  # noqa: D103
     with Client() as client:
         resp = client.get(f"{captcha_server}/api/challenge/get-public-key")
         data = resp.read()
@@ -89,6 +89,7 @@ def load_pub_key(app: Litestar) -> None:  # noqa: D103
     app.state["jwt_validator"] = jwt_validator
 
 
+# Create initial user if it does not exist
 async def create_initial_user(_: Litestar) -> None:  # noqa: D103
     async with sqlalchemy_config.get_session() as db_session:
         users_service = await anext(provide_user_service(db_session))
