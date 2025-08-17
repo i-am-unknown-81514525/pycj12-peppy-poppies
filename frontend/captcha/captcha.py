@@ -57,7 +57,7 @@ def get_challenge_id() -> str:
     return challenge_id
 
 
-async def get_challenge() -> tuple[str, list[int]]:
+async def get_challenge() -> tuple[bytes, list[int]]:
     """Endpoint to collect challenge data.
 
     Returns:
@@ -65,12 +65,12 @@ async def get_challenge() -> tuple[str, list[int]]:
 
     """
     challenge_id = get_challenge_id()
-    request = await pyfetch(f"/api/challenge/get-challenge/{challenge_id}")
+    request = await pyfetch(f"/api/challenge/get-challenge/{challenge_id}?width={window.innerWidth-40}")
     if not request.ok:
-        error_image = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48dGV4dCB4PSIyMCIgeT0iNDAiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTQiPkVycm9yOiBRdWVzdGlvbiBjYW5ub3QgYmUgZmV0Y2hlZDwvdGV4dD48L3N2Zz4="
+        error_image = b64decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII==")
         return (error_image, [1])
     response: GetChallengeResponse = await request.json()
-    return (response["question"], response["tasks"])
+    return (b64decode(response["question"]), response["tasks"])
 
 
 def _to_int(x: str) -> int:
@@ -194,8 +194,8 @@ initial_verify = pn.widgets.Button(
     visible=False,
     align=("end", "center"),
 )
-question = pn.pane.image.Image(
-    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=",
+question = pn.pane.image.PNG(
+    b64decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="),
     sizing_mode="stretch_width"
 )
 initial_loading = pn.indicators.LoadingSpinner(

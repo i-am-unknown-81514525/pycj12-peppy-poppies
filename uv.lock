@@ -1035,6 +1035,7 @@ backend = [
     { name = "aiosqlite" },
     { name = "cryptography" },
     { name = "litestar", extra = ["standard"] },
+    { name = "pillow" },
     { name = "pyjwt", extra = ["crypto"] },
     { name = "python-dotenv" },
 ]
@@ -1062,6 +1063,7 @@ backend = [
     { name = "aiosqlite", specifier = ">=0.21.0" },
     { name = "cryptography", specifier = ">=45.0.6" },
     { name = "litestar", extras = ["standard"], specifier = ">=2.17.0" },
+    { name = "pillow", specifier = ">=11.3.0" },
     { name = "pyjwt", extras = ["crypto"], specifier = ">=2.10.1" },
     { name = "python-dotenv", specifier = ">=1.1.1" },
 ]
