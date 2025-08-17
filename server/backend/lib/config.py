@@ -1,10 +1,8 @@
 import os
 from datetime import UTC, datetime, timedelta
 from os import getenv
-from typing import Any
+from typing import TYPE_CHECKING, Any
 from urllib.parse import urlparse
-
-from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
 
 from crypto.jwt_generate import JWTValidator
 from crypto.key import load_pem_public_key
@@ -21,6 +19,9 @@ from litestar.security.jwt import JWTCookieAuth, Token
 from litestar.stores.memory import MemoryStore
 from server.backend.lib.dependencies import provide_user_service
 from server.backend.models import User
+
+if TYPE_CHECKING:
+    from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
 
 load_dotenv(override=True)
 

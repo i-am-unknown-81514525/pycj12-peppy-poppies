@@ -157,14 +157,11 @@ class PyodideHasLoaded(param.Parameterized):
 
 loaded_item = PyodideHasLoaded()
 initial_label = pn.pane.Str(
-    "Verify for are human",
+    "Verify you are human",
     align=("start", "center"),
     styles={"text-wrap": "pretty"},
-    # sizing_mode="stretch_width",
     min_width=150,
 )
-# initial_spacer = pn.Spacer(sizing_mode="stretch_width")
-# initial_spacer2 = pn.Spacer(width=20)
 initial_verify = pn.widgets.Button(
     name="Verify",
     button_type="primary",
@@ -204,8 +201,6 @@ tasks: list[int] = []
 
 def _set_initial_visibility(status: bool) -> None:  # noqa: FBT001
     initial_label.visible = status
-    # initial_spacer.visible = status
-    # initial_spacer2.visible = status
     initial_verify.visible = status
 
 
@@ -240,8 +235,6 @@ submit_button.on_click(_click_submit)
 
 initial = pn.Row(
     initial_label,
-    # initial_spacer,
-    # initial_spacer2,
     initial_verify,
     initial_loading,
     sizing_mode="stretch_width",
