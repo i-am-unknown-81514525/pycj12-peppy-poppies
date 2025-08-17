@@ -4,6 +4,8 @@ from os import getenv
 from typing import Any
 from urllib.parse import urlparse
 
+from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
+
 from crypto.jwt_generate import JWTValidator
 from crypto.key import load_pem_public_key
 from dotenv import load_dotenv
@@ -22,7 +24,7 @@ from server.backend.models import User
 
 load_dotenv(override=True)
 
-captcha_server = getenv("CODECAPTCHA_DOMAIN_INTERNAL")
+captcha_server: str = getenv("CODECAPTCHA_DOMAIN_INTERNAL", "")
 if not captcha_server:
     captcha_server = getenv("CODECAPTCHA_DOMAIN", "http://localhost:8001")
 
@@ -79,7 +81,7 @@ def load_jwt_validator(app: Litestar) -> None:  # noqa: D103
     with Client() as client:
         resp = client.get(f"{captcha_server}/api/challenge/get-public-key")
         data = resp.read()
-    key = load_pem_public_key(data, None)
+    key: Ed25519PublicKey = load_pem_public_key(data, None)  # type: ignore[reportAssignmentType]
 
     parsed_url = urlparse(captcha_server)
     domain = parsed_url.netloc or captcha_server
