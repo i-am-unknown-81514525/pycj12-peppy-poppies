@@ -204,7 +204,7 @@
             "input": [1, 65536]
         },
         {
-            "question": "cube x and subtract {y}",
+            "question": "x cubed and subtract {y}",
             "validator": "validator=lambda x: x**3 - {y}",
             "range": { "y": [-65536, 65536] },
             "input": [1, 1024]
@@ -228,8 +228,8 @@
             "input": [1, 65536]
         },
         {
-            "question": "compute the difference between x and {y} squared",
-            "validator": "validator=lambda x: x - ({y})**2",
+            "question": "compute the absolute difference between x and {y} squared",
+            "validator": "validator=lambda x: abs(x - ({y})**2)",
             "range": { "y": [-65536, 65536] },
             "input": [1, 65536]
         },
@@ -448,7 +448,7 @@
         },
         {
             "question": "get the integer square root of the absolute value",
-            "validator": "validator=lambda x: int(abs(x)**0.5)",
+            "validator": "import math; validator=lambda x: math.isqrt(abs(x))",
             "range": {}
         },
         {
@@ -463,7 +463,7 @@
         },
         {
             "question": "find the integer part of its square root (of its absolute value)",
-            "validator": "validator=lambda x: int(abs(x)**0.5)",
+            "validator": "import math; validator=lambda x: math.isqrt(abs(x))",
             "range": {}
         },
         {
@@ -482,7 +482,7 @@
             }
         },
         {
-            "question": "find the remainder of the result when divided by the {y]}",
+            "question": "find the remainder of the result when divided by the {y}",
             "validator": "validator=lambda x: x % {y}",
             "range": {
                 "y": [1, 256]
@@ -532,13 +532,6 @@
             "validator": "import math; validator=lambda x: x//{y} * {y}",
             "range": {
                 "y": [1, 1000]
-            }
-        },
-        {
-            "question": "find the integer part of the {y}-th root of the absolute value",
-            "validator": "validator=lambda x: int(abs(x)**(1/{y}))",
-            "range": {
-                "y": [2, 10]
             }
         },
         {

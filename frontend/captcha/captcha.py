@@ -76,7 +76,7 @@ async def _worker_on_message(e) -> None:  # noqa: ANN001
     key, value = content.split(";", maxsplit=1)
     get_challenge_id()
     if key == "result":
-        result = await send_result(json.loads(value))
+        result = await send_result(list(map(int,json.loads(value))))
         progress_bar.value = progress_bar.max
         if result:
             progress_bar.bar_color = "success"
@@ -86,6 +86,9 @@ async def _worker_on_message(e) -> None:  # noqa: ANN001
         progress_bar.value = 1
     elif key == "run":
         progress_bar.value = 1 + int(value)
+    elif key == "error":
+        progress_bar.bar_color = "danger"
+        submit_button.disabled = False
     elif key == "pyodide-loaded":
         print("Pyodide loaded")
         loaded_item.has_loaded = True
