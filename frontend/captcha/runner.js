@@ -19,6 +19,7 @@ def reformat_exc():
 `,
         { globals, locals: globals },
     );
+    postMessage("start;0");
     let results = [];
     try {
         pyodide.runPython(code, { globals, locals: globals });
