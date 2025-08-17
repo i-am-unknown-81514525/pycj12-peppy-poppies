@@ -3,11 +3,13 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 from uuid import UUID
 
+import anyio
 from crypto.jwt_generate import JWTGenerator
 from crypto.key import import_private_key
 from litestar import Request, Response, get, post, status_codes
 from litestar.controller import Controller
 from litestar.di import Provide
+from litestar.status_codes import HTTP_200_OK
 from server.captcha.lib.dependencies import provide_challenge_service
 from server.captcha.lib.services import ChallengeService
 from server.captcha.lib.utils import question_generator
@@ -111,3 +113,14 @@ class ChallengeController(Controller):  # noqa: D101
             status_code=status_codes.HTTP_400_BAD_REQUEST,
             content="Challenge not solved correctly.",
         )
+
+    @get("/get-public-key")
+    async def get_public_key(self) -> Response:
+        """Get CAPTCHA server public key.
+
+        Returns:
+            Response: A response of the server public key used to sign the JWT.
+
+        """
+        async with await anyio.open_file(KEY_PATH / "public.pem") as file:
+            return Response(content=await file.read(), status_code=HTTP_200_OK, media_type="application/x-pem-file")

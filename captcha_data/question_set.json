@@ -304,18 +304,6 @@
             "validator": "validator=lambda x:(x-1)*{z}+{y}",
             "range": { "y": [1, 20], "z": [21, 200] },
             "input": [1, 65536]
-        },
-        {
-            "question": "find the x-th fibonacci number with starting point at (1, 1) (for clarity, fib(1)=1, fib(2)=1)",
-            "validator": "from sympy import fibonacci; validator=fibonacci",
-            "range": {},
-            "input": [3, 4000]
-        },
-        {
-            "question": "find the x-th fibonacci number with starting point at ({y}, {z}) (for clarity, fib(1)={y}, fib(2)={z})",
-            "validator": "from sympy import fibonacci; validator=lambda x:{y}*fibonacci(x-2)+{z}*fibonacci(x-1) # Since __base__>=3, no handling needed for 0,1,2",
-            "range": { "y": [0, 9], "z": [1, 9] },
-            "input": [3, 4000]
         }
     ],
     "part": [
@@ -500,13 +488,6 @@
             "range": {
                 "y": [1, 5],
                 "z": [2, 1000]
-            }
-        },
-        {
-            "question": "find the remainder of {y} when divided by the result or return 0 if the result is 0",
-            "validator": "validator=lambda x: {y} % x if result else 0",
-            "range": {
-                "y": [1, 65536]
             }
         },
         {

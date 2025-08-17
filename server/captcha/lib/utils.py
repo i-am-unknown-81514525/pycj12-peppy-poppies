@@ -1,8 +1,10 @@
+import math
 import re
 from collections.abc import Callable
 from random import Random
 from typing import TYPE_CHECKING, Literal
 
+import sympy
 from advanced_alchemy.exceptions import IntegrityError, NotFoundError, RepositoryError
 from advanced_alchemy.extensions.litestar.exception_handler import (
     ConflictError,
@@ -143,11 +145,31 @@ def question_generator(question_set: QuestionSet, seed: int | None = None) -> Ge
     task_amount = random_obj.randint(5, 12)
     tasks = list({random_obj.randint(*value_range) for _ in range(task_amount)})
     answers = tasks.copy()
+
     for validator_fn_str in validator_part:
-        globals = {}
-        locals = {}
-        exec(validator_fn_str, globals, locals)  # noqa: S102 it run limited subset of questions in question_part.json
-        validateor_fn: Callable[[int], int] = locals["validator"]
+        # Create a safe globals dict with necessary modules for validator functions
+        safe_globals = {
+            "__builtins__": __builtins__,
+            "abs": abs,
+            "min": min,
+            "max": max,
+            "bin": bin,
+            "int": int,
+            "len": len,
+            "sum": sum,
+            "pow": pow,
+            "math": math,
+            "sympy": sympy,
+            "factorial": math.factorial,
+            "prime": sympy.prime,
+            "fibonacci": sympy.fibonacci,
+            "divisors": sympy.divisors,
+            "prevprime": sympy.prevprime,
+        }
+
+        locals_dict = {}
+        exec(validator_fn_str, safe_globals, locals_dict)  # noqa: S102 it run limited subset of questions in question_part.json
+        validateor_fn: Callable[[int], int] = locals_dict["validator"]
         answers = list(map(validateor_fn, answers))
 
     return GeneratedQuestion(
