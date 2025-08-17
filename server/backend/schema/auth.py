@@ -11,3 +11,6 @@ class LoginRequest(Struct):  # noqa: D101
     username: str
     password: str
     captcha_jwt: str
+
+class GetUser(Struct):
+    username: str
