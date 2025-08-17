@@ -60,7 +60,7 @@
             "input": [1, 65536]
         },
         {
-            "question": "compute the sum of x and {y} cubed",
+            "question": "the sum of x and {y} cubed",
             "validator": "validator=lambda x: x + {y}**3",
             "range": { "y": [1, 1024] },
             "input": [1, 65536]
@@ -90,7 +90,7 @@
             "input": [1, 65536]
         },
         {
-            "question": "compute x divided by {y} plus {z} squared",
+            "question": "x divided by {y} plus {z} squared",
             "validator": "validator=lambda x: x//{y} + ({z})**2",
             "range": { "y": [1, 20], "z": [-10, 10] },
             "input": [1, 65536]
@@ -186,13 +186,13 @@
             "input": [1, 65536]
         },
         {
-            "question": "compute x modulo {y}",
+            "question": "x modulo {y}",
             "validator": "validator=lambda x: x % {y}",
             "range": { "y": [1, 100] },
             "input": [1, 65536]
         },
         {
-            "question": "compute {y} minus x",
+            "question": "{y} minus x",
             "validator": "validator=lambda x: {y} - x",
             "range": { "y": [1, 65536] },
             "input": [1, 65536]
@@ -222,43 +222,43 @@
             "input": [1, 65536]
         },
         {
-            "question": "compute the sum of x and {y} squared",
+            "question": "the sum of x and {y} squared",
             "validator": "validator=lambda x: x + {y}**2",
             "range": { "y": [1, 65536] },
             "input": [1, 65536]
         },
         {
-            "question": "compute the absolute difference between x and {y} squared",
+            "question": "the absolute difference between x and {y} squared",
             "validator": "validator=lambda x: abs(x - ({y})**2)",
             "range": { "y": [-65536, 65536] },
             "input": [1, 65536]
         },
         {
-            "question": "compute the product of x and {y} plus {z}",
+            "question": "the product of x and {y} plus {z}",
             "validator": "validator=lambda x: x*{y} + {z}",
             "range": { "y": [1, 65536], "z": [-65536, 65536] },
             "input": [1, 65536]
         },
         {
-            "question": "compute the integer division of x by {y} minus {z}",
+            "question": "the integer division of x by {y} minus {z}",
             "validator": "validator=lambda x: x//{y} - {z}",
             "range": { "y": [1, 200], "z": [-65536, 65536] },
             "input": [1, 65536]
         },
         {
-            "question": "compute the absolute difference between x and {y}",
+            "question": "the absolute difference between x and {y}",
             "validator": "validator=lambda x: abs(x - {y})",
             "range": { "y": [0, 65536] },
             "input": [1, 65536]
         },
         {
-            "question": "compute the next multiple of {y} greater than or equal to x",
+            "question": "the next multiple of {y} greater than or equal to x",
             "validator": "import math; validator=lambda x: math.ceil(x/{y})*{y}",
             "range": { "y": [1, 200] },
             "input": [1, 65536]
         },
         {
-            "question": "compute the largest multiple of {y} less than or equal to x",
+            "question": "the largest multiple of {y} less than or equal to x",
             "validator": "import math; validator=lambda x: math.floor(x/{y})*{y}",
             "range": { "y": [1, 200] },
             "input": [1, 65536]
@@ -282,13 +282,13 @@
             "input": [1, 2000]
         },
         {
-            "question": "find the x-th fibonacci number with starting point at (1, 1) (for clarity, fib(1)=1, fib(2)=1)",
+            "question": "the x-th fibonacci number with starting point at (1, 1) (for clarity, fib(1)=1, fib(2)=1)",
             "validator": "from sympy import fibonacci; validator=fibonacci",
             "range": {},
             "input": [3, 50]
         },
         {
-            "question": "find the x-th fibonacci number with starting point at ({y}, {z}) (for clarity, fib(1)={y}, fib(2)={z})",
+            "question": "the x-th fibonacci number with starting point at ({y}, {z}) (for clarity, fib(1)={y}, fib(2)={z})",
             "validator": "from sympy import fibonacci; validator=lambda x:{y}*fibonacci(x-2)+{z}*fibonacci(x-1) # Since __base__>=3, no handling needed for 0,1,2",
             "range": { "y": [0, 9], "z": [1, 9] },
             "input": [3, 50]
@@ -540,8 +540,8 @@
             "range": {}
         },
         {
-            "question": "compute the base-10 logarithm of the (result+1) (rounded down to integer)",
-            "validator": "import math; validator=lambda x: len(str(abs(x)+1))-1 if x>0 else 0",
+            "question": "compute the base-10 logarithm of the absolute valud of the result or 0 if invalid (rounded down to integer)",
+            "validator": "import math; validator=lambda x: len(str(abs(x)))-1",
             "range": {}
         },
         {
