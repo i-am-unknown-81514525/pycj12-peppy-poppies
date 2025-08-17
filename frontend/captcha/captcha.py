@@ -194,7 +194,10 @@ initial_verify = pn.widgets.Button(
     visible=False,
     align=("end", "center"),
 )
-question = pn.pane.image.Image("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=", sizing_mode="stretch_width")
+question = pn.pane.image.Image(
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=",
+    sizing_mode="stretch_width"
+)
 initial_loading = pn.indicators.LoadingSpinner(
     size=20,
     value=True,
