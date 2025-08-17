@@ -68,12 +68,12 @@ class AuthController(Controller):  # noqa: D101
         if not is_valid:
             raise PermissionDeniedException("Invalid token or challenge expired.")
 
+        await store.delete(key=jwt_data["challenge_id"]) # each challenge_id can only be used once
+
         user = await user_service.get_one_or_none(username=data.username, password=data.password)
 
         if not user:
             raise NotFoundException("User not found or invalid credentials.")
-
-        await store.delete(key=jwt_data["challenge_id"])
 
         return jwt_cookie_auth.login(
             identifier=str(user.id),
