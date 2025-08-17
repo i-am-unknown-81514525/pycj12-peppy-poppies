@@ -33,3 +33,4 @@ build/
 *.pem
 *.sqlite
 !captcha_data/question_set.json
+test.py
