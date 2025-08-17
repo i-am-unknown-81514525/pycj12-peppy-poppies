@@ -1,10 +1,11 @@
-from os import getenv
-
 from pathlib import Path
 
 from typing import TYPE_CHECKING
-
 from uuid import UUID
+
+import os
+
+import platform
 
 import base64
 
@@ -13,8 +14,6 @@ from io import BytesIO
 from PIL import Image, ImageDraw, ImageFont
 
 import textwrap
-
-
 
 from crypto.jwt_generate import JWTGenerator
 
@@ -52,106 +51,76 @@ if TYPE_CHECKING:
 
 
 
-KEY_PATH = Path(getenv("KEY_PATH", "./captcha_data"))
+KEY_PATH = Path(os.getenv("KEY_PATH", "./captcha_data"))
 
 
+def get_cross_platform_font(font_size: int = 16):
+    """Get the best available monospace font across platforms."""
+    system = platform.system().lower()
+    
+    if system == 'windows':
+        font_candidates = [
+            "C:/Windows/Fonts/consola.ttf",
+            "C:/Windows/Fonts/cour.ttf", 
+            "Consolas", "Courier New"
+        ]
+    elif system == 'darwin':  # mac
+        font_candidates = [
+            "/System/Library/Fonts/Monaco.ttf",
+            "/System/Library/Fonts/Menlo.ttc", 
+            "Monaco", "Menlo"
+        ]
+    else:  # linux i guess
+        font_candidates = [
+            "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf",
+            "/usr/share/fonts/truetype/liberation/LiberationMono-Regular.ttf",
+            "DejaVuSansMono", "monospace"
+        ]
+    
+    for font_path in font_candidates:
+        try:
+            if os.path.exists(font_path):
+                return ImageFont.truetype(font_path, font_size)
+            else:
+                return ImageFont.truetype(font_path, font_size)
+        except (OSError, IOError):
+            continue
+    
+    return ImageFont.load_default()
 
 def text_to_image(text: str, width: int = 800, font_size: int = 16) -> str:
-
-    """Convert text to base64 encoded PNG image.
-
-    
-
-    Args:
-
-        text: The text to convert to image
-
-        width: Width of the image
-
-        font_size: Font size for the text
-
-        
-
-    Returns:
-
-        str: Base64 encoded PNG image as data URL
-
-    """
-
-    try:
-
-        # this DEFINITELY NEEDS more from me...tomorrow..
-
-        font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf", font_size)
-
-    except (OSError, IOError):
-
-        try:
-
-            font = ImageFont.truetype("arial.ttf", font_size)
-
-        except (OSError, IOError):
-
-            font = ImageFont.load_default()
-
-
-    wrapped_lines = []
-
-    for line in text.split('\n'):
-
-        if line.strip():
-
-            wrapped = textwrap.fill(line, width=80)  
-
-            wrapped_lines.extend(wrapped.split('\n'))
-
-        else:
-
-            wrapped_lines.append('')
-
-    
-
-    line_height = font_size + 4
-
-    img_height = max(200, len(wrapped_lines) * line_height + 40)  
-
-    
-
-    img = Image.new('RGB', (width, img_height), color='white')
-
-    draw = ImageDraw.Draw(img)
-
-    
-
-    y_position = 20
-
-    for line in wrapped_lines:
-
-        draw.text((20, y_position), line, fill='black', font=font)
-
-        y_position += line_height
-
-    
-
-
-    buffer = BytesIO()
-
-    img.save(buffer, format='PNG')
-
-    img_data = buffer.getvalue()
-
-    buffer.close()
-
-    
-
-
-    img_base64 = base64.b64encode(img_data).decode('utf-8')
-
-    return f"data:image/png;base64,{img_base64}"
-
-
-
-
+    """Convert text to base64 encoded PNG image."""
+    font = get_cross_platform_font(font_size)
+    
+    chars_per_line = max(40, (width - 40) // (font_size // 2))
+    
+    wrapped_lines = []
+    for line in text.split('\n'):
+        if line.strip():
+            wrapped = textwrap.fill(line, width=chars_per_line)
+            wrapped_lines.extend(wrapped.split('\n'))
+        else:
+            wrapped_lines.append('')
+    
+    line_height = font_size + 4
+    img_height = max(200, len(wrapped_lines) * line_height + 40)
+    
+    img = Image.new('RGB', (width, img_height), color='white')
+    draw = ImageDraw.Draw(img)
+    draw.rectangle([0, 0, width-1, img_height-1], outline='#ddd', width=1)
+    
+    y_position = 20
+    for line in wrapped_lines:
+        draw.text((20, y_position), line, fill='black', font=font)
+        y_position += line_height
+    
+    buffer = BytesIO()
+    img.save(buffer, format='PNG', optimize=True)
+    img_data = buffer.getvalue()
+    buffer.close()
+    
+    img_base64 = base64.b64encode(img_data).decode('utf-8')
+    return f"data:image/png;base64,{img_base64}"
 
 class ChallengeController(Controller):  
 
