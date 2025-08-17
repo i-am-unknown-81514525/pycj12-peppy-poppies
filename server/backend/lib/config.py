@@ -24,9 +24,10 @@ from server.backend.models import User
 
 load_dotenv(override=True)
 
+captcha_server_client = getenv("CODECAPTCHA_DOMAIN", "http://localhost:8001")
 captcha_server: str = getenv("CODECAPTCHA_DOMAIN_INTERNAL", "")
 if not captcha_server:
-    captcha_server = getenv("CODECAPTCHA_DOMAIN", "http://localhost:8001")
+    captcha_server = captcha_server_client
 
 # Advanced Alchemy
 sqlalchemy_config = SQLAlchemyAsyncConfig(
@@ -83,8 +84,8 @@ def load_jwt_validator(app: Litestar) -> None:  # noqa: D103
         data = resp.read()
     key: Ed25519PublicKey = load_pem_public_key(data, None)  # type: ignore[reportAssignmentType]
 
-    parsed_url = urlparse(captcha_server)
-    domain = parsed_url.netloc or captcha_server
+    parsed_url = urlparse(captcha_server_client)
+    domain = parsed_url.netloc or captcha_server_client
 
     jwt_validator = JWTValidator(issuer=domain, public_key=key)
 
