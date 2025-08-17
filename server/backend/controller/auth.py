@@ -4,12 +4,13 @@ from uuid import uuid4
 import httpx
 from litestar import Request, Response, get, post
 from litestar.controller import Controller
+from litestar.datastructures import Cookie
 from litestar.di import Provide
 from litestar.exceptions import NotFoundException, PermissionDeniedException
 from server.backend.lib.config import captcha_server, jwt_cookie_auth, store
 from server.backend.lib.dependencies import provide_user_service
 from server.backend.lib.services import UserService
-from server.backend.schema.auth import GetChallengeResponse, LoginRequest
+from server.backend.schema.auth import GetChallengeResponse, LoginRequest, GetUser
 
 
 class AuthController(Controller):  # noqa: D101
@@ -82,3 +83,18 @@ class AuthController(Controller):  # noqa: D101
             identifier=str(user.id),
             send_token_as_response_body=True,
         )
+
+    @get("/logout", exclude_from_auth=True)
+    async def logout(self) -> Response:
+        return Response(
+            content=None,
+            cookies=[Cookie(key="token", value=None, expires=0)],
+        )
+
+    @get("/me")
+    async def get_user(
+        self,
+        request: Request,
+        users_service: UserService,
+    ) -> GetUser:
+        return users_service.to_schema(request.user, schema_type=GetUser)
