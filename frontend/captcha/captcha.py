@@ -71,11 +71,13 @@ async def get_challenge() -> tuple[str, list[int]]:
     response: GetChallengeResponse = await request.json()
     return (response["question"], response["tasks"])
 
+
 def _to_int(x: str) -> int:
     try:
         return int(x)
     except ValueError:
         return int(float(x))
+
 
 async def _worker_on_message(e) -> None:  # noqa: ANN001
     content: str = e.data
@@ -83,8 +85,8 @@ async def _worker_on_message(e) -> None:  # noqa: ANN001
     get_challenge_id()
     if key == "result":
         try:
-            values = list(map(_to_int,json.loads(value)))
-        except Exception:
+            values = list(map(_to_int, json.loads(value)))
+        except Exception:  # noqa: BLE001 alternative logging method
             print("Conversion failed: ")
             traceback.print_exc()
             progress_bar.bar_color = "danger"
@@ -98,7 +100,7 @@ async def _worker_on_message(e) -> None:  # noqa: ANN001
     elif key == "load":
         progress_bar.value = 1
     elif key == "start":
-        progress_bar.bar_color="primary"
+        progress_bar.bar_color = "primary"
         progress_bar.value = 0
     elif key == "run":
         progress_bar.value = 1 + int(value)
