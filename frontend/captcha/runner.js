@@ -35,8 +35,8 @@ def reformat_exc():
         }
     } catch (error) {
         const message = globals.get("reformat_exc")();
-        console.error(message);
-        postMessage(`error;message`);
+        console.log(message);
+        postMessage(`error;{message}`);
         return;
     }
     globals.destroy();

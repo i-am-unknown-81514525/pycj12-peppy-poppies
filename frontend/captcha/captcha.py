@@ -89,7 +89,7 @@ async def _worker_on_message(e) -> None:  # noqa: ANN001
             values = list(map(_to_int, json.loads(value)))
         except Exception:  # noqa: BLE001 alternative logging method
             print("Conversion failed: ")
-            traceback.print_exc()
+            error_str.object = traceback.format_exc()
             progress_bar.bar_color = "danger"
             submit_button.disabled = False
         result = await send_result(values)
@@ -103,11 +103,14 @@ async def _worker_on_message(e) -> None:  # noqa: ANN001
     elif key == "start":
         progress_bar.bar_color = "primary"
         progress_bar.value = 0
+        error_str.object = ""
     elif key == "run":
         progress_bar.value = 1 + int(value)
     elif key == "error":
         progress_bar.bar_color = "danger"
         submit_button.disabled = False
+        error_str.object = value
+
     elif key == "pyodide-loaded":
         print("Pyodide loaded")
         loaded_item.has_loaded = True
@@ -218,6 +221,7 @@ progress_bar = pn.indicators.Progress(
     bar_color="primary",
     sizing_mode="stretch_width",
 )
+error_str = pn.pane.Str("", sizing_mode="stretch_width")
 tasks: list[int] = []
 
 
@@ -231,6 +235,7 @@ def _set_after_visibility(status: bool) -> None:  # noqa: FBT001
     progress_bar.visible = status
     code_editor.visible = status
     submit_button.visible = status
+    error_str.visible = status
 
 
 async def _click_initial_verify(_) -> None:  # noqa: ANN001
@@ -263,7 +268,7 @@ initial = pn.Row(
 )
 
 
-after = pn.Column(question, code_editor, progress_bar, submit_button)
+after = pn.Column(question, code_editor, progress_bar, submit_button, error_str)
 
 _set_after_visibility(False)  # noqa: FBT003
 
