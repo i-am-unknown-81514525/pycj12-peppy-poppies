@@ -1,4 +1,5 @@
 import json
+import traceback
 import urllib.parse
 from base64 import b64decode
 from typing import TypedDict
@@ -70,13 +71,25 @@ async def get_challenge() -> tuple[str, list[int]]:
     response: GetChallengeResponse = await request.json()
     return (response["question"], response["tasks"])
 
+def _to_int(x: str) -> int:
+    try:
+        return int(x)
+    except ValueError:
+        return int(float(x))
 
 async def _worker_on_message(e) -> None:  # noqa: ANN001
     content: str = e.data
     key, value = content.split(";", maxsplit=1)
     get_challenge_id()
     if key == "result":
-        result = await send_result(list(map(int,json.loads(value))))
+        try:
+            values = list(map(_to_int,json.loads(value)))
+        except Exception:
+            print("Conversion failed: ")
+            traceback.print_exc()
+            progress_bar.bar_color = "danger"
+            submit_button.disabled = False
+        result = await send_result(values)
         progress_bar.value = progress_bar.max
         if result:
             progress_bar.bar_color = "success"
