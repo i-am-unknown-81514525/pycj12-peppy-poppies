@@ -58,17 +58,20 @@ class AuthController(Controller):  # noqa: D101
             Response: The response containing the JWT token.
 
         """
-        jwt_data = request.app.state["jwt_validator"].validate(
-            website=request.headers["Host"],
-            jwt_token=data.captcha_jwt,
-        )
+        try:
+            jwt_data = request.app.state["jwt_validator"].validate(
+                website=request.headers["Host"],
+                jwt_token=data.captcha_jwt,
+            )
+        except Exception as e:
+            raise PermissionDeniedException("Invalid JWT token") from e
 
         is_valid = await store.get(key=jwt_data["challenge_id"]) == b"valid"
 
         if not is_valid:
             raise PermissionDeniedException("Invalid token or challenge expired.")
 
-        await store.delete(key=jwt_data["challenge_id"]) # each challenge_id can only be used once
+        await store.delete(key=jwt_data["challenge_id"])  # each challenge_id can only be used once
 
         user = await user_service.get_one_or_none(username=data.username, password=data.password)
 
