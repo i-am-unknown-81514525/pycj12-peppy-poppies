@@ -50,15 +50,16 @@ def text_to_image(text: str, width: int = 800, font_size: int = 16) -> str:
             font = ImageFont.load_default()
 
     wrapped_lines = []
+    character_width = (font_size+4)//2
     for line in text.split('\n'):
         if line.strip():
-            wrapped = textwrap.fill(line, width=80)
+            wrapped = textwrap.fill(line, width=(width-40)//character_width)
             wrapped_lines.extend(wrapped.split('\n'))
         else:
             wrapped_lines.append('')
 
     line_height = font_size + 4
-    img_height = max(200, len(wrapped_lines) * line_height + 40)
+    img_height = max(100, len(wrapped_lines) * line_height + 40)
 
     img = Image.new('RGB', (width, img_height), color='white')
     draw = ImageDraw.Draw(img)
