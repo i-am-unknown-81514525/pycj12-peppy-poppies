@@ -181,9 +181,6 @@ def question_generator(question_set: QuestionSet, seed: int | None = None) -> Ge
     tasks = list({random_obj.randint(*value_range) for _ in range(task_amount)})
     answers = tasks.copy()
 
-    validator_fn_str = "N/A"
-    global_dict = {}
-    local_dict = {}
     start = time.perf_counter()
     try:
         queue = multiprocessing.Queue()
@@ -202,19 +199,17 @@ def question_generator(question_set: QuestionSet, seed: int | None = None) -> Ge
         str(answers)
     except Exception as e:
         issue_id = "".join(random_obj.choices("0123456789abcdef", k=32))
-        LOGGER.exception(
-            f"""Failed to generate question
+        message = f"""Failed to generate question
 Questions: {question}
 Tasks: {tasks}
 Validators:
 {"\n".join(f"  {fn!r}" for fn in validator_part)}
-Globals: {global_dict}
-Locals: {local_dict}
-Last ran validator: {validator_fn_str}
 Seed: {seed or "N/A"}
 Issue ID: {issue_id}
 Delta: {time.perf_counter() - start}s
-""",
+"""
+        LOGGER.exception(
+            message,
             exc_info=e,
         )
         question = (

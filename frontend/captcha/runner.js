@@ -10,17 +10,33 @@ self.onmessage = function (e) {
     let test_value = json_value["task"];
     const dict = pyodide.globals.get("dict"); // https://github.com/pyodide/pyodide/issues/703#issuecomment-1937774811
     const globals = dict();
+    pyodide.runPython(
+        `
+def reformat_exc():
+    import sys
+    from traceback import format_exception
+    return "".join(format_exception(sys.last_type, sys.last_value, sys.last_traceback))
+`,
+        { globals, locals: globals },
+    );
     let results = [];
-    pyodide.runPython(code, { globals, locals: globals });
-    postMessage("load;0");
-    for (let i = 0; i < test_value.length; i++) {
-        let value = test_value[i];
-        let result = pyodide.runPython(`calc(${value})`, {
-            globals,
-            locals: globals,
-        });
-        results.push(result);
-        postMessage(`run;${i}`);
+    try {
+        pyodide.runPython(code, { globals, locals: globals });
+        postMessage("load;0");
+        for (let i = 0; i < test_value.length; i++) {
+            let value = test_value[i];
+            let result = pyodide.runPython(`str(calc(${value}))`, {
+                globals,
+                locals: globals,
+            });
+            results.push(result);
+            postMessage(`run;${i}`);
+        }
+    } catch (error) {
+        const message = globals.get("reformat_exc")();
+        console.error(message);
+        postMessage(`error;message`);
+        return;
     }
     globals.destroy();
     dict.destroy();

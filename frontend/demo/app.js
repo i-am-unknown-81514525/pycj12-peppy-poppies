@@ -35,7 +35,7 @@ const showStatus = (message, type = "info") => {
 };
 
 // Login Management
-const handleLogin = () => {
+const handleLogin = async () => {
     const usernameInput = elements.usernameInput();
     const passwordInput = elements.passwordInput();
     const loginBtn = elements.loginBtn();
@@ -59,14 +59,37 @@ const handleLogin = () => {
         loginBtn.innerHTML =
             '<div class="loading-spinner" style="display: inline-block;"></div> Logging in...';
     }
+    const splitted = document.cookie.split(";");
+    let result = "";
+    for (let i = 0; i < splitted.length; i++) {
+        const item = splitted[i].trimStart(" ");
+        if (item.startsWith("CODECAPTCHA_JWT=")) {
+            result = item.substring("CODECAPTCHA_JWT=".length, item.length);
+        }
+    }
 
-    setTimeout(() => {
+    resp = await fetch("/api/auth/login", {
+        method: "POST",
+        body: JSON.stringify({
+            username: username,
+            password: password,
+            captcha_jwt: result,
+        }),
+    });
+    document.cookie = "CODECAPTCHA_JWT=false;Max-Age=0; path=/"; // since single use anyway
+    if (resp.ok) {
         showStatus("🎉 Login successful! Welcome back.", "success");
         if (loginBtn) {
             loginBtn.innerHTML = '<i class="fas fa-check"></i> Logged In';
             loginBtn.className = "btn btn-success";
         }
-    }, 1500);
+    } else {
+        showStatus(
+            "🎉 Login failed! You need to solve the capture again.",
+            "error",
+        );
+        await captchaReset();
+    }
 };
 
 const configIFrame = async () => {
@@ -88,6 +111,8 @@ const initApp = async () => {
 };
 
 const captchaReset = async () => {
+    elements.loginBtn().innerHTML =
+        '<i class="fas fa-sign-in-alt"></i> Sign In to Account';
     appState.captchaCompleted = false;
     elements.loginBtn().disabled = true;
     await configIFrame();
