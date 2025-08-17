@@ -84,6 +84,7 @@ async def _worker_on_message(e) -> None:  # noqa: ANN001
     key, value = content.split(";", maxsplit=1)
     get_challenge_id()
     if key == "result":
+        values = []
         try:
             values = list(map(_to_int, json.loads(value)))
         except Exception:  # noqa: BLE001 alternative logging method
