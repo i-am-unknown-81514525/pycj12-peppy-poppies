@@ -97,6 +97,9 @@ async def _worker_on_message(e) -> None:  # noqa: ANN001
             progress_bar.bar_color = "danger"
     elif key == "load":
         progress_bar.value = 1
+    elif key == "start":
+        progress_bar.bar_color="primary"
+        progress_bar.value = 0
     elif key == "run":
         progress_bar.value = 1 + int(value)
     elif key == "error":
