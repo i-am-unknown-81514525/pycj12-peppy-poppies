@@ -541,7 +541,7 @@
         },
         {
             "question": "compute the base-10 logarithm of the (result+1) (rounded down to integer)",
-            "validator": "import math; validator=lambda x: math.log10(abs(x)+1)",
+            "validator": "import math; validator=lambda x: len(str(abs(x)+1))-1 if x>0 else 0",
             "range": {}
         },
         {
