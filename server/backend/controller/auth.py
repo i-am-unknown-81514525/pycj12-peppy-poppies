@@ -64,7 +64,7 @@ class AuthController(Controller):  # noqa: D101
             host = [host, f"http://{host}", f"https://{host}"]
         try:
             jwt_data = request.app.state["jwt_validator"].validate(
-                website=request.headers["Host"],
+                website=host,
                 jwt_token=data.captcha_jwt,
             )
         except Exception as e:
