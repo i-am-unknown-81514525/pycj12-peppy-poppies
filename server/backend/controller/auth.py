@@ -97,4 +97,5 @@ class AuthController(Controller):  # noqa: D101
         request: Request,
         users_service: UserService,
     ) -> GetUser:
+        print(request.user)
         return users_service.to_schema(request.user, schema_type=GetUser)

@@ -7,10 +7,17 @@ let appState = {
     captchaCompleted: false,
 };
 
+const NOT_LOGIN = '<i class="fas fa-sign-in-alt"></i> Sign In to Account';
+const LOGIN_SUCCESS = '<i class="fas fa-check"></i> Logged In';
+const LOGGING_IN =
+    '<div class="loading-spinner" style="display: inline-block;"></div> Logging in...';
+const SIGN_OUT = '<i class="fas fa-sign-in-alt"></i> Sign Out';
+
 // DOM Elements Cache
 const elements = {
     pythonCaptchaDiv: () => document.getElementById("python-captcha"),
     loginBtn: () => document.getElementById("loginBtn"),
+    signoutBtn: () => document.getElementById("signoutBtn"),
     usernameInput: () => document.getElementById("username"),
     passwordInput: () => document.getElementById("password"),
     captchaIframe: () => document.getElementById("captchaFrame"),
@@ -83,30 +90,48 @@ const handleLogin = async () => {
             loginBtn.innerHTML = '<i class="fas fa-check"></i> Logged In';
             loginBtn.className = "btn btn-success";
         }
+        await hideIFrame();
+        elements.signoutBtn().classList.remove("hidden");
     } else {
         showStatus(
-            "🎉 Login failed! You need to solve the capture again.",
+            "Login failed! You need to solve the capture again.",
             "error",
         );
         await captchaReset();
     }
 };
 
+const handleSignout = async () => {
+    elements.signoutBtn().classList.add("hidden");
+    await fetch("/api/auth/logout");
+    await captchaReset();
+};
+
+const hideIFrame = async () => {
+    const div = elements.pythonCaptchaDiv();
+    div.classList.add("hidden");
+};
+
 const configIFrame = async () => {
+    showStatus("Loading challenge...", "info");
     const resp = await fetch("/api/auth/get-challenge"); // Get a challenge ID from website server
     const json = await resp.json();
     const challenge_id = json.challenge_id;
     const element = elements.captchaIframe();
     const url = element.getAttribute("data-src");
     element.src = url.replace("[challenge_id]", challenge_id);
+    const div = elements.pythonCaptchaDiv();
+    div.classList.remove("hidden");
 };
 
 // Initialize Application
 const initApp = async () => {
-    await configIFrame();
-    showStatus("Loading challenge...", "info");
-    const div = elements.pythonCaptchaDiv();
-    div.classList.remove("hidden");
+    resp = await fetch("/api/auth/me");
+    if (resp.ok) {
+        elements.signoutBtn().classList.remove("hidden");
+    } else {
+        await configIFrame();
+    }
     console.log("Completed init");
 };
 
@@ -132,6 +157,7 @@ const captchaCompletionListener = (e) => {
 
 // Global Functions for HTML onclick handlers
 window.handleLogin = handleLogin;
+window.handleSignout = handleSignout;
 
 // Initialize when DOM is loaded
 document.addEventListener("DOMContentLoaded", initApp);

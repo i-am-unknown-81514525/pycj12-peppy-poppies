@@ -6,7 +6,7 @@ from litestar.openapi import OpenAPIConfig
 from litestar.openapi.plugins import ScalarRenderPlugin
 from litestar.static_files import create_static_files_router
 from server.backend.controller.auth import AuthController
-from server.backend.lib.config import after_response, alchemy_plugin, create_initial_user, load_jwt_validator
+from server.backend.lib.config import after_response, alchemy_plugin, create_initial_user, load_jwt_validator, jwt_cookie_auth
 from server.backend.lib.utils import exception_handler
 
 app = Litestar(
@@ -17,6 +17,7 @@ app = Litestar(
     ],
     plugins=[alchemy_plugin],
     on_startup=[load_jwt_validator, create_initial_user],
+    on_app_init=[jwt_cookie_auth.on_app_init],
     after_response=after_response,
     openapi_config=OpenAPIConfig(
         title="Backend API",
