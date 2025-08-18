@@ -25,7 +25,7 @@ if TYPE_CHECKING:
 
 load_dotenv(override=True)
 
-captcha_server_client = getenv("CODECAPTCHA_DOMAIN", "http://localhost:8001")
+captcha_server_client = getenv("CODECAPTCHA_DOMAIN", "http://127.0.0.1:8001")
 captcha_server: str = getenv("CODECAPTCHA_DOMAIN_INTERNAL", "")
 if not captcha_server:
     captcha_server = captcha_server_client
