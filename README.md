@@ -63,5 +63,6 @@ uv run litestar --app server.captcha.main:app run --port 8001 --reload
 uv run litestar --app server.backend.main:app run --port 8000 --reload
 ```
 `--host 0.0.0.0` can be added on either command if it need to be accessible from other IP
+
 The [demo site](http://127.0.0.1:8000) and the [captcha site](http://127.0.0.1:8001) can be access from http://127.0.0.1:8000 and http://127.0.0.1:8001 respectively
 </details>
