@@ -6,14 +6,25 @@ from litestar.openapi import OpenAPIConfig
 from litestar.openapi.plugins import ScalarRenderPlugin
 from litestar.static_files import create_static_files_router
 from server.backend.controller.auth import AuthController
-from server.backend.lib.config import after_response, alchemy_plugin, create_initial_user, load_jwt_validator, jwt_cookie_auth
+from server.backend.lib.config import (
+    after_response,
+    alchemy_plugin,
+    create_initial_user,
+    jwt_cookie_auth,
+    load_jwt_validator,
+)
 from server.backend.lib.utils import exception_handler
 
 app = Litestar(
     debug=True,
     route_handlers=[
         AuthController,
-        create_static_files_router(path="/", directories=["dist/frontend/demo"], html_mode=True),
+        create_static_files_router(
+            path="/",
+            directories=["dist/frontend/demo"],
+            html_mode=True,
+            opt={"exclude_from_auth": True},
+        ),
     ],
     plugins=[alchemy_plugin],
     on_startup=[load_jwt_validator, create_initial_user],

@@ -54,7 +54,7 @@ jwt_cookie_auth = JWTCookieAuth[User](
     retrieve_user_handler=_retrieve_user_handler,
     token_secret=os.getenv("SECRET_KEY", "my_secret_key"),
     default_token_expiration=timedelta(hours=1),
-    exclude=["/schema", r"^(?!/api/auth/$).*$"],
+    exclude=["/schema"],
     samesite="strict",
     secure=True,
 )
