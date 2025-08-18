@@ -74,9 +74,6 @@ def text_to_image(text: str, width: int = 800, font_size: int = 12) -> str:
     img.save(buffer, format='PNG')
     img_data = buffer.getvalue()
     buffer.close()
-    with open("./captcha_data/test.png", "wb")  as fp:
-        fp.write(img_data)
-
     img_base64 = base64.b64encode(img_data).decode('utf-8')
     return img_base64
 
