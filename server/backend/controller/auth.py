@@ -101,10 +101,10 @@ class AuthController(Controller):  # noqa: D101
         )
 
     @get("/me")
-    async def get_user1(
+    async def get_user(
         self,
         request: Request,
-        users_service: UserService,
+        user_service: UserService,
     ) -> GetUser:
         """Retrieve the currently authenticated user's information.
 
@@ -116,4 +116,4 @@ class AuthController(Controller):  # noqa: D101
             GetUser: The schema representation of the authenticated user.
 
         """
-        return users_service.to_schema(request.user, schema_type=GetUser)
+        return user_service.to_schema(request.user, schema_type=GetUser)
