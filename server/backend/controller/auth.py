@@ -59,6 +59,9 @@ class AuthController(Controller):  # noqa: D101
             Response: The response containing the JWT token.
 
         """
+        host: str | list[str] = request.headers["Host"]
+        if isinstance(host, str) and not host.startswith("http://") and not host.startswith("https://"):
+            host = [host, f"http://{host}", f"https://{host}"]
         try:
             jwt_data = request.app.state["jwt_validator"].validate(
                 website=request.headers["Host"],
@@ -98,7 +101,7 @@ class AuthController(Controller):  # noqa: D101
         )
 
     @get("/me")
-    async def get_user(
+    async def get_user1(
         self,
         request: Request,
         users_service: UserService,

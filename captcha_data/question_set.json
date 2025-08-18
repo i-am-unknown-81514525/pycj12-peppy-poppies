@@ -139,7 +139,7 @@
         },
         {
             "question": "{y} minus the sum of first x natural numbers",
-            "validator": "validator=lambda x: x - {y}*({y}+1)//2",
+            "validator": "validator=lambda x: {y} - x*(x+1)//2",
             "range": { "y": [1, 65536] },
             "input": [1, 65536]
         },
