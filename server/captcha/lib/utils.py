@@ -93,35 +93,6 @@ def fill_question(question: Question | Part, random_obj: Random) -> QuestionSect
     )
 
 
-def _runner(answers: list[int], fn_part: list[str], queue: multiprocessing.Queue) -> None:
-    safe_globals = {
-        "__builtins__": __builtins__,
-        "abs": abs,
-        "min": min,
-        "max": max,
-        "bin": bin,
-        "int": int,
-        "len": len,
-        "sum": sum,
-        "pow": pow,
-        "math": math,
-        "sympy": sympy,
-        "factorial": math.factorial,
-        "prime": sympy.prime,
-        "fibonacci": sympy.fibonacci,
-        "divisors": sympy.divisors,
-        "prevprime": sympy.prevprime,
-    }
-    locals_dict = {}
-    try:
-        for fn_str in fn_part:
-            exec(fn_str, safe_globals, locals_dict)  # noqa: S102 it run limited subset of questions in question_part.json
-            validateor_fn: Callable[[int], int] = locals_dict["validator"]
-            answers = list(map(validateor_fn, answers))
-        queue.put(answers)
-    except Exception as e:  # noqa: BLE001
-        queue.put(e)
-
 
 def question_generator(question_set: QuestionSet, seed: int | None = None) -> GeneratedQuestion:  # noqa: C901, PLR0915
     """Generate a random question from QuestionSet.
@@ -182,20 +153,30 @@ def question_generator(question_set: QuestionSet, seed: int | None = None) -> Ge
     answers = tasks.copy()
 
     start = time.perf_counter()
+    safe_globals = {
+        "__builtins__": __builtins__,
+        "abs": abs,
+        "min": min,
+        "max": max,
+        "bin": bin,
+        "int": int,
+        "len": len,
+        "sum": sum,
+        "pow": pow,
+        "math": math,
+        "sympy": sympy,
+        "factorial": math.factorial,
+        "prime": sympy.prime,
+        "fibonacci": sympy.fibonacci,
+        "divisors": sympy.divisors,
+        "prevprime": sympy.prevprime,
+    }
+    locals_dict = {}
     try:
-        queue = multiprocessing.Queue()
-        process = multiprocessing.Process(target=_runner, args=(answers, validator_part, queue))
-        process.start()
-        process.join(timeout=0.5)
-        if process.is_alive():
-            if hasattr(os, "kill"):
-                process.kill()
-            else:
-                process.terminate()
-            raise TimeoutError  # noqa: TRY301
-        answers = queue.get()
-        if isinstance(answers, Exception):
-            raise answers  # noqa: TRY301
+        for fn_str in validator_part:
+            exec(fn_str, safe_globals, locals_dict)  # noqa: S102 it run limited subset of questions in question_part.json
+            validateor_fn: Callable[[int], int] = locals_dict["validator"]
+            answers = list(map(validateor_fn, answers))
         str(answers)
     except Exception as e:
         issue_id = "".join(random_obj.choices("0123456789abcdef", k=32))
