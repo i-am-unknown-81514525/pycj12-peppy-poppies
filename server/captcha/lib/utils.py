@@ -91,7 +91,6 @@ def fill_question(question: Question | Part, random_obj: Random) -> QuestionSect
     )
 
 
-
 def question_generator(question_set: QuestionSet, seed: int | None = None) -> GeneratedQuestion:  # noqa: C901, PLR0915
     """Generate a random question from QuestionSet.
 

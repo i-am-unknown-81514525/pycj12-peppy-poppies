@@ -65,9 +65,11 @@ async def get_challenge() -> tuple[bytes, list[int]]:
 
     """
     challenge_id = get_challenge_id()
-    request = await pyfetch(f"/api/challenge/get-challenge/{challenge_id}?width={window.innerWidth-40}")
+    request = await pyfetch(f"/api/challenge/get-challenge/{challenge_id}?width={window.innerWidth - 40}")
     if not request.ok:
-        error_image = b64decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII==")
+        error_image = b64decode(
+            "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII==",
+        )
         return (error_image, [1])
     response: GetChallengeResponse = await request.json()
     return (b64decode(response["question"]), response["tasks"])
@@ -197,7 +199,7 @@ initial_verify = pn.widgets.Button(
 )
 question = pn.pane.image.PNG(
     b64decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="),
-    sizing_mode="stretch_width"
+    sizing_mode="stretch_width",
 )
 initial_loading = pn.indicators.LoadingSpinner(
     size=20,

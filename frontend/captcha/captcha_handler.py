@@ -56,7 +56,7 @@ MIN_MODE: bool = (
 
 async def on_load() -> None:
     """Check for `CODECAPTCHA_REQUIRE_AUTH` and `CODECAPTCHA_CHALLENGE_ID` on script load."""
-    all_cookie = await window.cookieStore.getAll()  # noqa: N816
+    all_cookie = await window.cookieStore.getAll()
     cookie_list: list[Cookie] = []
     for cookie in all_cookie:
         name: str = cookie.name
@@ -135,4 +135,4 @@ if not MIN_MODE:
         body.appendChild(iframe)
     else:
         await on_load()  # type: ignore  # noqa: F704, PLE1142, PGH003
-        window.cookieStore.addEventListener("change", create_proxy(on_cookie_change))  # noqa: N816
+        window.cookieStore.addEventListener("change", create_proxy(on_cookie_change))
