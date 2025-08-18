@@ -63,8 +63,7 @@ const handleLogin = async () => {
     // Simulate login process
     if (loginBtn) {
         loginBtn.disabled = true;
-        loginBtn.innerHTML =
-            '<div class="loading-spinner" style="display: inline-block;"></div> Logging in...';
+        loginBtn.innerHTML = LOGGING_IN;
     }
     const splitted = document.cookie.split(";");
     let result = "";
@@ -87,7 +86,7 @@ const handleLogin = async () => {
     if (resp.ok) {
         showStatus("🎉 Login successful! Welcome back.", "success");
         if (loginBtn) {
-            loginBtn.innerHTML = '<i class="fas fa-check"></i> Logged In';
+            loginBtn.innerHTML = LOGIN_SUCCESS;
             loginBtn.className = "btn btn-success";
         }
         await hideIFrame();
@@ -104,6 +103,9 @@ const handleLogin = async () => {
 const handleSignout = async () => {
     elements.signoutBtn().classList.add("hidden");
     await fetch("/api/auth/logout");
+    const loginBtn = elements.loginBtn();
+    loginBtn.innerHTML = NOT_LOGIN;
+    loginBtn.className = "btn btn-primary";
     await captchaReset();
 };
 
@@ -129,6 +131,9 @@ const initApp = async () => {
     resp = await fetch("/api/auth/me");
     if (resp.ok) {
         elements.signoutBtn().classList.remove("hidden");
+        const loginBtn = elements.loginBtn();
+        loginBtn.innerHTML = LOGIN_SUCCESS;
+        loginBtn.className = "btn btn-success";
     } else {
         await configIFrame();
     }
@@ -136,8 +141,8 @@ const initApp = async () => {
 };
 
 const captchaReset = async () => {
-    elements.loginBtn().innerHTML =
-        '<i class="fas fa-sign-in-alt"></i> Sign In to Account';
+    elements.loginBtn().innerHTML = NOT_LOGIN;
+    loginBtn.className = "btn btn-primary";
     appState.captchaCompleted = false;
     elements.loginBtn().disabled = true;
     await configIFrame();
