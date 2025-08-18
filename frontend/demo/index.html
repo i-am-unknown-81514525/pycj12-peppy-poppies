@@ -77,7 +77,6 @@
                     <section id="python-captcha" class="hidden">
                         <iframe
                             id="captchaFrame"
-                            class="hidden"
                             title="Python Captcha Challenge"
                             aria-label="Python Captcha Challenge"
                             data-src="[domain]/static/captcha.html?challenge_id=[challenge_id]"
@@ -97,6 +96,13 @@
                         >
                             <i class="fas fa-sign-in-alt"></i> Sign In to
                             Account
+                        </button>
+                        <button
+                            class="btn btn-primary hidden"
+                            id="signoutBtn"
+                            onclick="handleSignout()"
+                        >
+                            <i class="fas fa-sign-in-alt"></i> Sign Out
                         </button>
                     </div>
                     <div class="note-div">
