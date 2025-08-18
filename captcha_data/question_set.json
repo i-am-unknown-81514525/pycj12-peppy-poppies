@@ -24,7 +24,7 @@
             "input": [1, 65536]
         },
         {
-            "question": "divide x by {y} and then subtract {z}",
+            "question": "integer divide x by {y} and then subtract {z}",
             "validator": "validator=lambda x: x//{y}-{z}",
             "range": { "y": [2, 200], "z": [-65536, 65536] },
             "input": [1, 65536]
@@ -90,7 +90,7 @@
             "input": [1, 65536]
         },
         {
-            "question": "x divided by {y} plus {z} squared",
+            "question": "x integer divided by {y} plus {z} squared",
             "validator": "validator=lambda x: x//{y} + ({z})**2",
             "range": { "y": [1, 20], "z": [-10, 10] },
             "input": [1, 65536]
@@ -150,7 +150,7 @@
             "input": [1, 1000]
         },
         {
-            "question": "subtract {y} from x and then divide by {z}",
+            "question": "subtract {y} from x and then integer divide by {z}",
             "validator": "validator=lambda x: (x - {y}) // {z}",
             "range": { "y": [1, 100], "z": [1, 10] },
             "input": [1, 1000]
@@ -180,7 +180,7 @@
             "input": [1, 65536]
         },
         {
-            "question": "divide x by 2 and subtract {y}",
+            "question": "integer divide x by 2 and subtract {y}",
             "validator": "validator=lambda x: x//2 - {y}",
             "range": { "y": [-65536, 65536] },
             "input": [1, 65536]
