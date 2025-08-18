@@ -18,7 +18,7 @@ if index_html_path.exists():
     with index_html_path.open("r", encoding="utf-8") as fp:
         content = fp.read()
 
-    content = content.replace("[domain]", getenv("CODECAPTCHA_DOMAIN", "localhost:8001"))
+    content = content.replace("[domain]", getenv("CODECAPTCHA_DOMAIN", "http://127.0.0.1:8001"))
 
     with index_html_path.open("w", encoding="utf-8") as fp:
         fp.write(content)
@@ -29,7 +29,7 @@ if app_js_path.exists():
     with app_js_path.open("r", encoding="utf-8") as fp:
         content = fp.read()
 
-    content = content.replace("[domain]", getenv("CODECAPTCHA_DOMAIN", "localhost:8001"))
+    content = content.replace("[domain]", getenv("CODECAPTCHA_DOMAIN", "http://127.0.0.1:8001"))
 
     with app_js_path.open("w", encoding="utf-8") as fp:
         fp.write(content)
