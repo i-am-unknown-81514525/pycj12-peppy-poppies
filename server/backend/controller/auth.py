@@ -110,7 +110,7 @@ class AuthController(Controller):  # noqa: D101
 
         Args:
             request (Request): The current request object containing user info.
-            users_service (UserService): Service to convert user to schema.
+            user_service (UserService): Service to convert user to schema.
 
         Returns:
             GetUser: The schema representation of the authenticated user.
