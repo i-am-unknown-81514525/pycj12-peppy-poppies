@@ -10,7 +10,7 @@ from litestar.exceptions import NotFoundException, PermissionDeniedException
 from server.backend.lib.config import captcha_server, jwt_cookie_auth, store
 from server.backend.lib.dependencies import provide_user_service
 from server.backend.lib.services import UserService
-from server.backend.schema.auth import GetChallengeResponse, LoginRequest, GetUser
+from server.backend.schema.auth import GetChallengeResponse, GetUser, LoginRequest
 
 
 class AuthController(Controller):  # noqa: D101
@@ -86,6 +86,12 @@ class AuthController(Controller):  # noqa: D101
 
     @get("/logout", exclude_from_auth=True)
     async def logout(self) -> Response:
+        """Log out the user by clearing the authentication token cookie.
+
+        Returns:
+            Response: A response that clears the 'token' cookie.
+
+        """
         return Response(
             content=None,
             cookies=[Cookie(key="token", value=None, expires=0)],
@@ -97,5 +103,14 @@ class AuthController(Controller):  # noqa: D101
         request: Request,
         users_service: UserService,
     ) -> GetUser:
-        print(request.user)
+        """Retrieve the currently authenticated user's information.
+
+        Args:
+            request (Request): The current request object containing user info.
+            users_service (UserService): Service to convert user to schema.
+
+        Returns:
+            GetUser: The schema representation of the authenticated user.
+
+        """
         return users_service.to_schema(request.user, schema_type=GetUser)
