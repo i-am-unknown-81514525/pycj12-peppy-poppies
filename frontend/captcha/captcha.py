@@ -157,6 +157,7 @@ async def send_result(results: list[int]) -> bool:
     payload: SolutionCorrectJWTPayload = json.loads(payload_str)
     origin = payload["aud"]
     if not origin.startswith("http://") and not origin.startswith("https://"):
+        window.parent.postMessage(jwt, f"http://{origin}")
         origin = f"https://{origin}"
     window.parent.postMessage(jwt, origin)
     return True

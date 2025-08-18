@@ -37,8 +37,6 @@ except ImportError:  # micropython
         )
         from parse import parse_qs, quote, unquote, urlparse
 
-cookieStore = window.cookieStore  # noqa: N816
-
 COOKIE_REQ_AUTH = "CODECAPTCHA_REQUIRE_AUTH"
 COOKIE_CHALLENGE_ID = "CODECAPTCHA_CHALLENGE_ID"
 COOKIE_JWT = "CODECAPTCHA_JWT"
@@ -58,7 +56,7 @@ MIN_MODE: bool = (
 
 async def on_load() -> None:
     """Check for `CODECAPTCHA_REQUIRE_AUTH` and `CODECAPTCHA_CHALLENGE_ID` on script load."""
-    all_cookie = await cookieStore.getAll()
+    all_cookie = await window.cookieStore.getAll()  # noqa: N816
     cookie_list: list[Cookie] = []
     for cookie in all_cookie:
         name: str = cookie.name
@@ -137,4 +135,4 @@ if not MIN_MODE:
         body.appendChild(iframe)
     else:
         await on_load()  # type: ignore  # noqa: F704, PLE1142, PGH003
-        cookieStore.addEventListener("change", create_proxy(on_cookie_change))
+        window.cookieStore.addEventListener("change", create_proxy(on_cookie_change))  # noqa: N816
