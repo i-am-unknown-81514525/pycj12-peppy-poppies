@@ -76,7 +76,7 @@ The [demo site](http://127.0.0.1:8000) and the [captcha site](http://127.0.0.1:8
   <details>
     <summary>Disclosure</summary>
     
-    `frontend/captcha/parse.py` is a patch for micropython as it didn't bundle the `urllib.parse` stdlib. The file contains `urllib.parse` and `ipaddress` standard library from cpython and patch for some other feature isn't available in micropython such as `str.isascii`
+    `frontend/captcha/parse.py` is a patch for micropython as it didn't bundle the `urllib.parse` stdlib. The file contains `urllib.parse` and `ipaddress` standard library from [cpython](https://github.com/python/cpython) and patch for some other feature isn't available in micropython such as `str.isascii` and "too complex" regex which is used by the original code from the standard library, which replacement with equivialent behaviour.
 
   </details>
 - `frontend/demo` - A demo login page for testing
@@ -85,9 +85,9 @@ The [demo site](http://127.0.0.1:8000) and the [captcha site](http://127.0.0.1:8
   <details>
     <summary>Disclosure</summary>
     
-    - `captcha_data/JetBrainsMono-Regular.ttf` is a font created by JetBrains, and licensed by SIL Open Font License, Version 1.1(OFL). The license text is inclued in `captcha_data/OFL.txt` as required by the license. The font is included for the purpose to run the project with minimal setup, and other font can be used. The OFL license is compatible with MIT license according to [FOSSA](https://fossa.com/blog/open-source-licenses-101-sil-open-font-license-ofl/)
+    - `captcha_data/JetBrainsMono-Regular.ttf` is a font created by JetBrains, and licensed under SIL Open Font License, Version 1.1 (OFL). The license text is inclued in `captcha_data/OFL.txt` as required by the license. The font is included for the purpose to run the project with minimal setup, and other font can be used. The OFL license is compatible with MIT license according to [FOSSA](https://fossa.com/blog/open-source-licenses-101-sil-open-font-license-ofl/)
     - `captcha_data/question_set.json` is created with a combination of manual effort and AI generation. Approximately 2 million
-questions is generated with only 1 exceed the execution timeout of 0.5s during testing when calculating a prime number, which likely originate from saturated resource usage from other task running on the test device. Howeverm some question description might not match the checking criteria(with 1 known case found after the deadline)
+questions is generated during testing, with only 1 exceed the execution timeout of 0.5s during testing when calculating a prime number, which likely originate from saturated resource usage from other task running on the test device. However some question description might not match the checking criteria(with 1 known case found after the deadline)
 
   </details>
 - `build.py` A build script which put all the file from `frontend/` to `dist/` and replace `[domain]` in specific file to domain defined by environment variable `CODECAPTCHA_DOMAIN` so the client can connect to the correct CAPTCHA serveras given from the static file. This is only needed for the demo server, but for consistency, the CAPTCHA server will also use it.
