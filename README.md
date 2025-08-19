@@ -142,3 +142,14 @@ questions is generated during testing, with only 1 exceed the execution timeout 
 - Wrote JWT Validator but was scrapped(due to issues).
 - Attempt to write the login systm for demo server that didn't get merged.
 </details>
+
+## Framework choice
+
+The project used a combination of Pyscript, Pyodide for the approved framework, with some HTML/js/css when necessary in the CAPTCHA files.
+- Pyscript is used in `frontend/captcha/captcha.py` and `frontend/captcha/captcha_handler.py` to handle the communication between 2 site to exchange the JWT token.
+- Pyodide is used to run user code in isolation in `frontend/captcha/runner.js`
+  Other framework:
+- [Panel](https://panel.holoviz.org/) is used as a frontend framework with pyscript as a CAPTCHA UI, defined in `frontend/captcha/captcha.py`
+- [Litestar](https://litestar.dev/) is used as backend framework for both the CAPTCHA server and DEMO server in `server/`
+- [pyjwt](https://pyjwt.readthedocs.io/) and [cryptography](https://cryptography.io/) is used for Ed25519 key handling, JWT creation and validation in `crypto/`
+- [Pillow](https://pillow.readthedocs.io/en/stable/) is used to generate image of question that is sent to the client
