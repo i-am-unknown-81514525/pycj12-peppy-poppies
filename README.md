@@ -22,6 +22,9 @@ Prerequisite: Have [docker](https://docs.docker.com/engine/install/) installed w
     
 ### Step 1: Setup `.env`
 
+> [!NOTE]
+> In contrast to running without docker, `.env` setup is necessary for running in docker, It would fail if the following environment isn't set.
+
 - `CODECAPTCHA_DOMAIN` to `http://127.0.0.1:9201` 
     - It can be changed depending on the configuration in `docker-compose.yml`. This environment variable is the domain in which the **client** accesses the CAPTCHA server
 - `CODECAPTCHA_DOMAIN_INTERNAL` to `http://captcha:8001`
@@ -48,7 +51,9 @@ uv sync
 ### Step 2: Setup `.env`
 By default, the project can be ran without creating or setting up `.env`, however, you might want to change some configurations. Check `.env.example` for information to configurate `.env`.
 
-Note: If you changed the `.env` file, or any other files in `frontend/`, you must setup the project up from the next step again.
+> [!NOTE]
+> If you changed the `.env` file, or any other files in `frontend/`, you must setup the project up from the next step again.
+
 ### Step 3: Run the build script
 ```bash
 uv run build.py
