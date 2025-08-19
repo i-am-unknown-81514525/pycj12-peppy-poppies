@@ -135,8 +135,9 @@ questions is generated during testing, with only 1 exceed the execution timeout 
 - Convert the question generated to send image instead of text to client
 </details>
 <details>
-    <summary>dragonsenseiguy (@@DragonSenseiGuy)</summary>
+    <summary>dragonsenseiguy (@DragonSenseiGuy)</summary>
     
 - Attempt to write the CAPTCHA server that was replaced
 - Minor UI improvement for the CAPTCHA frame for usability
+- Wrote JWT Auth but was scrapped(due to issues).
 </details>
