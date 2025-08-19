@@ -95,3 +95,42 @@ questions is generated during testing, with only 1 exceed the execution timeout 
   </details>
 - `build.py` A build script which put all the file from `frontend/` to `dist/` and replace `[domain]` in specific file to domain defined by environment variable `CODECAPTCHA_DOMAIN` so the client can connect to the correct CAPTCHA serveras given from the static file. This is only needed for the demo server, but for consistency, the CAPTCHA server will also use it.
 
+## Contribution list
+<details>
+    <summary>harshal6927 (@Harshal6927)</summary>
+    - Demo server
+    - CAPTCHA server
+    - Demo page UI
+    - Demo login system on the backend
+    - Setup SQLite database for the servers
+</details>
+<details>
+    <summary>deleted.user0 (@i-am-unknown-81514525)</summary>
+    - CAPTCHA UI
+    - CAPTCHA frontend
+    - Adding login system on the demo frontend
+    - JWT generation and validation, Ed25519 key generation and handling
+    - Question generator parser
+    - Writing question set
+    - Update image generation
+</details>
+<details>
+    <summary>ununenium817 (@Ununenium817)</summary>
+    - Help writing the CAPTCHA server that was replaced
+    - Writing question set
+    - Construct system prompt and code to generate part of question set
+</details>
+<details>
+    <summary>wrybyte (@tayvona)</summary>
+    - Minor UI improvement on demo page
+</details>
+<details>
+    <summary>fiwam (@fiwam)</summary>
+    - Update CAPTCHA frontend to handle image
+    - Convert the question generated to send image instead of text to client
+</details>
+<details>
+    <summary>dragonsenseiguy (@@DragonSenseiGuy)</summary>
+    - Attempt to write the CAPTCHA server that was replaced
+    - Minor UI improvement for the CAPTCHA frame for usability
+</details>
