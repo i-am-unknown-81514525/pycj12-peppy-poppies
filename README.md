@@ -139,5 +139,6 @@ questions is generated during testing, with only 1 exceed the execution timeout 
     
 - Attempt to write the CAPTCHA server that was replaced
 - Minor UI improvement for the CAPTCHA frame for usability
-- Wrote JWT Auth but was scrapped(due to issues).
+- Wrote JWT Validator but was scrapped(due to issues).
+- Attempt to write the login systm for demo server that didn't get merged.
 </details>
