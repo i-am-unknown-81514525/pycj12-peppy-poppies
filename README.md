@@ -16,7 +16,7 @@ This question has 100 steps and AI has failed to solve this :)
 
 ## How to Run the project with the demo
 <details>
-### <summary>Run with docker (recommended)</summary>
+<summary>Run with docker (recommended)</summary>
 
 Prerequisite: Have [docker](https://docs.docker.com/engine/install/) installed with `docker compose`
     
@@ -36,7 +36,7 @@ docker compose up -d --build
 The [demo site](http://127.0.0.1:9200) and the [captcha site](http://127.0.0.1:9201) can be accessed from http://127.0.0.1:9200 and http://127.0.0.1:9201 respectively
 </details>
 <details>
-### <summary>Run without docker</summary>
+<summary>Run without docker</summary>
 
 Prerequisites: Have [uv](https://docs.astral.sh/uv/getting-started/installation/) and `python3.12` installed
     
