@@ -8,7 +8,7 @@ An normal example:
 <details>
 <summary>Chaotic example (Note that it is very long):</summary>
 
-This question has 100 steps and AI has failed to solve this :)
+This question has 100 steps and ~~AI has failed to solve this :)~~ (I used the wrong model at the original test with Google Gemini 2.5 Flash, and Gemini 2.5 Pro was able to solve this with 13,857 tokens)
 
 ![Example question](docs-assets/de19ebabd51028f36f7ee03dbe4365b54726181300998b3bf1fd3954a17966e1.png)
 
@@ -28,7 +28,7 @@ This question has 100 steps and AI has failed to solve this :)
 # TODO, the question was given to other people as a challenge
 ```
 
-Could you have possible guess it does this? I certainly don't
+Could you have possible guess the result look like this? I certainly don't
 
 </details>
 
@@ -115,7 +115,7 @@ One that is overcomplicated and no one can solve them? We done something similar
   <details>
     <summary>Disclosure</summary>
     
-    `frontend/captcha/parse.py` is a patch for micropython as it didn't bundle the `urllib.parse` stdlib. The file contains `urllib.parse` and `ipaddress` standard library's from [cpython](https://github.com/python/cpython) and a patch for some other feature that isn't available in micropython such as `str.isascii` and "too complex" regex which is used by the original code from the standard library, which replaces with equivialent behaviour.
+    `frontend/captcha/parse.py` is a patch for micropython as it didn't bundle the `urllib.parse` stdlib. The file contains `urllib.parse` and `ipaddress` standard libraries from [cpython](https://github.com/python/cpython) and a patch for some other feature that isn't available in micropython such as `str.isascii` and "too complex" regex which is used by the original code from the standard library, which replaces with equivialent behaviour.
 
   </details>
 - `frontend/demo` - A demo login page for testing
