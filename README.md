@@ -12,6 +12,24 @@ This question has 100 steps and AI has failed to solve this :)
 
 ![Example question](docs-assets/de19ebabd51028f36f7ee03dbe4365b54726181300998b3bf1fd3954a17966e1.png)
 
+<details>
+<summary>Spoiler: Test input</summary>
+
+```py
+[16386, 19874, 48296, 41718, 58488, 42810, 58044]
+```
+
+</details>
+
+<details>
+<summary>Spoiler: Test output</summary>
+
+```py
+# TODO, the question was given to other people as a challenge
+```
+
+</details>
+
 </details>
 
 ## How to Run the project with the demo
