@@ -28,6 +28,8 @@ This question has 100 steps and AI has failed to solve this :)
 # TODO, the question was given to other people as a challenge
 ```
 
+Could you have possible guess it does this? I certainly don't
+
 </details>
 
 </details>
