@@ -38,18 +38,18 @@ Could you have possible guess it does this? I certainly don't
 <details>
 <summary>Run with docker (recommended)</summary>
 
-Prerequisite: Have [docker](https://docs.docker.com/engine/install/) installed with `docker compose`
+Prerequisites: Have [docker](https://docs.docker.com/engine/install/) installed with `docker compose`
     
 ### Step 1: Setup `.env`
 
-In contrast to running without docker, `.env` setup is necessary for running in docker, It would fail if the following environment isn't set.
+In contrast to running without docker, `.env` setup is necessary for running in docker, It would fail if the following environment variables are not set.
 
 - `CODECAPTCHA_DOMAIN` to `http://127.0.0.1:9201` 
     - It can be changed depending on the configuration in `docker-compose.yml`. This environment variable is the domain in which the **client** accesses the CAPTCHA server
 - `CODECAPTCHA_DOMAIN_INTERNAL` to `http://captcha:8001`
     - If the CAPTCHA endpoint is from `CODECAPTCHA_DOMAIN` it can be accessible inside the docker container (such as a publicly accessible domain), then this environment variable is not needed
 
-Other configuration can be changed, according to the documentation in `.env.example`. The default value should work for them
+Other configurations can be changed, according to the documentation in `.env.example`. The default values should work for them.
 
 ### Step 2: Run the project
 ```bash
@@ -68,9 +68,9 @@ uv sync
 ```
     
 ### Step 2: Setup `.env`
-By default, the project can be ran without creating or setting up `.env`, however, you might want to change some configurations. Check `.env.example` for information to configurate `.env`.
+By default, the project can be run without creating or setting up `.env`, however, you might want to change some configurations. Check `.env.example` for information to configurate `.env`.
 
-Note: If you changed the `.env` file, or any other files in `frontend/`, you must setup the project up from the next step again.
+Note: If you changed the `.env` file, or any other files in `frontend/`, you must set the project up from the next step again.
 
 ### Step 3: Run the build script
 ```bash
@@ -81,7 +81,7 @@ This configures the frontend code to create a set of files in `dist/` which link
 ### Step 4: Run the project
 Run in 2 seperate terminals
 ```bash
-# This must be ran first
+# This must be run first
 uv run litestar --app server.captcha.main:app run --port 8001 --reload
 # Run the following about 5 to 10 seconds later in the other terminal
 uv run litestar --app server.backend.main:app run --port 8000 --reload
@@ -93,43 +93,43 @@ The [demo site](http://127.0.0.1:8000) and the [captcha site](http://127.0.0.1:8
 
 ## Why is it wrong?
 
-Have you ever saw meme of this kind of CAHTCPA? 
+Have you ever seen a meme like this?
 
 <img width="446" height="271" alt="image" src="https://github.com/user-attachments/assets/df3c995c-4ced-43de-82a0-16d0de28a628" />
 
 > Mark Rushakoff Sep 19, 2009 from StackOverflow, Answer to "alternative captcha methods", https://stackoverflow.com/a/1448684 CC-BY-SA 2.5. The original source that the author mentioned is no longer available
 
-The one that is overcomplicated and no one can solve them? We done something similar, but for coding! You have to write the code that solve the very specific problem that have no practical usage, and maybe it's fun?
+One that is overcomplicated and no one can solve them? We done something similar, but for coding! You have to write the code to solve very specific problems that have no practical usage, and hopefully it's fun?
 
-### Other reason it is wrong
-- It is written in python - which make it really slow, in additional with the complex UI framework used on the CAPTCHA UI for feature such as the code editor, it would freeze my tab for about 10s and about 30s to load, and download about 50MiB of package before it can be ran. 
-- Statistically LLM have higher success rate to solve the problem than human can without help from LLM or other peoples (consider most of the population in the world cannot write python code by themselves). (similar to convetional CAPTCHA against specifically trainned algorithm)
-- LLM is not trained to avoid solving the question, unlike conventional CAPTCHA, which make it potentially have higher success rate than normal CAPTCHA?
+### Other reasons it is wrong
+- It is written in python - which makes it really slow(This is why it take 5-6 seconds to load) and in addition with the complex UI framework used on the CAPTCHA UI for features such as the code editor, it would freeze my tab for about 10s and about 30s to load(hopefully that doesn't happen on yours), and it downloads about 50MiB of packages before it can be run. 
+- Statistically LLM's have higher success rate to solve these problems than a human can, without help from LLM's or other people(considering most of the population in the world cannot write python code by themselves).
+- LLM's are not trained to avoid solving the question, unlike conventional CAPTCHA, which makes it have a potentially have higher chance of success than normal CAPTCHA's.
 - The server also needed high computational effort to know and validate the answer, unlike normal CAPTCHA which the question is generated from answers.
 
 ## Project structure
 
-- `server/captcha` - The CAPTCHA server, written with Litestar that responsible to generate questions and creating image
-- `server/backend` - A basic demo server written with Litestar that handle a theoretical login system that is gated with CAPTCHA
-- `frontend/captcha` - Contain the static assets for the CAPTCHA server
+- `server/captcha` - The CAPTCHA server, written with Litestar that is responsible for generating images and creating the questions.
+- `server/backend` - A basic demo server written with Litestar that handles the theoretical login system that is gated with CAPTCHA.
+- `frontend/captcha` - Contains the static assets for the CAPTCHA server.
   <details>
     <summary>Disclosure</summary>
     
-    `frontend/captcha/parse.py` is a patch for micropython as it didn't bundle the `urllib.parse` stdlib. The file contains `urllib.parse` and `ipaddress` standard library from [cpython](https://github.com/python/cpython) and patch for some other feature isn't available in micropython such as `str.isascii` and "too complex" regex which is used by the original code from the standard library, which replacement with equivialent behaviour.
+    `frontend/captcha/parse.py` is a patch for micropython as it didn't bundle the `urllib.parse` stdlib. The file contains `urllib.parse` and `ipaddress` standard library's from [cpython](https://github.com/python/cpython) and a patch for some other feature that isn't available in micropython such as `str.isascii` and "too complex" regex which is used by the original code from the standard library, which replaces with equivialent behaviour.
 
   </details>
 - `frontend/demo` - A demo login page for testing
-- `crypto` - A module that both CAPTCHA server and demo server used to generate/handle public private key pair, and to generate and validate the JWT(JSON Web Token) using the Ed25519 key.
-- `captcha_data` - Contain a font file and the a question set
+- `crypto` - A module that both CAPTCHA server and demo server use to generate/handle public private key pair, and to generate and validate the JWT(JSON Web Token) using the Ed25519 key.
+- `captcha_data` - Contains a font file and the a question set
   <details>
     <summary>Disclosure</summary>
     
-    - `captcha_data/JetBrainsMono-Regular.ttf` is a font created by JetBrains, and licensed under SIL Open Font License, Version 1.1 (OFL). The license text is inclued in `captcha_data/OFL.txt` as required by the license. The font is included for the purpose to run the project with minimal setup, and other font can be used. The OFL license is compatible with MIT license according to [FOSSA](https://fossa.com/blog/open-source-licenses-101-sil-open-font-license-ofl/)
+    - `captcha_data/JetBrainsMono-Regular.ttf` is a font created by JetBrains, and licensed under SIL Open Font License, Version 1.1 (OFL). The license text is inclued in `captcha_data/OFL.txt` as required by the license. The font is included for the purpose to run the project with minimal setup, and any other font can be used. The OFL license is compatible with MIT license according to [FOSSA](https://fossa.com/blog/open-source-licenses-101-sil-open-font-license-ofl/)
     - `captcha_data/question_set.json` is created with a combination of manual effort and AI generation. Approximately 2 million
-questions is generated during testing, with only 1 exceed the execution timeout of 0.5s during testing when calculating a prime number, which likely originate from saturated resource usage from other task running on the test device. However some question description might not match the checking criteria(with 1 known case found after the deadline)
+questions are generated during testing, with only 1 exceeding the execution timeout of 0.5s during testing when calculating a prime number, which likely originates from saturated resource usage from other tasks running on the test device. However some questions descriptions might not match the checking criteria(with 1 known case found after the deadline )
 
   </details>
-- `build.py` A build script which put all the file from `frontend/` to `dist/` and replace `[domain]` in specific file to domain defined by environment variable `CODECAPTCHA_DOMAIN` so the client can connect to the correct CAPTCHA serveras given from the static file. This is only needed for the demo server, but for consistency, the CAPTCHA server will also use it.
+- `build.py` A build script which put all the files from `frontend/` to `dist/` and replaces `[domain]` in specific file to domain defined by environment variable `CODECAPTCHA_DOMAIN` so the client can connect to the correct CAPTCHA servers given from the static file. This is only needed for the demo server, but for consistency, the CAPTCHA server will also use it.
 
 ## Contribution list
 <details>
@@ -181,12 +181,12 @@ questions is generated during testing, with only 1 exceed the execution timeout 
 
 ## Framework choice
 
-The project used a combination of Pyscript, Pyodide for the approved framework, with some HTML/js/css when necessary in the CAPTCHA files.
-- Pyscript is used in `frontend/captcha/captcha.py` and `frontend/captcha/captcha_handler.py` to handle the communication between 2 site to exchange the JWT token.
+The project used a combination of Pyscript and Pyodide from the approved frameworks, with some HTML/js/css when necessary in the CAPTCHA files.
+- Pyscript is used in `frontend/captcha/captcha.py` and `frontend/captcha/captcha_handler.py` to handle the communication between 2 sites to exchange the JWT token.
 - Pyodide is used to run user code in isolation in `frontend/captcha/runner.js`
 
 Other framework:
-- [Panel](https://panel.holoviz.org/) is used as a frontend framework with pyscript as a CAPTCHA UI, defined in `frontend/captcha/captcha.py`
-- [Litestar](https://litestar.dev/) is used as backend framework for both the CAPTCHA server and DEMO server in `server/`
-- [pyjwt](https://pyjwt.readthedocs.io/) and [cryptography](https://cryptography.io/) is used for Ed25519 key handling, JWT creation and validation in `crypto/`
-- [Pillow](https://pillow.readthedocs.io/en/stable/) is used to generate image of question that is sent to the client
+- [Panel](https://panel.holoviz.org/) is used as a frontend framework with pyscript as a CAPTCHA UI, defined in `frontend/captcha/captcha.py`.
+- [Litestar](https://litestar.dev/) is used as backend framework for both the CAPTCHA server and DEMO server in `server/`.
+- [pyjwt](https://pyjwt.readthedocs.io/) and [cryptography](https://cryptography.io/) is used for Ed25519 key handling, JWT creation and validation in `crypto/`.
+- [Pillow](https://pillow.readthedocs.io/en/stable/) is used to generate image of question that is sent to the client.
