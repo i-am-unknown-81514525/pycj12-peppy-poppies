@@ -102,8 +102,8 @@ Have you ever saw meme of this kind of CAHTCPA?
 The one that is overcomplicated and no one can solve them? We done something similar, but for coding! You have to write the code that solve the very specific problem that have no practical usage, and maybe it's fun?
 
 ### Other reason it is wrong
-- It is written in python - which make it really slow, in additional with the complex UI framework used on the CAPTCHA UI for feature such as the code editor, it would freeze my tab for about 10s and about 30s to load, and download about 50MiB of package before it can be ran.
-- Statistically LLM have higher success rate to solve the problem than human can without help from LLM or other peoples (consider most of the population in the world cannot write python code by themselves).
+- It is written in python - which make it really slow, in additional with the complex UI framework used on the CAPTCHA UI for feature such as the code editor, it would freeze my tab for about 10s and about 30s to load, and download about 50MiB of package before it can be ran. 
+- Statistically LLM have higher success rate to solve the problem than human can without help from LLM or other peoples (consider most of the population in the world cannot write python code by themselves). (similar to convetional CAPTCHA against specifically trainned algorithm)
 - LLM is not trained to avoid solving the question, unlike conventional CAPTCHA, which make it potentially have higher success rate than normal CAPTCHA?
 - The server also needed high computational effort to know and validate the answer, unlike normal CAPTCHA which the question is generated from answers.
 
