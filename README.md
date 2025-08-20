@@ -91,6 +91,21 @@ uv run litestar --app server.backend.main:app run --port 8000 --reload
 The [demo site](http://127.0.0.1:8000) and the [captcha site](http://127.0.0.1:8001) can be accessed from http://127.0.0.1:8000 and http://127.0.0.1:8001 respectively
 </details>
 
+## Why is it wrong?
+
+Have you ever saw meme of this kind of CAHTCPA? 
+
+<img width="446" height="271" alt="image" src="https://github.com/user-attachments/assets/df3c995c-4ced-43de-82a0-16d0de28a628" />
+> Mark Rushakoff Sep 19, 2009 from StackOverflow, Answer to "alternative captcha methods", https://stackoverflow.com/a/1448684 CC-BY-SA 2.5. The original source that the author mention is no longer available
+
+The one that is overcomplicated and no one can solve them? We done something similar, but for coding! You have to write the code that solve the very specific problem that have no practical usage, and maybe it's fun?
+
+### Other reason it is wrong
+- It is written in python - which make it really slow, in additional with the complex UI framework used on the CAPTCHA UI for feature such as the code editor, it would freeze my tab for about 10s and about 30s to load, and download about 50MiB of package before it can be ran.
+- Statistically LLM have higher success rate to solve the problem than human can without help from LLM or other peoples (consider most of the population in the world cannot write python code by themselves).
+- LLM is not trained to avoid solving the question, unlike conventional CAPTCHA, which make it potentially have higher success rate than normal CAPTCHA?
+- The server also needed high computational effort to know and validate the answer, unlike normal CAPTCHA which the question is generated from answers.
+
 ## Project structure
 
 - `server/captcha` - The CAPTCHA server, written with Litestar that responsible to generate questions and creating image
