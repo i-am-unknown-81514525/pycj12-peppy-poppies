@@ -96,7 +96,8 @@ The [demo site](http://127.0.0.1:8000) and the [captcha site](http://127.0.0.1:8
 Have you ever saw meme of this kind of CAHTCPA? 
 
 <img width="446" height="271" alt="image" src="https://github.com/user-attachments/assets/df3c995c-4ced-43de-82a0-16d0de28a628" />
-> Mark Rushakoff Sep 19, 2009 from StackOverflow, Answer to "alternative captcha methods", https://stackoverflow.com/a/1448684 CC-BY-SA 2.5. The original source that the author mention is no longer available
+
+> Mark Rushakoff Sep 19, 2009 from StackOverflow, Answer to "alternative captcha methods", https://stackoverflow.com/a/1448684 CC-BY-SA 2.5. The original source that the author mentioned is no longer available
 
 The one that is overcomplicated and no one can solve them? We done something similar, but for coding! You have to write the code that solve the very specific problem that have no practical usage, and maybe it's fun?
 
