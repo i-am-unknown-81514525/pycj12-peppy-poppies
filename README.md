@@ -153,6 +153,7 @@ questions are generated during testing, with only 1 exceeding the execution time
 - Question generator parser
 - Writing question set
 - Update image generation
+- Write the final `README.md`
 </details>
 <details>
     <summary>ununenium817 (@Ununenium817)</summary>
@@ -179,6 +180,7 @@ questions are generated during testing, with only 1 exceeding the execution time
 - Minor UI improvement for the CAPTCHA frame for usability
 - Wrote JWT Validator but was scrapped(due to issues).
 - Attempt to write the login system for demo server that didn't get merged.
+- Update various part of `README.md`
 </details>
 
 ## Framework choice
