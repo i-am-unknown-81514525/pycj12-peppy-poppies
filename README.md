@@ -104,7 +104,7 @@ Have you ever seen a meme like this?
 One that is overcomplicated and no one can solve them? We done something similar, but for coding! You have to write the code to solve very specific problems that have no practical usage, and hopefully it's fun?
 
 ### Other reasons it is wrong
-- It is written in python - which makes it really slow(This is why it take 5-6 seconds to load) and in addition with the complex UI framework used on the CAPTCHA UI for features such as the code editor, it would freeze my tab for about 10s and about 30s to load(hopefully that doesn't happen on yours), and it downloads about 50MiB of packages before it can be run. 
+- It is written in python - which makes it really slow(This is why it take 5-6 seconds to load) and in addition with the complex UI framework used on the CAPTCHA UI for features such as the code editor, it would freeze my tab for about 10s and about 30s to load(hopefully that doesn't happen on yours), and it downloads about 50MiB of packages before it can be run.
 - Statistically LLM's have higher success rate to solve these problems than a human can, without help from LLM's or other people(considering most of the population in the world cannot write python code by themselves).
 - LLM's are not trained to avoid solving the question, unlike conventional CAPTCHA, which makes it have a potentially have higher chance of success than normal CAPTCHA's.
 - The server also needed high computational effort to know and validate the answer, unlike normal CAPTCHA which the question is generated from answers.
@@ -116,7 +116,7 @@ One that is overcomplicated and no one can solve them? We done something similar
 - `frontend/captcha` - Contains the static assets for the CAPTCHA server.
   <details>
     <summary>Disclosure</summary>
-    
+
     `frontend/captcha/parse.py` is a patch for micropython as it didn't bundle the `urllib.parse` stdlib. The file contains `urllib.parse` and `ipaddress` standard libraries from [cpython](https://github.com/python/cpython) and a patch for some other feature that isn't available in micropython such as `str.isascii` and "too complex" regex which is used by the original code from the standard library, which replaces with equivialent behaviour.
 
   </details>
@@ -125,7 +125,7 @@ One that is overcomplicated and no one can solve them? We done something similar
 - `captcha_data` - Contains a font file and the a question set
   <details>
     <summary>Disclosure</summary>
-    
+
     - `captcha_data/JetBrainsMono-Regular.ttf` is a font created by JetBrains, and licensed under SIL Open Font License, Version 1.1 (OFL). The license text is inclued in `captcha_data/OFL.txt` as required by the license. The font is included for the purpose to run the project with minimal setup, and any other font can be used. The OFL license is compatible with MIT license according to [FOSSA](https://fossa.com/blog/open-source-licenses-101-sil-open-font-license-ofl/)
     - `captcha_data/question_set.json` is created with a combination of manual effort and AI generation. Approximately 2 million
 questions are generated during testing, with only 1 exceeding the execution timeout of 0.5s during testing when calculating a prime number, which likely originates from saturated resource usage from other tasks running on the test device. However some questions descriptions might not match the checking criteria(with 1 known case found after the deadline )
@@ -157,25 +157,25 @@ questions are generated during testing, with only 1 exceeding the execution time
 </details>
 <details>
     <summary>ununenium817 (@Ununenium817)</summary>
-    
+
 - Help writing the CAPTCHA server that was replaced
 - Writing question set
 - Construct system prompt and code to generate part of question set
 </details>
 <details>
     <summary>wrybyte (@tayvona)</summary>
-    
+
 - Minor UI improvement on demo page
 </details>
 <details>
     <summary>fiwam (@fiwam)</summary>
-    
+
 - Update CAPTCHA frontend to handle image
 - Convert the question generated to send image instead of text to client
 </details>
 <details>
     <summary>dragonsenseiguy (@DragonSenseiGuy)</summary>
-    
+
 - Attempt to write the CAPTCHA server that was replaced
 - Minor UI improvement for the CAPTCHA frame for usability
 - Wrote JWT Validator but was scrapped(due to issues).
