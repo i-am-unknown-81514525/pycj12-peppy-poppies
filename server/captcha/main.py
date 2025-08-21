@@ -52,7 +52,30 @@ def ensure_questions(app: Litestar) -> None:  # noqa: D103
             )
     with (CONFIG_PATH / "question_set.json").open("rb") as fp:
         question_set = decode(fp.read(), type=QuestionSet)
+    if not (CONFIG_PATH / "hard_set.json").exists():
+        with (CONFIG_PATH / "hard_set.json").open("wb") as fp:
+            fp.write(
+                encode(
+                    QuestionSet(
+                        construct=["{init} {dyn:base}"],
+                        base=[
+                            Question(
+                                question="{y}+x",
+                                validator="validator=lambda x:{y}+x",
+                                range={"y": (-65536, 65536)},
+                                input=(1, 65536),
+                            ),
+                        ],
+                        part=[],
+                        init=["Write a function `calc(x: int) -> int` to calculate"],
+                        cont=[", then"],
+                    ),
+                ),
+            )
+    with (CONFIG_PATH / "hard_set.json").open("rb") as fp:
+        hard_set = decode(fp.read(), type=QuestionSet)
     app.state["question_set"] = question_set
+    app.state["hard_set"] = hard_set
 
 
 app = Litestar(

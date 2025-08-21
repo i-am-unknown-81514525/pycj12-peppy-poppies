@@ -5,6 +5,7 @@ from os import getenv
 from pathlib import Path
 from typing import TYPE_CHECKING
 from uuid import UUID
+from random import randint
 
 import anyio
 from crypto.jwt_generate import JWTGenerator
@@ -99,6 +100,9 @@ class ChallengeController(Controller):  # noqa: D101
 
         """
         question_set: QuestionSet = request.app.state["question_set"]
+        if randint(0, 9) == 0:
+            question_set: QuestionSet = request.app.state["hard_set"]
+
         question: GeneratedQuestion = question_generator(question_set)
 
         challenge = await challenge_service.create(
