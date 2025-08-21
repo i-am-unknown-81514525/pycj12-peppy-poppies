@@ -25,10 +25,12 @@ This question has 100 steps and ~~AI has failed to solve this :)~~ (I used the w
 <summary>Spoiler: Test output</summary>
 
 ```py
-# TODO, the question was given to other people as a challenge
+[24, 24, 24, 24, 24, 24, 24]
 ```
 
-Could you have possible guess the result look like this? I certainly don't
+Could you have possible guess the result look like this? I certainly didn't
+
+> Side note: The reason which I have figured out afterward is as each step in the question is determistic (a given input would always give the same output for the same step), and many steps in the `question_set.json` have many-to-one relationship, therefore, when there are a lot of steps(in this case: 100), It is very likely that all the input produce the exact same result.
 
 </details>
 
