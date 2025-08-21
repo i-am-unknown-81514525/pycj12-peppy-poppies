@@ -41,12 +41,12 @@ Could you have possible guess the result look like this? I certainly didn't
 <summary>Run with docker (recommended)</summary>
 
 Prerequisites: Have [docker](https://docs.docker.com/engine/install/) installed with `docker compose`
-    
+
 ### Step 1: Setup `.env`
 
 In contrast to running without docker, `.env` setup is necessary for running in docker, It would fail if the following environment variables are not set.
 
-- `CODECAPTCHA_DOMAIN` to `http://127.0.0.1:9201` 
+- `CODECAPTCHA_DOMAIN` to `http://127.0.0.1:9201`
     - It can be changed depending on the configuration in `docker-compose.yml`. This environment variable is the domain in which the **client** accesses the CAPTCHA server
 - `CODECAPTCHA_DOMAIN_INTERNAL` to `http://captcha:8001`
     - If the CAPTCHA endpoint is from `CODECAPTCHA_DOMAIN` it can be accessible inside the docker container (such as a publicly accessible domain), then this environment variable is not needed
@@ -63,12 +63,12 @@ The [demo site](http://127.0.0.1:9200) and the [captcha site](http://127.0.0.1:9
 <summary>Run without docker</summary>
 
 Prerequisites: Have [uv](https://docs.astral.sh/uv/getting-started/installation/) and `python3.12` installed
-    
+
 ### Step 1: Setup `.venv`
 ```bash
 uv sync
 ```
-    
+
 ### Step 2: Setup `.env`
 By default, the project can be run without creating or setting up `.env`, however, you might want to change some configurations. Check `.env.example` for information to configurate `.env`.
 
