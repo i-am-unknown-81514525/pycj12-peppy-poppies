@@ -93,6 +93,9 @@ uv run litestar --app server.backend.main:app run --port 8000 --reload
 The [demo site](http://127.0.0.1:8000) and the [captcha site](http://127.0.0.1:8001) can be accessed from http://127.0.0.1:8000 and http://127.0.0.1:8001 respectively
 </details>
 
+## Short video demo
+![Demo](docs-assets/Presentation.gif)
+
 ## Why is it wrong?
 
 Have you ever seen a meme like this?
