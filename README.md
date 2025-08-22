@@ -1,7 +1,7 @@
 # CodeCaptcha
 A CAPTCHA system where the user writes python code to solve a given question.
 
-An normal example:
+A normal example:
 
 ![Example question](docs-assets/16768e08d0bf01f942995f0077ef5e6718aba3298c7b609dd98cf3825fa0db0a.png)
 
