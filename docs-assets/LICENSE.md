@@ -5,4 +5,5 @@ The following file is created using the question generator, with minor modificat
 
 The following file is recorded by [@DragonSenseiGuy](https://github.com/DragonSenseiGuy) and licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
 
-- `docs-assets/Presentation.np4`
+- `docs-assets/Presentation.np4` (removed in replacement for `Presentation.gif`)
+- `docs-assets/Presentation.gif`
