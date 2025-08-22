@@ -108,7 +108,7 @@ One that is overcomplicated and no one can solve them? We done something similar
 
 ### Other reasons it is wrong
 - It is written in python - which makes it really slow (This is why it takes 5-6 seconds to load) and in addition to the complex UI framework used on the CAPTCHA UI for features such as the code editor, it would freeze my tab for about 10s and about 30s to load (hopefully that doesn't happen on yours), and it downloads about 50MiB of packages before it can be run.
-- Statistically LLM's have higher success rate to solve these problems than a human can, without help from LLM's or other people(considering most of the population in the world cannot write python code by themselves).
+- Statistically LLMs have higher success rates to solve these problems than a human can, without help from LLMs or other people (considering most of the population in the world cannot write python code by themselves).
 - LLMs are not trained to avoid solving the question, unlike conventional CAPTCHAs, which makes them potentially have a higher chance of success than normal CAPTCHAs.
 - The server also needed high computational effort to know and validate the answer, unlike normal CAPTCHA which the question is generated from answers.
 
