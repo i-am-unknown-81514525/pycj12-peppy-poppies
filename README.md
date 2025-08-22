@@ -134,7 +134,7 @@ One that is overcomplicated and no one can solve them? We done something similar
 questions are generated during testing, with only 1 exceeding the execution timeout of 0.5s during testing when calculating a prime number, which likely originated from saturated resource usage from other tasks running on the test device. However, some question descriptions might not match the checking criteria (with 1 known case found after the deadline)
 
   </details>
-- `build.py` A build script which put all the files from `frontend/` to `dist/` and replaces `[domain]` in specific file to domain defined by environment variable `CODECAPTCHA_DOMAIN` so the client can connect to the correct CAPTCHA servers given from the static file. This is only needed for the demo server, but for consistency, the CAPTCHA server will also use it.
+- `build.py` A build script which puts all the files from `frontend/` to `dist/` and replaces `[domain]` in specific files to the domain defined by the environment variable `CODECAPTCHA_DOMAIN` so the client can connect to the correct CAPTCHA servers specified in the static file. This is only needed for the demo server, but for consistency, the CAPTCHA server will also use it.
 
 ## Contribution list
 <details>
