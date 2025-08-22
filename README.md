@@ -8,7 +8,7 @@ A normal example:
 <details>
 <summary>Chaotic example (Note that it is very long):</summary>
 
-This question has 100 steps and ~~AI has failed to solve this :)~~ (I used the wrong model at the original test with Google Gemini 2.5 Flash, and Gemini 2.5 Pro was able to solve this with 13,857 tokens)
+This question has 100 steps and ~~AI has failed to solve this :)~~ (I used the wrong model in the original test with Google Gemini 2.5 Flash, and Gemini 2.5 Pro was able to solve this with 13,857 tokens)
 
 ![Example question](docs-assets/de19ebabd51028f36f7ee03dbe4365b54726181300998b3bf1fd3954a17966e1.png)
 
