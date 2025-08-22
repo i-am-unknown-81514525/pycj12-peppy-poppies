@@ -30,7 +30,7 @@ This question has 100 steps and ~~AI has failed to solve this :)~~ (I used the w
 
 Could you have possibly guessed the result looks like this? I certainly didn't
 
-> Side note: The reason which I have figured out afterward is as each step in the question is determistic (a given input would always give the same output for the same step), and many steps in the `question_set.json` have many-to-one relationship, therefore, when there are a lot of steps(in this case: 100), It is very likely that all the input produce the exact same result.
+> Side note: The reason which I have figured out afterward is as each step in the question is deterministic (a given input would always give the same output for the same step), and many steps in the `question_set.json` have many-to-one relationship, therefore, when there are a lot of steps (in this case: 100), it is very likely that all the inputs produce the exact same result.
 
 </details>
 
