@@ -387,24 +387,17 @@
             "range": {}
         },
         {
-            "question": "bitwise AND by {y}",
-            "validator": "validator=lambda x:x&{y}",
-            "range": {
-                "y": [-65536, 65536]
-            }
-        },
-        {
-            "question": "bitwise OR by {y}",
-            "validator": "validator=lambda x:x|{y}",
-            "range": {
-                "y": [-65536, 65536]
-            }
-        },
-        {
             "question": "modulo by {y}",
             "validator": "validator=lambda x:x%{y}",
             "range": {
-                "y": [1, 65536]
+                "y": [1024, 65536]
+            }
+        },
+        {
+            "question": "(modulo by {y} plus integer divide by {y})",
+            "validator": "validator=lambda x:sum(divmod(x,{y}))",
+            "range": {
+                "y": [128, 65536]
             }
         },
         {
@@ -418,7 +411,7 @@
             "question": "bitwise left shift by {y}",
             "validator": "validator=lambda x:x<<{y}",
             "range": {
-                "y": [0, 31]
+                "y": [0, 16]
             }
         },
         {
@@ -442,8 +435,8 @@
             "range": {}
         },
         {
-            "question": "find the integer part of its square root (of its absolute value)",
-            "validator": "import math; validator=lambda x: math.isqrt(abs(x))",
+            "question": "find the integer part of its square root (of its absolute value) multiply by the value",
+            "validator": "import math; validator=lambda x: math.isqrt(abs(x))*x",
             "range": {}
         },
         {
@@ -458,21 +451,14 @@
             "validator": "validator=lambda x: pow(x, {y}, {z})",
             "range": {
                 "y": [1, 5],
-                "z": [512, 65536]
+                "z": [1024, 65536]
             }
         },
         {
             "question": "find the remainder of the result when divided by the {y}",
             "validator": "validator=lambda x: x % {y}",
             "range": {
-                "y": [512, 65536]
-            }
-        },
-        {
-            "question": "find the greatest common divisor with {y}",
-            "validator": "import math; validator=lambda x: math.gcd(x, {y})",
-            "range": {
-                "y": [1, 65536]
+                "y": [1024, 65536]
             }
         },
         {
@@ -565,8 +551,20 @@
             "range": {}
         },
         {
-            "question": "compute the factorial of the result mod {y} then add the result",
+            "question": "compute the factorial of the last digit of the result and add the result",
+            "validator": "from math import factorial; validator=lambda x: factorial(abs(x)%10) + x",
+            "range": {}
+        },
+        {
+            "question": "compute the factorial of the (result mod {y}) and add the result",
             "validator": "from math import factorial; validator=lambda x: factorial(abs(x)%{y}) + x",
+            "range": {
+                "y": [10, 200]
+            }
+        },
+        {
+            "question": "compute the factorial of the (result mod {y}) multiply by the result",
+            "validator": "from math import factorial; validator=lambda x: factorial(abs(x)%{y}) * x",
             "range": {
                 "y": [10, 200]
             }
@@ -577,8 +575,8 @@
             "range": {}
         },
         {
-            "question": "compute the product of the digits of the result, ignoring 0",
-            "validator": "import math; validator=lambda x: math.prod([int(d) for d in str(abs(x)) if int(d)])",
+            "question": "compute the product of the digits of the current value, ignoring 0, and add by the current value",
+            "validator": "import math; validator=lambda x: math.prod([int(d) for d in str(abs(x)) if int(d)])+x",
             "range": {}
         }
     ],
